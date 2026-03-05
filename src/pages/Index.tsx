@@ -45,7 +45,7 @@ const Index = () => {
           <p className="text-muted-foreground text-lg mb-8">
             Comece a analisar seus dados e descubra oportunidades escondidas.
           </p>
-          <button className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-medium text-base tactile-shadow hover:tactile-shadow-pressed active:scale-[0.98] transition-all duration-150 cursor-pointer">
+          <button onClick={() => navigate("/analisar")} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-medium text-base tactile-shadow hover:tactile-shadow-pressed active:scale-[0.98] transition-all duration-150 cursor-pointer">
             Começar agora
             <ArrowRight className="w-4 h-4" />
           </button>
