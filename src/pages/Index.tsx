@@ -1,4 +1,5 @@
 import { BarChart3, Users, Zap, TrendingUp, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
