@@ -5,6 +5,7 @@ import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
 
 const Index = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
