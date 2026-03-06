@@ -18,14 +18,6 @@ interface ProfileData {
 
 type AnalysisResult = Record<string, ProfileData>;
 
-const metricLabels: { key: keyof ProfileData; label: string }[] = [
-  { key: "seguidores", label: "Seguidores" },
-  { key: "total_posts_3m", label: "Posts últimos 3 meses" },
-  { key: "total_views", label: "Total de visualizações" },
-  { key: "total_likes", label: "Total de likes" },
-  { key: "total_comentarios", label: "Total de comentários" },
-  { key: "posts_por_semana", label: "Posts por semana" },
-];
 
 const AnalysisFlow = () => {
   const navigate = useNavigate();
