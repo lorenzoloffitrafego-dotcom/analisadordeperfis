@@ -147,12 +147,11 @@ const AnalysisFlow = () => {
                     <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <img
-                          src={result[name].foto}
+                          src={`https://images.weserv.nl/?url=${encodeURIComponent(result[name].foto || "")}`}
                           alt={name.replace("@", "")}
                           width={40}
                           height={40}
                           style={{ borderRadius: "50%", objectFit: "cover", minWidth: 40 }}
-                          referrerPolicy="no-referrer"
                           onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                         <span>{name.replace("@", "")}</span>
