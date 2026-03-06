@@ -107,72 +107,7 @@ const AnalysisFlow = () => {
   }
 
   if (result) {
-    const profileNames = Object.keys(result);
-
-    return (
-      <div className="min-h-screen aurora-bg flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-4xl">
-          <div className="text-center mb-8">
-            <h2 className="font-display text-3xl font-bold text-foreground mb-2">
-              Resultado da Análise
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              Comparação entre os perfis analisados.
-            </p>
-          </div>
-
-          <div className="glass-surface rounded-2xl tactile-shadow overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-border/50">
-                  <TableHead className="text-muted-foreground font-medium">Perfil</TableHead>
-                  {metricLabels.map(({ key, label }) => (
-                    <TableHead key={key} className="text-muted-foreground font-medium text-center">
-                      {label}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {profileNames.map((name, i) => (
-                  <TableRow key={name} className="border-border/30">
-                    <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <img
-                          src={`https://images.weserv.nl/?url=${encodeURIComponent(result[name].foto || "")}`}
-                          alt={name.replace("@", "")}
-                          width={40}
-                          height={40}
-                          style={{ borderRadius: "50%", objectFit: "cover", minWidth: 40 }}
-                          onError={(e) => { e.currentTarget.style.display = "none"; }}
-                        />
-                        <span>{name.replace("@", "")}</span>
-                      </div>
-                    </TableCell>
-                    {metricLabels.map(({ key }) => (
-                      <TableCell key={key} className={`text-center ${i === 0 ? "text-accent font-semibold" : "text-muted-foreground"}`}>
-                        {result[name][key]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-
-          <div className="flex justify-center gap-3 mt-8">
-            <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
-              <ArrowLeft className="w-4 h-4" />
-              Início
-            </Button>
-            <Button variant="accent" size="lg" onClick={handleReset}>
-              <RotateCcw className="w-4 h-4" />
-              Nova Análise
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
+    return <AnalysisResults result={result} onReset={handleReset} />;
   }
 
   return (
