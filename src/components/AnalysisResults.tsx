@@ -71,7 +71,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   return (
     <div className="min-h-screen aurora-bg flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl">
+      <div className="w-full max-w-6xl">
         <div className="text-center mb-10">
           <h2 className="font-display text-3xl font-bold text-foreground mb-2">
             Resultado da Análise
@@ -81,83 +81,85 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </p>
         </div>
 
-        {/* Profile headers */}
-        <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: `200px repeat(${profileNames.length}, 1fr)` }}>
-          <div />
-          {profileNames.map((name, i) => (
-            <div
-              key={name}
-              className={`rounded-xl p-4 flex items-center gap-3 border ${
-                i === 0
-                  ? "bg-accent/10 border-accent/30"
-                  : "glass-surface border-border/50"
-              }`}
-            >
-              <img
-                src={`https://images.weserv.nl/?url=${encodeURIComponent(result[name].foto || "")}`}
-                alt={name.replace("@", "")}
-                width={44}
-                height={44}
-                style={{ borderRadius: "50%", objectFit: "cover", minWidth: 44 }}
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
-              />
-              <div className="min-w-0">
-                <span className={`font-display font-bold text-sm truncate block ${i === 0 ? "text-accent" : "text-foreground"}`}>
-                  {name.replace("@", "")}
-                </span>
-                {i === 0 && (
-                  <span className="text-[10px] uppercase tracking-widest text-accent/70 font-semibold">
-                    Seu perfil
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Metric rows */}
-        <div className="space-y-2">
-          {metricConfig.map(({ key, label, icon: Icon }) => {
-            const bestIdx = getBestIndex(profiles, key);
-            return (
-              <div
-                key={key}
-                className="grid gap-4 items-center"
-                style={{ gridTemplateColumns: `200px repeat(${profileNames.length}, 1fr)` }}
-              >
-                <div className="flex items-center gap-2.5 py-3 px-1">
-                  <Icon className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="text-sm font-medium text-muted-foreground">{label}</span>
-                </div>
-                {profiles.map((profile, i) => {
-                  const isBest = i === bestIdx;
+        {/* Horizontal table: profiles as rows, metrics as columns */}
+        <div className="glass-surface rounded-2xl tactile-shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b border-border/50">
+                  <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground min-w-[200px]">
+                    Concorrente
+                  </th>
+                  {metricConfig.map(({ key, label, icon: Icon }) => (
+                    <th key={key} className="py-4 px-4 text-center min-w-[120px]">
+                      <div className="flex flex-col items-center gap-1.5">
+                        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          {label}
+                        </span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {profileNames.map((name, i) => {
+                  const profile = profiles[i];
                   const isUser = i === 0;
                   return (
-                    <div
-                      key={profileNames[i]}
-                      className={`rounded-lg py-3 px-4 text-center border transition-colors ${
-                        isBest
-                          ? "bg-accent/10 border-accent/20"
-                          : "glass-surface border-border/30"
+                    <tr
+                      key={name}
+                      className={`border-b border-border/30 last:border-b-0 transition-colors ${
+                        isUser ? "bg-accent/[0.04]" : "hover:bg-muted/30"
                       }`}
                     >
-                      <span
-                        className={`font-display text-lg font-bold ${
-                          isBest
-                            ? "text-accent"
-                            : isUser
-                            ? "text-foreground"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        {formatNumber(profile[key] as string)}
-                      </span>
-                    </div>
+                      <td className="py-4 px-5">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`https://images.weserv.nl/?url=${encodeURIComponent(profile.foto || "")}`}
+                            alt={name.replace("@", "")}
+                            width={36}
+                            height={36}
+                            style={{ borderRadius: "50%", objectFit: "cover", minWidth: 36 }}
+                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          />
+                          <div className="min-w-0">
+                            <span className={`font-display font-bold text-sm truncate block ${isUser ? "text-accent" : "text-foreground"}`}>
+                              {name.replace("@", "")}
+                            </span>
+                            {isUser && (
+                              <span className="text-[10px] uppercase tracking-widest text-accent/60 font-semibold">
+                                Seu perfil
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      {metricConfig.map(({ key }) => {
+                        const bestIdx = getBestIndex(profiles, key);
+                        const isBest = i === bestIdx;
+                        return (
+                          <td key={key} className="py-4 px-4 text-center">
+                            <span
+                              className={`font-display text-base font-bold ${
+                                isBest
+                                  ? "text-accent"
+                                  : isUser
+                                  ? "text-foreground"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              {formatNumber(profile[key] as string)}
+                            </span>
+                          </td>
+                        );
+                      })}
+                    </tr>
                   );
                 })}
-              </div>
-            );
-          })}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="flex justify-center gap-3 mt-10">
