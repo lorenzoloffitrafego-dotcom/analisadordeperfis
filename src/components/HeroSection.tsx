@@ -64,9 +64,6 @@ const HeroSection = () => {
             Analisar Perfis
             <ArrowRight className="w-4 h-4" />
           </button>
-          <button className="inline-flex items-center gap-2 glass-surface px-6 py-3.5 rounded-full font-medium text-sm text-muted-foreground hover:text-foreground tactile-shadow hover:tactile-shadow-pressed active:scale-[0.98] transition-all duration-150 cursor-pointer">
-            Ver demonstração
-          </button>
         </div>
       </div>
     </section>
