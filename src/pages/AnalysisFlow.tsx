@@ -145,11 +145,15 @@ const AnalysisFlow = () => {
                 {profileNames.map((name, i) => (
                   <TableRow key={name} className="border-border/30">
                     <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
-                      <div className="flex items-center gap-2">
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <img
                           src={result[name].foto}
                           alt={name.replace("@", "")}
-                          className="h-10 w-10 rounded-full object-cover shrink-0"
+                          width={40}
+                          height={40}
+                          style={{ borderRadius: "50%", objectFit: "cover", minWidth: 40 }}
+                          referrerPolicy="no-referrer"
+                          onError={(e) => { e.currentTarget.style.display = "none"; }}
                         />
                         <span>{name.replace("@", "")}</span>
                       </div>
