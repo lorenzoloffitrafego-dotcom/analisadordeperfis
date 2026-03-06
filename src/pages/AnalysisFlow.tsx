@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import TagInput from "@/components/TagInput";
 import {
   Table,
   TableBody,
@@ -13,8 +13,6 @@ import {
 } from "@/components/ui/table";
 import { toast } from "sonner";
 
-const sanitizeHandle = (value: string) => value.replace(/@/g, "").trim();
-
 interface ProfileData {
   seguidores: string;
   total_posts_3m: string;
@@ -24,11 +22,7 @@ interface ProfileData {
   posts_por_semana: string;
 }
 
-interface AnalysisResult {
-  meu_perfil: ProfileData;
-  concorrente_1: ProfileData;
-  concorrente_2: ProfileData;
-}
+type AnalysisResult = Record<string, ProfileData>;
 
 const metricLabels: { key: keyof ProfileData; label: string }[] = [
   { key: "seguidores", label: "Seguidores" },
@@ -42,33 +36,25 @@ const metricLabels: { key: keyof ProfileData; label: string }[] = [
 const AnalysisFlow = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [myInstagram, setMyInstagram] = useState("");
-  const [competitor1, setCompetitor1] = useState("");
-  const [competitor2, setCompetitor2] = useState("");
+  const [myTags, setMyTags] = useState<string[]>([]);
+  const [competitorTags, setCompetitorTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
   const handleNext = () => {
-    const handle = sanitizeHandle(myInstagram);
-    if (!handle) {
-      toast.error("Por favor, digite seu nome de usuário do Instagram.");
+    if (myTags.length === 0) {
+      toast.error("Por favor, adicione seu nome de usuário do Instagram.");
       return;
     }
-    setMyInstagram(handle);
     setStep(2);
   };
 
   const handleSubmit = async () => {
-    const c1 = sanitizeHandle(competitor1);
-    const c2 = sanitizeHandle(competitor2);
-
-    if (!c1 || !c2) {
-      toast.error("Por favor, preencha os dois perfis de concorrentes.");
+    if (competitorTags.length < 2) {
+      toast.error("Por favor, adicione dois perfis de concorrentes.");
       return;
     }
 
-    setCompetitor1(c1);
-    setCompetitor2(c2);
     setLoading(true);
 
     try {
@@ -78,9 +64,9 @@ const AnalysisFlow = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            meu_instagram: sanitizeHandle(myInstagram),
-            concorrente_1: c1,
-            concorrente_2: c2,
+            meu_instagram: myTags[0],
+            concorrente_1: competitorTags[0],
+            concorrente_2: competitorTags[1],
           }),
         }
       );
@@ -103,13 +89,11 @@ const AnalysisFlow = () => {
 
   const handleReset = () => {
     setStep(1);
-    setMyInstagram("");
-    setCompetitor1("");
-    setCompetitor2("");
+    setMyTags([]);
+    setCompetitorTags([]);
     setResult(null);
   };
 
-  // Loading screen
   if (loading) {
     return (
       <div className="min-h-screen aurora-bg flex items-center justify-center px-6">
@@ -128,11 +112,12 @@ const AnalysisFlow = () => {
     );
   }
 
-  // Results screen
   if (result) {
+    const profileNames = Object.keys(result);
+
     return (
       <div className="min-h-screen aurora-bg flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-4xl">
           <div className="text-center mb-8">
             <h2 className="font-display text-3xl font-bold text-foreground mb-2">
               Resultado da Análise
@@ -146,19 +131,25 @@ const AnalysisFlow = () => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50">
-                  <TableHead className="text-muted-foreground font-medium">Métrica</TableHead>
-                  <TableHead className="text-accent font-semibold">@{sanitizeHandle(myInstagram)}</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">@{sanitizeHandle(competitor1)}</TableHead>
-                  <TableHead className="text-muted-foreground font-medium">@{sanitizeHandle(competitor2)}</TableHead>
+                  <TableHead className="text-muted-foreground font-medium">Perfil</TableHead>
+                  {metricLabels.map(({ key, label }) => (
+                    <TableHead key={key} className="text-muted-foreground font-medium text-center">
+                      {label}
+                    </TableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {metricLabels.map(({ key, label }) => (
-                  <TableRow key={key} className="border-border/30">
-                    <TableCell className="font-medium text-foreground">{label}</TableCell>
-                    <TableCell className="text-accent font-semibold">{result.meu_perfil[key]}</TableCell>
-                    <TableCell className="text-muted-foreground">{result.concorrente_1[key]}</TableCell>
-                    <TableCell className="text-muted-foreground">{result.concorrente_2[key]}</TableCell>
+                {profileNames.map((name, i) => (
+                  <TableRow key={name} className="border-border/30">
+                    <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
+                      @{name}
+                    </TableCell>
+                    {metricLabels.map(({ key }) => (
+                      <TableCell key={key} className={`text-center ${i === 0 ? "text-accent font-semibold" : "text-muted-foreground"}`}>
+                        {result[name][key]}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))}
               </TableBody>
@@ -180,7 +171,6 @@ const AnalysisFlow = () => {
     );
   }
 
-  // Steps screen
   return (
     <div className="min-h-screen aurora-bg flex items-center justify-center px-6">
       <div className="w-full max-w-md">
@@ -201,12 +191,11 @@ const AnalysisFlow = () => {
                   Digite apenas o nome da conta. Não precisa incluir o símbolo @.
                 </p>
               </div>
-              <Input
+              <TagInput
+                tags={myTags}
+                onTagsChange={setMyTags}
                 placeholder="nomedaconta"
-                value={myInstagram}
-                onChange={(e) => setMyInstagram(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleNext()}
-                className="h-12 rounded-xl bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground/60 focus:ring-accent"
+                maxTags={1}
               />
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => navigate("/")}>
@@ -231,21 +220,12 @@ const AnalysisFlow = () => {
                   Digite o nome de dois perfis que você deseja comparar.
                 </p>
               </div>
-              <div className="space-y-3">
-                <Input
-                  placeholder="concorrente1"
-                  value={competitor1}
-                  onChange={(e) => setCompetitor1(e.target.value)}
-                  className="h-12 rounded-xl bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground/60 focus:ring-accent"
-                />
-                <Input
-                  placeholder="concorrente2"
-                  value={competitor2}
-                  onChange={(e) => setCompetitor2(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-                  className="h-12 rounded-xl bg-secondary/50 border-border/50 text-foreground placeholder:text-muted-foreground/60 focus:ring-accent"
-                />
-              </div>
+              <TagInput
+                tags={competitorTags}
+                onTagsChange={setCompetitorTags}
+                placeholder="concorrente"
+                maxTags={2}
+              />
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => setStep(1)}>
                   <ArrowLeft className="w-4 h-4" />
