@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 
 interface ProfileData {
+  foto?: string;
   seguidores: string;
   total_posts_3m: string;
   total_views: string;
