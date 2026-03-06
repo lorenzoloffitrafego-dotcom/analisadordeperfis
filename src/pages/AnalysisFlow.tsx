@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TagInput from "@/components/TagInput";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import {
 import { toast } from "sonner";
 
 interface ProfileData {
+  foto?: string;
   seguidores: string;
   total_posts_3m: string;
   total_views: string;
@@ -143,7 +145,15 @@ const AnalysisFlow = () => {
                 {profileNames.map((name, i) => (
                   <TableRow key={name} className="border-border/30">
                     <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
-                      @{name}
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={result[name].foto} alt={name.replace("@", "")} />
+                          <AvatarFallback className="bg-accent/10 text-accent text-xs font-bold">
+                            {name.replace("@", "").slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>{name.replace("@", "")}</span>
+                      </div>
                     </TableCell>
                     {metricLabels.map(({ key }) => (
                       <TableCell key={key} className={`text-center ${i === 0 ? "text-accent font-semibold" : "text-muted-foreground"}`}>
