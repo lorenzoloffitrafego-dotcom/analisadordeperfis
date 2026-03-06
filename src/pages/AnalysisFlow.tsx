@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TagInput from "@/components/TagInput";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
