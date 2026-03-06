@@ -146,12 +146,11 @@ const AnalysisFlow = () => {
                   <TableRow key={name} className="border-border/30">
                     <TableCell className={`font-semibold ${i === 0 ? "text-accent" : "text-foreground"}`}>
                       <div className="flex items-center gap-2">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={result[name].foto} alt={name.replace("@", "")} />
-                          <AvatarFallback className="bg-accent/10 text-accent text-xs font-bold">
-                            {name.replace("@", "").slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        <img
+                          src={result[name].foto}
+                          alt={name.replace("@", "")}
+                          className="h-10 w-10 rounded-full object-cover shrink-0"
+                        />
                         <span>{name.replace("@", "")}</span>
                       </div>
                     </TableCell>
