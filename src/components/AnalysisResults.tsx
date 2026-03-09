@@ -71,8 +71,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const profileNames = Object.keys(result);
   const profiles = profileNames.map((n) => result[n]);
 
-  const [avgPostAccount, setAvgPostAccount] = React.useState(profileNames[0]);
-  const [engagementAccount, setEngagementAccount] = React.useState(profileNames[0]);
+  const [avgPostAccount, setAvgPostAccount] = useState(profileNames[0]);
+  const [engagementAccount, setEngagementAccount] = useState(profileNames[0]);
 
   const selectedAvgProfile = result[avgPostAccount];
   const selectedEngProfile = result[engagementAccount];
