@@ -13,6 +13,12 @@ interface ProfileData {
   total_likes: string;
   total_comentarios: string;
   posts_por_semana: string;
+  porcentagem_reels?: string;
+  porcentagem_imagens?: string;
+  porcentagem_carrossel?: string;
+  comparacao_views?: string;
+  comparacao_posts?: string;
+  comparacao_seguidores?: string;
 }
 
 type AnalysisResult = Record<string, ProfileData>;
