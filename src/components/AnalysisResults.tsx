@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3 } from "lucide-react";
+import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3, LayoutGrid, PieChart as PieChartIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 interface ProfileData {
   foto?: string;
@@ -12,6 +13,12 @@ interface ProfileData {
   total_likes: string;
   total_comentarios: string;
   posts_por_semana: string;
+  porcentagem_reels?: string;
+  porcentagem_imagens?: string;
+  porcentagem_carrossel?: string;
+  comparacao_views?: string;
+  comparacao_posts?: string;
+  comparacao_seguidores?: string;
 }
 
 type AnalysisResult = Record<string, ProfileData>;
@@ -73,6 +80,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const [avgPostAccount, setAvgPostAccount] = useState(profileNames[0]);
   const [engagementAccount, setEngagementAccount] = useState(profileNames[0]);
+  const [contentDistAccount, setContentDistAccount] = useState(profileNames[0]);
 
   const selectedAvgProfile = result[avgPostAccount];
   const selectedEngProfile = result[engagementAccount];
@@ -261,6 +269,112 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                   <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold text-center leading-tight">
                     {label}
                   </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+          {/* Bloco 1 — Distribuição de Conteúdo */}
+          <div className="glass-surface rounded-2xl tactile-shadow p-6 flex flex-col">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <PieChartIcon className="w-4 h-4 text-accent" />
+                <h3 className="font-display font-bold text-sm text-foreground">Distribuição de Conteúdo</h3>
+              </div>
+              <Select value={contentDistAccount} onValueChange={setContentDistAccount}>
+                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {profileNames.map((name) => (
+                    <SelectItem key={name} value={name} className="text-xs">
+                      {name.replace("@", "")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {(() => {
+              const profile = result[contentDistAccount];
+              const parsePercent = (v?: string) => parseFloat((v || "0").replace("%", "")) || 0;
+              const pieData = [
+                { name: "Reels", value: parsePercent(profile?.porcentagem_reels), color: "#8B5CF6" },
+                { name: "Imagens", value: parsePercent(profile?.porcentagem_imagens), color: "#3B82F6" },
+                { name: "Carrossel", value: parsePercent(profile?.porcentagem_carrossel), color: "#EC4899" },
+              ];
+              return (
+                <div className="flex-1 flex flex-col items-center gap-4">
+                  <div className="w-full h-[180px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={50}
+                          outerRadius={75}
+                          paddingAngle={3}
+                          dataKey="value"
+                          stroke="none"
+                        >
+                          {pieData.map((entry, idx) => (
+                            <Cell key={idx} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          formatter={(value: number) => `${value}%`}
+                          contentStyle={{
+                            background: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "8px",
+                            fontSize: "12px",
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex gap-5">
+                    {pieData.map(({ name, value, color }) => (
+                      <div key={name} className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+                        <span className="text-xs text-muted-foreground font-medium">
+                          {name} — {value}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Bloco 2 — Comparação com Concorrentes */}
+          <div className="glass-surface rounded-2xl tactile-shadow p-6 flex flex-col">
+            <div className="flex items-center gap-2 mb-5">
+              <TrendingUp className="w-4 h-4 text-accent" />
+              <h3 className="font-display font-bold text-sm text-foreground">Comparação com Concorrentes</h3>
+            </div>
+            <div className="flex flex-col gap-3 flex-1">
+              {[
+                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes" },
+                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes" },
+                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes" },
+              ].map(({ field, icon: Icon, label }) => (
+                <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-muted/40 flex-1">
+                  <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-accent" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold block">
+                      {label}
+                    </span>
+                    <span className="font-display text-sm font-bold text-foreground">
+                      {(profiles[0] as any)?.[field] || "—"}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
