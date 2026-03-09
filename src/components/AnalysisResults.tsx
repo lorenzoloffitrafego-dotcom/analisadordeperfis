@@ -80,6 +80,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const [avgPostAccount, setAvgPostAccount] = useState(profileNames[0]);
   const [engagementAccount, setEngagementAccount] = useState(profileNames[0]);
+  const [contentDistAccount, setContentDistAccount] = useState(profileNames[0]);
 
   const selectedAvgProfile = result[avgPostAccount];
   const selectedEngProfile = result[engagementAccount];
