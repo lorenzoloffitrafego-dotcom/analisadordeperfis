@@ -381,7 +381,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
         </div>
 
-          <div className="flex justify-center gap-3 mt-10">
+        <div className="flex justify-center gap-3 mt-10">
+          <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
             <ArrowLeft className="w-4 h-4" />
             Início
           </Button>
