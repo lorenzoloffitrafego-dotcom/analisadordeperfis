@@ -188,6 +188,85 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
         </div>
 
+        {/* Two metric cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+          {/* Card 1 — Média por Post */}
+          <div className="glass-surface rounded-2xl tactile-shadow p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-accent" />
+                <h3 className="font-display font-bold text-sm text-foreground">Média por Post</h3>
+              </div>
+              <Select value={avgPostAccount} onValueChange={setAvgPostAccount}>
+                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {profileNames.map((name) => (
+                    <SelectItem key={name} value={name} className="text-xs">
+                      {name.replace("@", "")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "Views", value: avgViews, icon: Eye },
+                { label: "Likes", value: avgLikes, icon: Heart },
+                { label: "Comentários", value: avgComments, icon: MessageCircle },
+              ].map(({ label, value, icon: Icon }) => (
+                <div key={label} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/40">
+                  <Icon className="w-4 h-4 text-muted-foreground" />
+                  <span className="font-display text-lg font-bold text-foreground">
+                    {formatNumber(String(Math.round(value)))}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Card 2 — Média de Engajamento */}
+          <div className="glass-surface rounded-2xl tactile-shadow p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-accent" />
+                <h3 className="font-display font-bold text-sm text-foreground">Média de Engajamento</h3>
+              </div>
+              <Select value={engagementAccount} onValueChange={setEngagementAccount}>
+                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {profileNames.map((name) => (
+                    <SelectItem key={name} value={name} className="text-xs">
+                      {name.replace("@", "")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { label: "Engajamento dos Seguidores", value: followerEngagement },
+                { label: "Engajamento por Views", value: viewEngagement },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex flex-col items-center gap-1.5 p-4 rounded-xl bg-muted/40">
+                  <span className="font-display text-2xl font-bold text-accent">
+                    {value.toFixed(2)}%
+                  </span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold text-center leading-tight">
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-center gap-3 mt-10">
           <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
             <ArrowLeft className="w-4 h-4" />
