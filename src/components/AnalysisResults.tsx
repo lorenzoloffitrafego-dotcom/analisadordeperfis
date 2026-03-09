@@ -69,6 +69,30 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const profileNames = Object.keys(result);
   const profiles = profileNames.map((n) => result[n]);
 
+  const [avgPostAccount, setAvgPostAccount] = React.useState(profileNames[0]);
+  const [engagementAccount, setEngagementAccount] = React.useState(profileNames[0]);
+
+  const selectedAvgProfile = result[avgPostAccount];
+  const selectedEngProfile = result[engagementAccount];
+
+  const totalPosts3m = parseNumber(selectedAvgProfile?.total_posts_3m as string);
+  const avgViews = totalPosts3m > 0 ? parseNumber(selectedAvgProfile?.total_views as string) / totalPosts3m : 0;
+  const avgLikes = totalPosts3m > 0 ? parseNumber(selectedAvgProfile?.total_likes as string) / totalPosts3m : 0;
+  const avgComments = totalPosts3m > 0 ? parseNumber(selectedAvgProfile?.total_comentarios as string) / totalPosts3m : 0;
+
+  const engTotalPosts = parseNumber(selectedEngProfile?.total_posts_3m as string);
+  const engFollowers = parseNumber(selectedEngProfile?.seguidores as string);
+  const engTotalLikes = parseNumber(selectedEngProfile?.total_likes as string);
+  const engTotalComments = parseNumber(selectedEngProfile?.total_comentarios as string);
+  const engTotalViews = parseNumber(selectedEngProfile?.total_views as string);
+
+  const followerEngagement = engFollowers > 0 && engTotalPosts > 0
+    ? ((engTotalLikes + engTotalComments) / engTotalPosts / engFollowers) * 100
+    : 0;
+  const viewEngagement = engTotalViews > 0 && engTotalPosts > 0
+    ? ((engTotalLikes + engTotalComments) / engTotalPosts / (engTotalViews / engTotalPosts)) * 100
+    : 0;
+
   return (
     <div className="min-h-screen aurora-bg flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-6xl">
