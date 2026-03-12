@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, FileText, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ExternalLink, FileText, ArrowUp, ArrowDown, ArrowUpDown, Hash } from "lucide-react";
 
 interface PostData {
   tipo: string;
@@ -12,6 +9,15 @@ interface PostData {
   thumbnail: string;
   url_post: string;
   data_postagem: string;
+}
+
+interface ProfilePostsTableProps {
+  profileKey: string;
+  profileData: Record<string, any>;
+  label: string;
+  foto?: string;
+  showViews?: boolean;
+  showRanking?: boolean;
 }
 
 interface PostsTableProps {
@@ -39,10 +45,10 @@ function formatDate(d: string): string {
   return `${day}/${m}/${y}`;
 }
 
-const tipoBadge: Record<string, string> = {
-  Reel: "bg-[#8B5CF6]/20 text-[#A78BFA] border-[#8B5CF6]/30",
-  Imagem: "bg-[#3B82F6]/20 text-[#60A5FA] border-[#3B82F6]/30",
-  Carrossel: "bg-[#F97316]/20 text-[#FB923C] border-[#F97316]/30",
+const tipoBadge: Record<string, { bg: string; text: string; glow: string }> = {
+  Reel: { bg: "linear-gradient(135deg, rgba(139,92,246,0.25), rgba(139,92,246,0.1))", text: "#A78BFA", glow: "0 0 12px rgba(139,92,246,0.3)" },
+  Imagem: { bg: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.1))", text: "#60A5FA", glow: "0 0 12px rgba(59,130,246,0.3)" },
+  Carrossel: { bg: "linear-gradient(135deg, rgba(249,115,22,0.25), rgba(249,115,22,0.1))", text: "#FB923C", glow: "0 0 12px rgba(249,115,22,0.3)" },
 };
 
 function getPosts(perfil: Record<string, any>): PostData[] {
@@ -59,35 +65,26 @@ function getPosts(perfil: Record<string, any>): PostData[] {
     .filter(Boolean) as PostData[];
 }
 
-const GERAL = "__geral__";
-
 type SortKey = "views" | "likes" | "comentarios" | "data_postagem" | null;
 type SortDir = "asc" | "desc";
 
-const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTableProps) => {
-  const [selected, setSelected] = useState(GERAL);
-  const [sortKey, setSortKey] = useState<SortKey>(null);
+const ProfilePostsTable = ({ profileKey, profileData, label, foto, showViews = true, showRanking = false }: ProfilePostsTableProps) => {
+  const defaultSort: SortKey = showRanking ? "views" : null;
+  const [sortKey, setSortKey] = useState<SortKey>(defaultSort);
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
-  const posts: { post: PostData; owner: string }[] = [];
+  const posts = getPosts(profileData);
 
-  if (selected === GERAL) {
-    profileNames.forEach((name) => {
-      getPosts(profiles[name]).forEach((post) => posts.push({ post, owner: name }));
-    });
-  } else {
-    getPosts(profiles[selected]).forEach((post) => posts.push({ post, owner: selected }));
-  }
-
+  const sorted = [...posts];
   if (sortKey) {
-    posts.sort((a, b) => {
+    sorted.sort((a, b) => {
       let va: number, vb: number;
       if (sortKey === "data_postagem") {
-        va = new Date(a.post.data_postagem || "1970-01-01").getTime();
-        vb = new Date(b.post.data_postagem || "1970-01-01").getTime();
+        va = new Date(a.data_postagem || "1970-01-01").getTime();
+        vb = new Date(b.data_postagem || "1970-01-01").getTime();
       } else {
-        va = Number(a.post[sortKey]) || 0;
-        vb = Number(b.post[sortKey]) || 0;
+        va = Number(a[sortKey]) || 0;
+        vb = Number(b[sortKey]) || 0;
       }
       return sortDir === "desc" ? vb - va : va - vb;
     });
@@ -104,136 +101,192 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
-    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-30" />;
+    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-30 transition-all duration-200" />;
     return sortDir === "desc"
-      ? <ArrowDown className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />
-      : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />;
+      ? <ArrowDown className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)] transition-all duration-200" />
+      : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)] transition-all duration-200" />;
   };
 
-  const thSortable = "py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors";
+  const thBase = "py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]";
+  const thSortable = `${thBase} text-right cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
 
-  return (
-    <div className="mt-10">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-[hsl(230,80%,70%)]" />
-          <h2 className="font-display text-xl font-bold">
-            Posts dos últimos 3 meses
-          </h2>
+  if (posts.length === 0) {
+    return (
+      <div className="mt-8">
+        <div className="flex items-center gap-3 mb-4">
+          {foto && (
+            <img
+              src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
+              className="w-7 h-7 rounded-full object-cover ring-1 ring-[hsl(220,15%,20%)]"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
+          <h3 className="font-display text-base font-bold">{label}</h3>
         </div>
-        <Select value={selected} onValueChange={(v) => { setSelected(v); setSortKey(null); }}>
-          <SelectTrigger className="w-[200px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={GERAL} className="text-xs">Geral</SelectItem>
-            {profileNames.map((name) => (
-              <SelectItem key={name} value={name} className="text-xs">
-                <div className="flex items-center gap-2">
-                  <img
-                    src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`}
-                    className="w-5 h-5 rounded-full object-cover"
-                    onError={(e) => { e.currentTarget.style.display = "none"; }}
-                  />
-                  {getLabel(name)}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {posts.length === 0 ? (
-        <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-8 text-center">
+        <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-8 text-center">
           <p className="text-[hsl(215,15%,45%)] text-sm">Sem posts nos últimos 3 meses</p>
         </div>
-      ) : (
-        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)]" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
-                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Post</th>
-                  {selected === GERAL && (
-                    <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Conta</th>
-                  )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8">
+      <div className="flex items-center gap-3 mb-4">
+        {foto && (
+          <img
+            src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
+            className="w-7 h-7 rounded-full object-cover ring-1 ring-[hsl(220,15%,20%)]"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
+          />
+        )}
+        <h3 className="font-display text-base font-bold">{label}</h3>
+        <span className="text-[10px] text-[hsl(215,15%,40%)] font-medium ml-1">
+          {posts.length} {posts.length === 1 ? "post" : "posts"}
+        </span>
+      </div>
+
+      <div
+        className="rounded-2xl overflow-hidden border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm"
+        style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,5%)]/80">
+                {showRanking && (
+                  <th
+                    className={`${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200 w-14`}
+                    onClick={() => handleSort("views")}
+                  >
+                    <span className="inline-flex items-center justify-center">
+                      <Hash className="w-3 h-3" />
+                      <SortIcon col="views" />
+                    </span>
+                  </th>
+                )}
+                <th className={`${thBase} text-left`}>Post</th>
+                {showViews && (
                   <th className={thSortable} onClick={() => handleSort("views")}>
                     <span className="inline-flex items-center justify-end">Views<SortIcon col="views" /></span>
                   </th>
-                  <th className={thSortable} onClick={() => handleSort("likes")}>
-                    <span className="inline-flex items-center justify-end">Likes<SortIcon col="likes" /></span>
-                  </th>
-                  <th className={thSortable} onClick={() => handleSort("comentarios")}>
-                    <span className="inline-flex items-center justify-end">Comentários<SortIcon col="comentarios" /></span>
-                  </th>
-                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Tipo</th>
-                  <th
-                    className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors"
-                    onClick={() => handleSort("data_postagem")}
+                )}
+                <th className={thSortable} onClick={() => handleSort("likes")}>
+                  <span className="inline-flex items-center justify-end">Likes<SortIcon col="likes" /></span>
+                </th>
+                <th className={thSortable} onClick={() => handleSort("comentarios")}>
+                  <span className="inline-flex items-center justify-end">Comentários<SortIcon col="comentarios" /></span>
+                </th>
+                <th className={`${thBase} text-left`}>Tipo</th>
+                <th
+                  className={`${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`}
+                  onClick={() => handleSort("data_postagem")}
+                >
+                  <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
+                </th>
+                <th className={`${thBase} text-center`}>Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map((post, idx) => {
+                const badge = tipoBadge[post.tipo];
+                return (
+                  <tr
+                    key={idx}
+                    className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-all duration-200 hover:bg-[hsl(230,30%,12%)]/60"
+                    style={{
+                      // @ts-ignore
+                      "--hover-shadow": "0 2px 8px -2px hsl(230 80% 65% / 0.08)",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
                   >
-                    <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
-                  </th>
-                  <th className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Link</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map(({ post, owner }, idx) => (
-                  <tr key={idx} className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-colors hover:bg-[hsl(220,20%,10%)]">
+                    {showRanking && (
+                      <td className="py-3 px-4 text-center">
+                        <span className="font-display text-sm font-bold text-[hsl(230,80%,70%)]">
+                          {idx + 1}
+                        </span>
+                      </td>
+                    )}
                     <td className="py-3 px-4">
                       <img
                         src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
                         alt={`Post ${idx + 1}`}
-                        className="w-14 h-14 rounded-lg object-cover"
+                        className="w-14 h-14 rounded-lg object-cover border border-transparent hover:border-[hsl(230,80%,65%)]/30 transition-colors duration-200"
                         onError={(e) => { e.currentTarget.style.display = "none"; }}
                       />
                     </td>
-                    {selected === GERAL && (
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(owner) || "")}`}
-                            className="w-5 h-5 rounded-full object-cover"
-                            onError={(e) => { e.currentTarget.style.display = "none"; }}
-                          />
-                          <span className="text-xs font-semibold">{getLabel(owner)}</span>
-                        </div>
+                    {showViews && (
+                      <td className="py-3 px-4 text-right font-display text-sm font-semibold">
+                        {formatNum(post.views)}
                       </td>
                     )}
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
-                      {formatNum(post.views)}
-                    </td>
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
+                    <td className="py-3 px-4 text-right font-display text-sm font-semibold">
                       {formatNum(post.likes)}
                     </td>
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
+                    <td className="py-3 px-4 text-right font-display text-sm font-semibold">
                       {formatNum(post.comentarios)}
                     </td>
                     <td className="py-3 px-4">
-                      <Badge variant="outline" className={`text-[10px] font-semibold ${tipoBadge[post.tipo] || ""}`}>
+                      <span
+                        className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold border border-transparent"
+                        style={{
+                          background: badge?.bg || "rgba(100,100,100,0.2)",
+                          color: badge?.text || "#aaa",
+                          boxShadow: badge?.glow || "none",
+                        }}
+                      >
                         {post.tipo}
-                      </Badge>
+                      </span>
                     </td>
-                    <td className="py-3 px-4 text-center text-xs text-[hsl(215,15%,50%)]">
+                    <td className="py-3 px-4 text-center text-xs text-[hsl(215,15%,50%)] font-normal">
                       {formatDate(post.data_postagem)}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 text-[10px] gap-1 px-2.5 border-[hsl(220,15%,14%)] bg-transparent hover:bg-[hsl(220,20%,12%)]"
-                        onClick={() => window.open(post.url_post, "_blank")}
+                      <a
+                        href={post.url_post}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 h-7 px-3 text-[10px] font-semibold rounded-md border border-[hsl(230,60%,40%)]/40 text-[hsl(230,80%,75%)] hover:bg-[hsl(230,80%,60%)]/15 hover:border-[hsl(230,80%,60%)]/60 transition-all duration-200"
                       >
                         Ver post
                         <ExternalLink className="w-3 h-3" />
-                      </Button>
+                      </a>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
+    </div>
+  );
+};
+
+const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTableProps) => {
+  const lastProfileIdx = profileNames.length - 1;
+
+  return (
+    <div className="mt-10">
+      <div className="flex items-center gap-2 mb-2">
+        <FileText className="w-5 h-5 text-[hsl(230,80%,70%)]" />
+        <h2 className="font-display text-xl font-bold">
+          Posts dos últimos 3 meses
+        </h2>
+      </div>
+
+      {profileNames.map((name, idx) => (
+        <ProfilePostsTable
+          key={name}
+          profileKey={name}
+          profileData={profiles[name]}
+          label={getLabel(name)}
+          foto={getFoto(name)}
+          showViews={idx !== lastProfileIdx}
+          showRanking={idx === 0}
+        />
+      ))}
     </div>
   );
 };

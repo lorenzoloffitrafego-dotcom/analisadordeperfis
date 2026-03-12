@@ -141,10 +141,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
     ));
 
   return (
-    <div className="min-h-screen bg-[hsl(220,20%,4%)] text-[hsl(210,40%,95%)] px-4 py-12">
+    <div className="min-h-screen text-[hsl(210,40%,95%)] px-4 py-12" style={{ background: "linear-gradient(180deg, #0f0f0f 0%, #1a1a2e 100%)" }}>
       {/* Subtle gradient overlay */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse 80% 50% at 50% 0%, hsl(230 80% 65% / 0.08) 0%, transparent 60%)"
+        background: "radial-gradient(ellipse 80% 50% at 50% 0%, hsl(230 80% 65% / 0.1) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, hsl(280 60% 50% / 0.05) 0%, transparent 50%)"
       }} />
 
       <div className="relative w-full max-w-6xl mx-auto">
@@ -158,7 +158,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         </div>
 
         {/* Horizontal table */}
-        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)]" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -185,9 +185,11 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                   return (
                     <tr
                       key={name}
-                      className={`border-b border-[hsl(220,15%,12%)] last:border-b-0 transition-colors ${
-                        isUser ? "bg-[hsl(230,80%,65%,0.04)]" : "hover:bg-[hsl(220,20%,10%)]"
+                      className={`border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-all duration-200 ${
+                        isUser ? "bg-[hsl(230,80%,65%,0.04)]" : "hover:bg-[hsl(230,30%,12%)]/60"
                       }`}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
                     >
                       <td className="py-4 px-5">
                         <div className="flex items-center gap-3">
@@ -241,7 +243,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         {/* Two metric cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           {/* Card 1 — Média por Post */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-[hsl(230,80%,70%)]" />
@@ -274,7 +276,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* Card 2 — Média de Engajamento */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-[hsl(160,80%,50%)]" />
@@ -308,7 +310,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           {/* Bloco 1 — Distribuição de Conteúdo */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <PieChartIcon className="w-4 h-4 text-[hsl(280,80%,65%)]" />
@@ -377,7 +379,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* Bloco 2 — Comparação com Concorrentes */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center gap-2 mb-5">
               <TrendingUp className="w-4 h-4 text-[hsl(40,90%,60%)]" />
               <h3 className="font-display font-bold text-sm">Comparação com Concorrentes</h3>
