@@ -377,7 +377,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* Bloco 2 — Comparação com Concorrentes */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center gap-2 mb-5">
               <TrendingUp className="w-4 h-4 text-[hsl(40,90%,60%)]" />
               <h3 className="font-display font-bold text-sm">Comparação com Concorrentes</h3>
