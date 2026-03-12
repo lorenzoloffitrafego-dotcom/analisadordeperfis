@@ -96,7 +96,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const getLabel = (key: string): string => {
     if (key === "meu_perfil") return "Meu Perfil";
-    const profile = result[key as keyof AnalysisOutput];
+    const profile = result[key];
     if (profile?.nome) return String(profile.nome).charAt(0).toUpperCase() + String(profile.nome).slice(1);
     return key === "perfil1" ? "Perfil 1" : "Perfil 2";
   };
