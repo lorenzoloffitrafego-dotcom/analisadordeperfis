@@ -244,7 +244,10 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                 <SelectContent>
                   {profileNames.map((name) => (
                     <SelectItem key={name} value={name} className="text-xs">
-                      {name.replace("@", "")}
+                      <div className="flex items-center gap-2">
+                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        {getLabel(name)}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
