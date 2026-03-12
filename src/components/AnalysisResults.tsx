@@ -423,7 +423,7 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
         </div>
 
         {/* Posts dos últimos 3 meses */}
-        <PostsTable profiles={result} profileNames={profileNames} />
+        <PostsTable profiles={result} profileNames={profileNames} getLabel={getLabel} getFoto={getFoto} />
 
         <div className="flex justify-center gap-3 mt-10">
           <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
