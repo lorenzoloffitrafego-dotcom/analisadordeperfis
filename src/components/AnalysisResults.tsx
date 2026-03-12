@@ -101,7 +101,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
     return key === "perfil1" ? "Perfil 1" : "Perfil 2";
   };
 
-  const getFoto = (key: string): string | undefined => result[key as keyof AnalysisOutput]?.foto;
+  const getFoto = (key: string): string | undefined => result[key]?.foto;
 
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
