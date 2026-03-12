@@ -256,7 +256,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               </Select>
             </div>
             {(() => {
-              const profile = result[contentDistAccount as keyof AnalysisOutput];
+              const profile = result[contentDistAccount];
               const pieData = [
                 { name: "Reels", value: profile?.porcentagem_reels || 0, color: "#8B5CF6" },
                 { name: "Imagens", value: profile?.porcentagem_imagens || 0, color: "#3B82F6" },
