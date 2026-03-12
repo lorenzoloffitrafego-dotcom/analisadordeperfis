@@ -20,21 +20,14 @@ interface ProfileData {
   comparacao_views?: string;
   comparacao_posts?: string;
   comparacao_seguidores?: string;
-  [key: string]: any; // post0..post9 and other dynamic fields
+  [key: string]: any;
 }
 
 type AnalysisResult = Record<string, ProfileData>;
 
-interface UsernamesMap {
-  myTag: string;
-  competitor1: string;
-  competitor2: string;
-}
-
 interface AnalysisResultsProps {
   result: AnalysisResult;
   onReset: () => void;
-  usernames: UsernamesMap;
 }
 
 const metricConfig = [
@@ -83,22 +76,24 @@ function getBestIndex(profiles: ProfileData[], key: keyof ProfileData): number {
   return bestIdx;
 }
 
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
+function formatProfileName(key: string): string {
+  if (key === "meu_perfil") return "Meu Perfil";
+  // Remove @ and capitalize first letter of each word
+  const clean = key.replace("@", "");
+  return clean
+    .split(/[\s_]+/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
-
-const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profileNames = Object.keys(result);
   const profiles = profileNames.map((n) => result[n]);
 
   const getLabel = (key: string): string => {
-    const idx = profileNames.indexOf(key);
-    if (idx === 0) return "Meu Perfil";
-    if (idx === 1) return capitalize(usernames.competitor1);
-    if (idx === 2) return capitalize(usernames.competitor2);
-    return key.replace("@", "");
+    if (profileNames.indexOf(key) === 0) return "Meu Perfil";
+    return formatProfileName(key);
   };
 
   const getFoto = (key: string): string | undefined => result[key]?.foto;
@@ -128,32 +123,52 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
     ? ((engTotalLikes + engTotalComments) / engTotalPosts / (engTotalViews / engTotalPosts)) * 100
     : 0;
 
+  // Reusable dropdown items renderer
+  const renderProfileOptions = () =>
+    profileNames.map((name) => (
+      <SelectItem key={name} value={name} className="text-xs">
+        <div className="flex items-center gap-2">
+          <img
+            src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`}
+            className="w-5 h-5 rounded-full object-cover"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
+          />
+          {getLabel(name)}
+        </div>
+      </SelectItem>
+    ));
+
   return (
-    <div className="min-h-screen aurora-bg flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-6xl">
+    <div className="min-h-screen bg-[hsl(220,20%,4%)] text-[hsl(210,40%,95%)] px-4 py-12">
+      {/* Subtle gradient overlay */}
+      <div className="fixed inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 80% 50% at 50% 0%, hsl(230 80% 65% / 0.08) 0%, transparent 60%)"
+      }} />
+
+      <div className="relative w-full max-w-6xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="font-display text-3xl font-bold text-foreground mb-2">
+          <h2 className="font-display text-3xl font-bold mb-2">
             Resultado da Análise
           </h2>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-[hsl(215,15%,50%)] text-sm">
             Comparação entre os perfis analisados
           </p>
         </div>
 
-        {/* Horizontal table: profiles as rows, metrics as columns */}
-        <div className="glass-surface rounded-2xl tactile-shadow overflow-hidden">
+        {/* Horizontal table */}
+        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)]" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b border-border/50">
-                  <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground min-w-[200px]">
+                <tr className="border-b border-[hsl(220,15%,14%)]">
+                  <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] min-w-[200px]">
                     Concorrente
                   </th>
                   {metricConfig.map(({ key, label, icon: Icon }) => (
                     <th key={key} className="py-4 px-4 text-center min-w-[120px]">
                       <div className="flex flex-col items-center gap-1.5">
-                        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        <Icon className="w-3.5 h-3.5 text-[hsl(215,15%,45%)]" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">
                           {label}
                         </span>
                       </div>
@@ -168,8 +183,8 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                   return (
                     <tr
                       key={name}
-                      className={`border-b border-border/30 last:border-b-0 transition-colors ${
-                        isUser ? "bg-accent/[0.04]" : "hover:bg-muted/30"
+                      className={`border-b border-[hsl(220,15%,12%)] last:border-b-0 transition-colors ${
+                        isUser ? "bg-[hsl(230,80%,65%,0.04)]" : "hover:bg-[hsl(220,20%,10%)]"
                       }`}
                     >
                       <td className="py-4 px-5">
@@ -183,11 +198,11 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                             onError={(e) => { e.currentTarget.style.display = "none"; }}
                           />
                           <div className="min-w-0">
-                            <span className={`font-display font-bold text-sm truncate block ${isUser ? "text-accent" : "text-foreground"}`}>
+                            <span className={`font-display font-bold text-sm truncate block ${isUser ? "text-[hsl(230,80%,70%)]" : ""}`}>
                               {getLabel(name)}
                             </span>
                             {isUser && (
-                              <span className="text-[10px] uppercase tracking-widest text-accent/60 font-semibold">
+                              <span className="text-[10px] uppercase tracking-widest text-[hsl(230,80%,65%,0.6)] font-semibold">
                                 Seu perfil
                               </span>
                             )}
@@ -202,10 +217,10 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                             <span
                               className={`font-display text-base font-bold ${
                                 isBest
-                                  ? "text-accent"
+                                  ? "text-[hsl(230,80%,70%)]"
                                   : isUser
-                                  ? "text-foreground"
-                                  : "text-muted-foreground"
+                                  ? ""
+                                  : "text-[hsl(215,15%,50%)]"
                               }`}
                             >
                               {formatNumber(profile[key] as string)}
@@ -224,26 +239,17 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
         {/* Two metric cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           {/* Card 1 — Média por Post */}
-          <div className="glass-surface rounded-2xl tactile-shadow p-6">
+          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-accent" />
-                <h3 className="font-display font-bold text-sm text-foreground">Média por Post</h3>
+                <BarChart3 className="w-4 h-4 text-[hsl(230,80%,70%)]" />
+                <h3 className="font-display font-bold text-sm">Média por Post</h3>
               </div>
               <Select value={avgPostAccount} onValueChange={setAvgPostAccount}>
-                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {profileNames.map((name) => (
-                    <SelectItem key={name} value={name} className="text-xs">
-                      <div className="flex items-center gap-2">
-                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                        {getLabel(name)}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <SelectContent>{renderProfileOptions()}</SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -252,12 +258,12 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                 { label: "Likes", value: avgLikes, icon: Heart },
                 { label: "Comentários", value: avgComments, icon: MessageCircle },
               ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-muted/40">
-                  <Icon className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-display text-lg font-bold text-foreground">
+                <div key={label} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-[hsl(220,20%,10%)]">
+                  <Icon className="w-4 h-4 text-[hsl(215,15%,45%)]" />
+                  <span className="font-display text-lg font-bold">
                     {formatNumber(String(Math.round(value)))}
                   </span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                  <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold">
                     {label}
                   </span>
                 </div>
@@ -266,26 +272,17 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
           </div>
 
           {/* Card 2 — Média de Engajamento */}
-          <div className="glass-surface rounded-2xl tactile-shadow p-6">
+          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-accent" />
-                <h3 className="font-display font-bold text-sm text-foreground">Média de Engajamento</h3>
+                <TrendingUp className="w-4 h-4 text-[hsl(160,80%,50%)]" />
+                <h3 className="font-display font-bold text-sm">Média de Engajamento</h3>
               </div>
               <Select value={engagementAccount} onValueChange={setEngagementAccount}>
-                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {profileNames.map((name) => (
-                    <SelectItem key={name} value={name} className="text-xs">
-                      <div className="flex items-center gap-2">
-                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                        {getLabel(name)}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <SelectContent>{renderProfileOptions()}</SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -293,11 +290,11 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                 { label: "Engajamento dos Seguidores", value: followerEngagement },
                 { label: "Engajamento por Views", value: viewEngagement },
               ].map(({ label, value }) => (
-                <div key={label} className="flex flex-col items-center gap-1.5 p-4 rounded-xl bg-muted/40">
-                  <span className="font-display text-2xl font-bold text-accent">
+                <div key={label} className="flex flex-col items-center gap-1.5 p-4 rounded-xl bg-[hsl(220,20%,10%)]">
+                  <span className="font-display text-2xl font-bold text-[hsl(160,80%,50%)]">
                     {value.toFixed(2)}%
                   </span>
-                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold text-center leading-tight">
+                  <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight">
                     {label}
                   </span>
                 </div>
@@ -309,26 +306,17 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
         {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           {/* Bloco 1 — Distribuição de Conteúdo */}
-          <div className="glass-surface rounded-2xl tactile-shadow p-6 flex flex-col">
+          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
-                <PieChartIcon className="w-4 h-4 text-accent" />
-                <h3 className="font-display font-bold text-sm text-foreground">Distribuição de Conteúdo</h3>
+                <PieChartIcon className="w-4 h-4 text-[hsl(280,80%,65%)]" />
+                <h3 className="font-display font-bold text-sm">Distribuição de Conteúdo</h3>
               </div>
               <Select value={contentDistAccount} onValueChange={setContentDistAccount}>
-                <SelectTrigger className="w-[160px] h-8 text-xs border-border/50 bg-background/50">
+                <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {profileNames.map((name) => (
-                    <SelectItem key={name} value={name} className="text-xs">
-                      <div className="flex items-center gap-2">
-                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                        {getLabel(name)}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <SelectContent>{renderProfileOptions()}</SelectContent>
               </Select>
             </div>
             {(() => {
@@ -361,10 +349,11 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                         <Tooltip
                           formatter={(value: number) => `${value}%`}
                           contentStyle={{
-                            background: "hsl(var(--card))",
-                            border: "1px solid hsl(var(--border))",
+                            background: "hsl(220 20% 8%)",
+                            border: "1px solid hsl(220 15% 14%)",
                             borderRadius: "8px",
                             fontSize: "12px",
+                            color: "hsl(210 40% 95%)",
                           }}
                         />
                       </PieChart>
@@ -374,7 +363,7 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                     {pieData.map(({ name, value, color }) => (
                       <div key={name} className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                        <span className="text-xs text-muted-foreground font-medium">
+                        <span className="text-xs text-[hsl(215,15%,50%)] font-medium">
                           {name} — {value}%
                         </span>
                       </div>
@@ -386,26 +375,26 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
           </div>
 
           {/* Bloco 2 — Comparação com Concorrentes */}
-          <div className="glass-surface rounded-2xl tactile-shadow p-6 flex flex-col">
+          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
             <div className="flex items-center gap-2 mb-5">
-              <TrendingUp className="w-4 h-4 text-accent" />
-              <h3 className="font-display font-bold text-sm text-foreground">Comparação com Concorrentes</h3>
+              <TrendingUp className="w-4 h-4 text-[hsl(40,90%,60%)]" />
+              <h3 className="font-display font-bold text-sm">Comparação com Concorrentes</h3>
             </div>
             <div className="flex flex-col gap-3 flex-1">
               {[
-                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes" },
-                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes" },
-                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes" },
-              ].map(({ field, icon: Icon, label }) => (
-                <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-muted/40 flex-1">
-                  <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-accent" />
+                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", color: "hsl(230,80%,70%)" },
+                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", color: "hsl(160,80%,50%)" },
+                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", color: "hsl(40,90%,60%)" },
+              ].map(({ field, icon: Icon, label, color }) => (
+                <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-[hsl(220,20%,10%)] flex-1">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${color.replace(")", " / 0.12)")}` }}>
+                    <Icon className="w-4 h-4" style={{ color }} />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold block">
+                    <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold block">
                       {label}
                     </span>
-                    <span className="font-display text-sm font-bold text-foreground">
+                    <span className="font-display text-sm font-bold">
                       {(profiles[0] as any)?.[field] || "—"}
                     </span>
                   </div>
@@ -419,11 +408,20 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
         <PostsTable profiles={result} profileNames={profileNames} getLabel={getLabel} getFoto={getFoto} />
 
         <div className="flex justify-center gap-3 mt-10">
-          <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
+          <Button
+            variant="outline"
+            size="lg"
+            className="border-[hsl(220,15%,14%)] bg-[hsl(220,20%,8%)] hover:bg-[hsl(220,20%,12%)] text-[hsl(210,40%,95%)]"
+            onClick={() => navigate("/")}
+          >
             <ArrowLeft className="w-4 h-4" />
             Início
           </Button>
-          <Button variant="accent" size="lg" onClick={onReset}>
+          <Button
+            size="lg"
+            className="bg-[hsl(230,80%,60%)] hover:bg-[hsl(230,80%,55%)] text-white"
+            onClick={onReset}
+          >
             <RotateCcw className="w-4 h-4" />
             Nova Análise
           </Button>

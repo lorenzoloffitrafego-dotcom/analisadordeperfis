@@ -40,9 +40,9 @@ function formatDate(d: string): string {
 }
 
 const tipoBadge: Record<string, string> = {
-  Reel: "bg-[#8B5CF6]/15 text-[#8B5CF6] border-[#8B5CF6]/20",
-  Imagem: "bg-[#3B82F6]/15 text-[#3B82F6] border-[#3B82F6]/20",
-  Carrossel: "bg-[#F97316]/15 text-[#F97316] border-[#F97316]/20",
+  Reel: "bg-[#8B5CF6]/20 text-[#A78BFA] border-[#8B5CF6]/30",
+  Imagem: "bg-[#3B82F6]/20 text-[#60A5FA] border-[#3B82F6]/30",
+  Carrossel: "bg-[#F97316]/20 text-[#FB923C] border-[#F97316]/30",
 };
 
 function getPosts(perfil: Record<string, any>): PostData[] {
@@ -79,7 +79,6 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
     getPosts(profiles[selected]).forEach((post) => posts.push({ post, owner: selected }));
   }
 
-  // Sort
   if (sortKey) {
     posts.sort((a, b) => {
       let va: number, vb: number;
@@ -105,23 +104,25 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
-    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-30" />;
     return sortDir === "desc"
-      ? <ArrowDown className="w-3 h-3 ml-1 text-accent" />
-      : <ArrowUp className="w-3 h-3 ml-1 text-accent" />;
+      ? <ArrowDown className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />
+      : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />;
   };
+
+  const thSortable = "py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors";
 
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-accent" />
-          <h2 className="font-display text-xl font-bold text-foreground">
+          <FileText className="w-5 h-5 text-[hsl(230,80%,70%)]" />
+          <h2 className="font-display text-xl font-bold">
             Posts dos últimos 3 meses
           </h2>
         </div>
         <Select value={selected} onValueChange={(v) => { setSelected(v); setSortKey(null); }}>
-          <SelectTrigger className="w-[200px] h-8 text-xs border-border/50 bg-background/50">
+          <SelectTrigger className="w-[200px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -143,50 +144,41 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
       </div>
 
       {posts.length === 0 ? (
-        <div className="glass-surface rounded-2xl tactile-shadow p-8 text-center">
-          <p className="text-muted-foreground text-sm">Sem posts nos últimos 3 meses</p>
+        <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-8 text-center">
+          <p className="text-[hsl(215,15%,45%)] text-sm">Sem posts nos últimos 3 meses</p>
         </div>
       ) : (
-        <div className="glass-surface rounded-2xl tactile-shadow overflow-hidden">
+        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)]" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b border-border/50 bg-muted/30">
-                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Post</th>
+                <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
+                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Post</th>
                   {selected === GERAL && (
-                    <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Conta</th>
+                    <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Conta</th>
                   )}
-                  <th
-                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
-                    onClick={() => handleSort("views")}
-                  >
+                  <th className={thSortable} onClick={() => handleSort("views")}>
                     <span className="inline-flex items-center justify-end">Views<SortIcon col="views" /></span>
                   </th>
-                  <th
-                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
-                    onClick={() => handleSort("likes")}
-                  >
+                  <th className={thSortable} onClick={() => handleSort("likes")}>
                     <span className="inline-flex items-center justify-end">Likes<SortIcon col="likes" /></span>
                   </th>
-                  <th
-                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
-                    onClick={() => handleSort("comentarios")}
-                  >
+                  <th className={thSortable} onClick={() => handleSort("comentarios")}>
                     <span className="inline-flex items-center justify-end">Comentários<SortIcon col="comentarios" /></span>
                   </th>
-                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Tipo</th>
+                  <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Tipo</th>
                   <th
-                    className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
+                    className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors"
                     onClick={() => handleSort("data_postagem")}
                   >
                     <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
                   </th>
-                  <th className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Link</th>
+                  <th className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">Link</th>
                 </tr>
               </thead>
               <tbody>
                 {posts.map(({ post, owner }, idx) => (
-                  <tr key={idx} className="border-b border-border/30 last:border-b-0 transition-colors hover:bg-muted/20">
+                  <tr key={idx} className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-colors hover:bg-[hsl(220,20%,10%)]">
                     <td className="py-3 px-4">
                       <img
                         src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
@@ -203,17 +195,17 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                             className="w-5 h-5 rounded-full object-cover"
                             onError={(e) => { e.currentTarget.style.display = "none"; }}
                           />
-                          <span className="text-xs font-semibold text-foreground">{getLabel(owner)}</span>
+                          <span className="text-xs font-semibold">{getLabel(owner)}</span>
                         </div>
                       </td>
                     )}
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold text-foreground">
+                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
                       {formatNum(post.views)}
                     </td>
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold text-foreground">
+                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
                       {formatNum(post.likes)}
                     </td>
-                    <td className="py-3 px-4 text-right font-display text-sm font-bold text-foreground">
+                    <td className="py-3 px-4 text-right font-display text-sm font-bold">
                       {formatNum(post.comentarios)}
                     </td>
                     <td className="py-3 px-4">
@@ -221,14 +213,14 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                         {post.tipo}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-center text-xs text-muted-foreground">
+                    <td className="py-3 px-4 text-center text-xs text-[hsl(215,15%,50%)]">
                       {formatDate(post.data_postagem)}
                     </td>
                     <td className="py-3 px-4 text-center">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-7 text-[10px] gap-1 px-2.5"
+                        className="h-7 text-[10px] gap-1 px-2.5 border-[hsl(220,15%,14%)] bg-transparent hover:bg-[hsl(220,20%,12%)]"
                         onClick={() => window.open(post.url_post, "_blank")}
                       >
                         Ver post
