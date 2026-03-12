@@ -6,17 +6,11 @@ import TagInput from "@/components/TagInput";
 import AnalysisResults from "@/components/AnalysisResults";
 import { toast } from "sonner";
 
-interface ProfileData {
-  foto?: string;
-  seguidores: string;
-  total_posts_3m: string;
-  total_views: string;
-  total_likes: string;
-  total_comentarios: string;
-  posts_por_semana: string;
+interface AnalysisResult {
+  meu_perfil: Record<string, any>;
+  perfil1: Record<string, any>;
+  perfil2: Record<string, any>;
 }
-
-type AnalysisResult = Record<string, ProfileData>;
 
 
 const AnalysisFlow = () => {
