@@ -25,9 +25,16 @@ interface ProfileData {
 
 type AnalysisResult = Record<string, ProfileData>;
 
+interface UsernamesMap {
+  myTag: string;
+  competitor1: string;
+  competitor2: string;
+}
+
 interface AnalysisResultsProps {
   result: AnalysisResult;
   onReset: () => void;
+  usernames: UsernamesMap;
 }
 
 const metricConfig = [
@@ -76,10 +83,25 @@ function getBestIndex(profiles: ProfileData[], key: keyof ProfileData): number {
   return bestIdx;
 }
 
-const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+
+const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profileNames = Object.keys(result);
   const profiles = profileNames.map((n) => result[n]);
+
+  const getLabel = (key: string): string => {
+    const idx = profileNames.indexOf(key);
+    if (idx === 0) return "Meu Perfil";
+    if (idx === 1) return capitalize(usernames.competitor1);
+    if (idx === 2) return capitalize(usernames.competitor2);
+    return key.replace("@", "");
+  };
+
+  const getFoto = (key: string): string | undefined => result[key]?.foto;
 
   const [avgPostAccount, setAvgPostAccount] = useState(profileNames[0]);
   const [engagementAccount, setEngagementAccount] = useState(profileNames[0]);
@@ -154,7 +176,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                         <div className="flex items-center gap-3">
                           <img
                             src={`https://images.weserv.nl/?url=${encodeURIComponent(profile.foto || "")}`}
-                            alt={name.replace("@", "")}
+                            alt={getLabel(name)}
                             width={36}
                             height={36}
                             style={{ borderRadius: "50%", objectFit: "cover", minWidth: 36 }}
@@ -162,7 +184,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                           />
                           <div className="min-w-0">
                             <span className={`font-display font-bold text-sm truncate block ${isUser ? "text-accent" : "text-foreground"}`}>
-                              {name.replace("@", "")}
+                              {getLabel(name)}
                             </span>
                             {isUser && (
                               <span className="text-[10px] uppercase tracking-widest text-accent/60 font-semibold">
@@ -215,7 +237,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 <SelectContent>
                   {profileNames.map((name) => (
                     <SelectItem key={name} value={name} className="text-xs">
-                      {name.replace("@", "")}
+                      <div className="flex items-center gap-2">
+                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        {getLabel(name)}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -254,7 +279,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 <SelectContent>
                   {profileNames.map((name) => (
                     <SelectItem key={name} value={name} className="text-xs">
-                      {name.replace("@", "")}
+                      <div className="flex items-center gap-2">
+                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        {getLabel(name)}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -294,7 +322,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 <SelectContent>
                   {profileNames.map((name) => (
                     <SelectItem key={name} value={name} className="text-xs">
-                      {name.replace("@", "")}
+                      <div className="flex items-center gap-2">
+                        <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        {getLabel(name)}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -385,7 +416,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         </div>
 
         {/* Posts dos últimos 3 meses */}
-        <PostsTable profiles={result} profileNames={profileNames} />
+        <PostsTable profiles={result} profileNames={profileNames} getLabel={getLabel} getFoto={getFoto} />
 
         <div className="flex justify-center gap-3 mt-10">
           <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>

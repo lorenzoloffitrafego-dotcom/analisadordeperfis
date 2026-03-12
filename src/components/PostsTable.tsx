@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ExternalLink, FileText } from "lucide-react";
+import { ExternalLink, FileText, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,6 +17,8 @@ interface PostData {
 interface PostsTableProps {
   profiles: Record<string, Record<string, any>>;
   profileNames: string[];
+  getLabel: (key: string) => string;
+  getFoto: (key: string) => string | undefined;
 }
 
 function formatNum(n: number): string {
@@ -59,8 +61,13 @@ function getPosts(perfil: Record<string, any>): PostData[] {
 
 const GERAL = "__geral__";
 
-const PostsTable = ({ profiles, profileNames }: PostsTableProps) => {
+type SortKey = "views" | "likes" | "comentarios" | "data_postagem" | null;
+type SortDir = "asc" | "desc";
+
+const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTableProps) => {
   const [selected, setSelected] = useState(GERAL);
+  const [sortKey, setSortKey] = useState<SortKey>(null);
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   const posts: { post: PostData; owner: string }[] = [];
 
@@ -72,6 +79,38 @@ const PostsTable = ({ profiles, profileNames }: PostsTableProps) => {
     getPosts(profiles[selected]).forEach((post) => posts.push({ post, owner: selected }));
   }
 
+  // Sort
+  if (sortKey) {
+    posts.sort((a, b) => {
+      let va: number, vb: number;
+      if (sortKey === "data_postagem") {
+        va = new Date(a.post.data_postagem || "1970-01-01").getTime();
+        vb = new Date(b.post.data_postagem || "1970-01-01").getTime();
+      } else {
+        va = Number(a.post[sortKey]) || 0;
+        vb = Number(b.post[sortKey]) || 0;
+      }
+      return sortDir === "desc" ? vb - va : va - vb;
+    });
+  }
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      if (sortDir === "desc") setSortDir("asc");
+      else { setSortKey(null); setSortDir("desc"); }
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  };
+
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-40" />;
+    return sortDir === "desc"
+      ? <ArrowDown className="w-3 h-3 ml-1 text-accent" />
+      : <ArrowUp className="w-3 h-3 ml-1 text-accent" />;
+  };
+
   return (
     <div className="mt-10">
       <div className="flex items-center justify-between mb-6">
@@ -81,15 +120,22 @@ const PostsTable = ({ profiles, profileNames }: PostsTableProps) => {
             Posts dos últimos 3 meses
           </h2>
         </div>
-        <Select value={selected} onValueChange={setSelected}>
-          <SelectTrigger className="w-[180px] h-8 text-xs border-border/50 bg-background/50">
+        <Select value={selected} onValueChange={(v) => { setSelected(v); setSortKey(null); }}>
+          <SelectTrigger className="w-[200px] h-8 text-xs border-border/50 bg-background/50">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={GERAL} className="text-xs">Geral</SelectItem>
             {profileNames.map((name) => (
               <SelectItem key={name} value={name} className="text-xs">
-                {name.replace("@", "")}
+                <div className="flex items-center gap-2">
+                  <img
+                    src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`}
+                    className="w-5 h-5 rounded-full object-cover"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                  {getLabel(name)}
+                </div>
               </SelectItem>
             ))}
           </SelectContent>
@@ -110,11 +156,31 @@ const PostsTable = ({ profiles, profileNames }: PostsTableProps) => {
                   {selected === GERAL && (
                     <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Conta</th>
                   )}
-                  <th className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Views</th>
-                  <th className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Likes</th>
-                  <th className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Comentários</th>
+                  <th
+                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
+                    onClick={() => handleSort("views")}
+                  >
+                    <span className="inline-flex items-center justify-end">Views<SortIcon col="views" /></span>
+                  </th>
+                  <th
+                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
+                    onClick={() => handleSort("likes")}
+                  >
+                    <span className="inline-flex items-center justify-end">Likes<SortIcon col="likes" /></span>
+                  </th>
+                  <th
+                    className="py-3 px-4 text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
+                    onClick={() => handleSort("comentarios")}
+                  >
+                    <span className="inline-flex items-center justify-end">Comentários<SortIcon col="comentarios" /></span>
+                  </th>
                   <th className="py-3 px-4 text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Tipo</th>
-                  <th className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Data</th>
+                  <th
+                    className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors"
+                    onClick={() => handleSort("data_postagem")}
+                  >
+                    <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
+                  </th>
                   <th className="py-3 px-4 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Link</th>
                 </tr>
               </thead>
@@ -131,7 +197,14 @@ const PostsTable = ({ profiles, profileNames }: PostsTableProps) => {
                     </td>
                     {selected === GERAL && (
                       <td className="py-3 px-4">
-                        <span className="text-xs font-semibold text-foreground">{owner.replace("@", "")}</span>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(owner) || "")}`}
+                            className="w-5 h-5 rounded-full object-cover"
+                            onError={(e) => { e.currentTarget.style.display = "none"; }}
+                          />
+                          <span className="text-xs font-semibold text-foreground">{getLabel(owner)}</span>
+                        </div>
                       </td>
                     )}
                     <td className="py-3 px-4 text-right font-display text-sm font-bold text-foreground">
