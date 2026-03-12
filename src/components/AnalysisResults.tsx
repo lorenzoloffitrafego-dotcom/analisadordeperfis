@@ -308,7 +308,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           {/* Bloco 1 — Distribuição de Conteúdo */}
-          <div className="rounded-2xl border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)] p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+          <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <PieChartIcon className="w-4 h-4 text-[hsl(280,80%,65%)]" />
