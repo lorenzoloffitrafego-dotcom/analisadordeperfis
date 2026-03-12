@@ -83,10 +83,32 @@ function getBestIndex(profiles: ProfileData[], key: keyof ProfileData): number {
   return bestIdx;
 }
 
-const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function getDisplayName(key: string, usernames: UsernamesMap): string {
+  if (key === "meu_perfil") return "Meu Perfil";
+  const profileNames = Object.keys({});
+  if (key === Object.keys({})[1]) return capitalize(usernames.competitor1);
+  if (key === Object.keys({})[2]) return capitalize(usernames.competitor2);
+  return key.replace("@", "");
+}
+
+const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profileNames = Object.keys(result);
   const profiles = profileNames.map((n) => result[n]);
+
+  const getLabel = (key: string): string => {
+    const idx = profileNames.indexOf(key);
+    if (idx === 0) return "Meu Perfil";
+    if (idx === 1) return capitalize(usernames.competitor1);
+    if (idx === 2) return capitalize(usernames.competitor2);
+    return key.replace("@", "");
+  };
+
+  const getFoto = (key: string): string | undefined => result[key]?.foto;
 
   const [avgPostAccount, setAvgPostAccount] = useState(profileNames[0]);
   const [engagementAccount, setEngagementAccount] = useState(profileNames[0]);
