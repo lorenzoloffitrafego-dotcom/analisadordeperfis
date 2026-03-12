@@ -176,7 +176,7 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                         <div className="flex items-center gap-3">
                           <img
                             src={`https://images.weserv.nl/?url=${encodeURIComponent(profile.foto || "")}`}
-                            alt={name.replace("@", "")}
+                            alt={getLabel(name)}
                             width={36}
                             height={36}
                             style={{ borderRadius: "50%", objectFit: "cover", minWidth: 36 }}
