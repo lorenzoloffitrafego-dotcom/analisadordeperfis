@@ -30,11 +30,7 @@ interface ProfileData {
   [key: string]: any;
 }
 
-interface AnalysisOutput {
-  meu_perfil: ProfileData;
-  perfil1: ProfileData;
-  perfil2: ProfileData;
-}
+// result keys: meu_perfil, perfil1, perfil2
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
