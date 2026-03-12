@@ -413,7 +413,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                       {label}
                     </span>
                     <span className="font-display text-sm font-bold">
-                      {(profiles[0] as any)?.[field] || "—"}
+                      {formatComparacao((profiles[0] as any)?.[field])}
                     </span>
                   </div>
                 </div>
