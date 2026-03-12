@@ -99,7 +99,13 @@ const AnalysisFlow = () => {
   }
 
   if (result) {
-    return <AnalysisResults result={result} onReset={handleReset} />;
+    return (
+      <AnalysisResults
+        result={result}
+        onReset={handleReset}
+        usernames={{ myTag: myTags[0], competitor1: competitorTags[0], competitor2: competitorTags[1] }}
+      />
+    );
   }
 
   return (
