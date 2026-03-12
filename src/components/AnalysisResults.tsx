@@ -37,9 +37,10 @@ const metricConfig = [
   { key: "posts_por_semana" as const, label: "Posts / semana", icon: CalendarDays },
 ];
 
-function parseNumber(value: string): number {
+function parseNumber(value: unknown): number {
   if (!value) return 0;
-  const cleaned = value.replace(/[^\d.,]/g, "").replace(",", ".");
+  const str = String(value);
+  const cleaned = str.replace(/[^\d.,]/g, "").replace(",", ".");
   return parseFloat(cleaned) || 0;
 }
 
