@@ -4,6 +4,7 @@ import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, F
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import PostsTable from "@/components/PostsTable";
 
 interface ProfileData {
   foto?: string;
