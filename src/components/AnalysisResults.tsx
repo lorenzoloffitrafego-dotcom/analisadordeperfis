@@ -302,7 +302,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             {(() => {
               const profile = result[contentDistAccount];
-              const parsePercent = (v?: string) => parseFloat((v || "0").replace("%", "")) || 0;
+              const parsePercent = (v?: string | number) => parseFloat(String(v ?? "0").replace("%", "")) || 0;
               const pieData = [
                 { name: "Reels", value: parsePercent(profile?.porcentagem_reels), color: "#8B5CF6" },
                 { name: "Imagens", value: parsePercent(profile?.porcentagem_imagens), color: "#3B82F6" },
