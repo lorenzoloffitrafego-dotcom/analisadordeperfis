@@ -384,6 +384,21 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
         </div>
 
+        {/* Posts dos últimos 3 meses */}
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-6">
+            <FileText className="w-5 h-5 text-accent" />
+            <h2 className="font-display text-xl font-bold text-foreground">
+              Posts dos últimos 3 meses
+            </h2>
+          </div>
+          <div className="flex flex-col gap-8">
+            {profileNames.map((name) => (
+              <PostsTable key={name} perfil={result[name]} profileName={name} />
+            ))}
+          </div>
+        </div>
+
         <div className="flex justify-center gap-3 mt-10">
           <Button variant="accent-outline" size="lg" onClick={() => navigate("/")}>
             <ArrowLeft className="w-4 h-4" />
