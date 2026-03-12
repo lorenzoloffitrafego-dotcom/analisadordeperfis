@@ -141,10 +141,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
     ));
 
   return (
-    <div className="min-h-screen bg-[hsl(220,20%,4%)] text-[hsl(210,40%,95%)] px-4 py-12">
+    <div className="min-h-screen text-[hsl(210,40%,95%)] px-4 py-12" style={{ background: "linear-gradient(180deg, #0f0f0f 0%, #1a1a2e 100%)" }}>
       {/* Subtle gradient overlay */}
       <div className="fixed inset-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse 80% 50% at 50% 0%, hsl(230 80% 65% / 0.08) 0%, transparent 60%)"
+        background: "radial-gradient(ellipse 80% 50% at 50% 0%, hsl(230 80% 65% / 0.1) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, hsl(280 60% 50% / 0.05) 0%, transparent 50%)"
       }} />
 
       <div className="relative w-full max-w-6xl mx-auto">
