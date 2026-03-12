@@ -158,7 +158,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         </div>
 
         {/* Horizontal table */}
-        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,12%)] bg-[hsl(220,20%,8%)]" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.4)" }}>
+        <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
