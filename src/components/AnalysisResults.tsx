@@ -93,6 +93,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const getLabel = (key: string): string => {
     if (profileNames.indexOf(key) === 0) return "Meu Perfil";
+    const nome = result[key]?.nome;
+    if (nome) return String(nome).charAt(0).toUpperCase() + String(nome).slice(1);
     return formatProfileName(key);
   };
 
