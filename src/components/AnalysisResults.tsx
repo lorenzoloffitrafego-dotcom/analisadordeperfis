@@ -37,7 +37,7 @@ interface AnalysisOutput {
 }
 
 interface AnalysisResultsProps {
-  result: AnalysisOutput;
+  result: Record<string, any>;
   onReset: () => void;
 }
 
