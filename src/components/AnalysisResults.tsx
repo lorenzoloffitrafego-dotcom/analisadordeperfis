@@ -87,13 +87,6 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function getDisplayName(key: string, usernames: UsernamesMap): string {
-  if (key === "meu_perfil") return "Meu Perfil";
-  const profileNames = Object.keys({});
-  if (key === Object.keys({})[1]) return capitalize(usernames.competitor1);
-  if (key === Object.keys({})[2]) return capitalize(usernames.competitor2);
-  return key.replace("@", "");
-}
 
 const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) => {
   const navigate = useNavigate();
