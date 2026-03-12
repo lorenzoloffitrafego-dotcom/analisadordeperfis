@@ -20,6 +20,7 @@ interface ProfileData {
   comparacao_views?: string;
   comparacao_posts?: string;
   comparacao_seguidores?: string;
+  [key: string]: any; // post0..post9 and other dynamic fields
 }
 
 type AnalysisResult = Record<string, ProfileData>;
