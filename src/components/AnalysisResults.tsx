@@ -185,9 +185,11 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                   return (
                     <tr
                       key={name}
-                      className={`border-b border-[hsl(220,15%,12%)] last:border-b-0 transition-colors ${
-                        isUser ? "bg-[hsl(230,80%,65%,0.04)]" : "hover:bg-[hsl(220,20%,10%)]"
+                      className={`border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-all duration-200 ${
+                        isUser ? "bg-[hsl(230,80%,65%,0.04)]" : "hover:bg-[hsl(230,30%,12%)]/60"
                       }`}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
                     >
                       <td className="py-4 px-5">
                         <div className="flex items-center gap-3">
