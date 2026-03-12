@@ -76,6 +76,20 @@ function getBestIndex(profiles: ProfileData[], key: keyof ProfileData): number {
   return bestIdx;
 }
 
+function formatComparacao(raw: unknown): string {
+  if (!raw) return "—";
+  const str = String(raw).replace(",", ".").replace("%", "").trim();
+  const num = parseFloat(str);
+  if (isNaN(num)) return String(raw);
+  if (num === 0) return "0%";
+  const abs = Math.abs(num);
+  if (abs >= 1) return `${num.toFixed(2)}%`;
+  // Find first significant digit position
+  const logVal = Math.floor(Math.log10(abs));
+  const decimals = Math.max(1, -logVal);
+  return `${num.toFixed(decimals)}%`;
+}
+
 function formatProfileName(key: string): string {
   if (key === "meu_perfil") return "Meu Perfil";
   // Remove @ and capitalize first letter of each word
@@ -399,7 +413,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                       {label}
                     </span>
                     <span className="font-display text-sm font-bold">
-                      {(profiles[0] as any)?.[field] || "—"}
+                      {formatComparacao((profiles[0] as any)?.[field])}
                     </span>
                   </div>
                 </div>
