@@ -184,7 +184,7 @@ const AnalysisResults = ({ result, onReset, usernames }: AnalysisResultsProps) =
                           />
                           <div className="min-w-0">
                             <span className={`font-display font-bold text-sm truncate block ${isUser ? "text-accent" : "text-foreground"}`}>
-                              {name.replace("@", "")}
+                              {getLabel(name)}
                             </span>
                             {isUser && (
                               <span className="text-[10px] uppercase tracking-widest text-accent/60 font-semibold">
