@@ -25,9 +25,16 @@ interface ProfileData {
 
 type AnalysisResult = Record<string, ProfileData>;
 
+interface UsernamesMap {
+  myTag: string;
+  competitor1: string;
+  competitor2: string;
+}
+
 interface AnalysisResultsProps {
   result: AnalysisResult;
   onReset: () => void;
+  usernames: UsernamesMap;
 }
 
 const metricConfig = [
