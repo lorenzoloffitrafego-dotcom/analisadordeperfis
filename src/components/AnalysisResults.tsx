@@ -106,7 +106,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
 
-  const selectedAvgProfile = result[avgPostAccount as keyof AnalysisOutput];
+  const selectedAvgProfile = result[avgPostAccount];
 
   const renderProfileOptions = () =>
     profileKeys.map((name) => (
