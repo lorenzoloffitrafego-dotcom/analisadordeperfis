@@ -113,7 +113,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   };
 
   const thBase = "py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]";
-  const thSortable = `${thBase} text-right cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
+  const thSortable = `${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
 
   return (
     <div className="mt-10">
