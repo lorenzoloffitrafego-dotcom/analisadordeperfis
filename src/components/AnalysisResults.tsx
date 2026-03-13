@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3, LayoutGrid, PieChart as PieChartIcon } from "lucide-react";
+import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3, LayoutGrid, PieChart as PieChartIcon, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -30,20 +30,18 @@ interface ProfileData {
   [key: string]: any;
 }
 
-// result keys: meu_perfil, perfil1, perfil2
-
 interface AnalysisResultsProps {
   result: Record<string, any>;
   onReset: () => void;
 }
 
-const metricConfig = [
-  { key: "seguidores" as const, label: "Seguidores", icon: Users },
-  { key: "total_posts_3m" as const, label: "Posts (3 meses)", icon: FileText },
-  { key: "total_views" as const, label: "Visualizações", icon: Eye },
-  { key: "total_likes" as const, label: "Likes", icon: Heart },
-  { key: "total_comentarios" as const, label: "Comentários", icon: MessageCircle },
-  { key: "posts_por_semana" as const, label: "Posts / semana", icon: CalendarDays },
+const resumoColumns = [
+  { key: "seguidores", label: "Seguidores", icon: Users },
+  { key: "total_views", label: "Total de Views", icon: Eye },
+  { key: "total_likes", label: "Total de Likes", icon: Heart },
+  { key: "total_comentarios", label: "Total de Comentários", icon: MessageCircle },
+  { key: "total_posts_3m", label: "Total de Posts", icon: FileText },
+  { key: "posts_por_semana", label: "Média de Posts (Semanal)", icon: CalendarDays },
 ];
 
 function fmtVal(value: unknown): string {
@@ -62,24 +60,10 @@ function fmtVal(value: unknown): string {
   return num.toFixed(1);
 }
 
-function getBestIndex(profiles: ProfileData[], key: string): number {
-  let bestIdx = 0;
-  let bestVal = -Infinity;
-  profiles.forEach((p, i) => {
-    const v = typeof p[key] === "number" ? p[key] : parseFloat(String(p[key] ?? 0));
-    if (!isNaN(v) && v > bestVal) {
-      bestVal = v;
-      bestIdx = i;
-    }
-  });
-  return bestIdx;
-}
-
 function formatComparacao(raw: unknown): string {
   if (raw === null || raw === undefined) return "—";
   const num = typeof raw === "number" ? raw : parseFloat(String(raw));
   if (isNaN(num) || num === 0) return "—";
-  // Multiply by 100 as per rules
   const pct = num * 100;
   const abs = Math.abs(pct);
   if (abs >= 1) return `${pct.toFixed(2)}%`;
@@ -89,6 +73,9 @@ function formatComparacao(raw: unknown): string {
 }
 
 const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
+
+type ResumoSortKey = string | null;
+type SortDir = "asc" | "desc";
 
 const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const navigate = useNavigate();
@@ -106,7 +93,38 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
 
+  // Resumo table sorting
+  const [resumoSortKey, setResumoSortKey] = useState<ResumoSortKey>(null);
+  const [resumoSortDir, setResumoSortDir] = useState<SortDir>("desc");
+
+  const handleResumoSort = (key: string) => {
+    if (resumoSortKey === key) {
+      if (resumoSortDir === "desc") setResumoSortDir("asc");
+      else { setResumoSortKey(null); setResumoSortDir("desc"); }
+    } else {
+      setResumoSortKey(key);
+      setResumoSortDir("desc");
+    }
+  };
+
+  // Sort profiles for resumo table
+  const sortedProfileIndices = [0, 1, 2];
+  if (resumoSortKey) {
+    sortedProfileIndices.sort((a, b) => {
+      const va = Number(profiles[a]?.[resumoSortKey] ?? 0) || 0;
+      const vb = Number(profiles[b]?.[resumoSortKey] ?? 0) || 0;
+      return resumoSortDir === "desc" ? vb - va : va - vb;
+    });
+  }
+
   const selectedAvgProfile = result[avgPostAccount];
+
+  const ResumoSortIcon = ({ col }: { col: string }) => {
+    if (resumoSortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-30" />;
+    return resumoSortDir === "desc"
+      ? <ArrowDown className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />
+      : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />;
+  };
 
   const renderProfileOptions = () =>
     profileKeys.map((name) => (
@@ -122,9 +140,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
       </SelectItem>
     ));
 
-  // Build profiles record for PostsTable
   const profilesRecord: Record<string, Record<string, any>> = {};
   profileKeys.forEach((k) => { profilesRecord[k] = result[k]; });
+
+  const thBase = "py-4 px-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]";
 
   return (
     <div className="min-h-screen text-[hsl(210,40%,95%)] px-4 py-12" style={{ background: "linear-gradient(180deg, #0f0f0f 0%, #1a1a2e 100%)" }}>
@@ -138,25 +157,34 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <p className="text-[hsl(215,15%,50%)] text-sm">Comparação entre os perfis analisados</p>
         </div>
 
-        {/* Main comparison table */}
+        {/* 1. Resumo Inicial */}
         <div className="rounded-2xl overflow-hidden border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
+          <div className="flex items-center gap-2 px-5 pt-5 pb-2">
+            <BarChart3 className="w-5 h-5 text-[hsl(230,80%,70%)]" />
+            <h3 className="font-display text-lg font-bold">Resumo Inicial</h3>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-[hsl(220,15%,14%)]">
-                  <th className="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)] min-w-[200px]">Concorrente</th>
-                  {metricConfig.map(({ key, label, icon: Icon }) => (
-                    <th key={key} className="py-4 px-4 text-center min-w-[120px]">
-                      <div className="flex flex-col items-center gap-1.5">
-                        <Icon className="w-3.5 h-3.5 text-[hsl(215,15%,45%)]" />
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[hsl(215,15%,45%)]">{label}</span>
-                      </div>
+                  <th className={`${thBase} text-left min-w-[180px]`}>Conta</th>
+                  {resumoColumns.map(({ key, label }) => (
+                    <th
+                      key={key}
+                      className={`${thBase} text-center min-w-[120px] cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`}
+                      onClick={() => handleResumoSort(key)}
+                    >
+                      <span className="inline-flex items-center justify-center">
+                        {label}
+                        <ResumoSortIcon col={key} />
+                      </span>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {profileKeys.map((name, i) => {
+                {sortedProfileIndices.map((i) => {
+                  const name = profileKeys[i];
                   const profile = profiles[i];
                   const isUser = i === 0;
                   return (
@@ -181,8 +209,12 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                           </div>
                         </div>
                       </td>
-                      {metricConfig.map(({ key }) => {
-                        const bestIdx = getBestIndex(profiles, key);
+                      {resumoColumns.map(({ key }) => {
+                        const bestIdx = sortedProfileIndices.reduce((best, idx) => {
+                          const vBest = Number(profiles[best]?.[key] ?? 0) || 0;
+                          const vCur = Number(profiles[idx]?.[key] ?? 0) || 0;
+                          return vCur > vBest ? idx : best;
+                        }, 0);
                         const isBest = i === bestIdx;
                         return (
                           <td key={key} className="py-4 px-4 text-center">
@@ -202,7 +234,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
         {/* Média por Post + Engajamento */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-          {/* Card 1 — Média por Post (uses webhook fields directly) */}
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
@@ -231,7 +262,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
           </div>
 
-          {/* Card 2 — Engajamento (uses webhook fields directly) */}
           <EngajamentoCard data={{
             meu_perfil: { ...result.meu_perfil },
             perfil1: { ...result.perfil1 },
@@ -241,7 +271,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
         {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-          {/* Distribuição de Conteúdo */}
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
@@ -290,7 +319,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             })()}
           </div>
 
-          {/* Comparação com Concorrentes (multiply by 100) */}
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center gap-2 mb-5">
               <TrendingUp className="w-4 h-4 text-[hsl(40,90%,60%)]" />
