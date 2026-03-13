@@ -11,6 +11,7 @@ interface PostData {
   url_post: string;
   data_postagem: string;
   legenda?: string;
+  descricao?: string;
   _account?: string;
 }
 
@@ -112,7 +113,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   };
 
   const thBase = "py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]";
-  const thSortable = `${thBase} text-right cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
+  const thSortable = `${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
 
   return (
     <div className="mt-10">
@@ -163,15 +164,14 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
               <thead>
                 <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,5%)]/80">
                   <th className={`${thBase} text-left`}>Conta</th>
-                  <th className={`${thBase} text-left`}>Capa</th>
-                  <th className={`${thBase} text-left`}>Legenda</th>
+                  <th className={`${thBase} text-left min-w-[320px]`}>Post</th>
                   <th className={thSortable} onClick={() => handleSort("likes")}>
-                    <span className="inline-flex items-center justify-end">Likes<SortIcon col="likes" /></span>
+                    <span className="inline-flex items-center justify-center">Likes<SortIcon col="likes" /></span>
                   </th>
                   <th className={thSortable} onClick={() => handleSort("comentarios")}>
-                    <span className="inline-flex items-center justify-end">Comentários<SortIcon col="comentarios" /></span>
+                    <span className="inline-flex items-center justify-center">Comentários<SortIcon col="comentarios" /></span>
                   </th>
-                  <th className={`${thBase} text-left`}>Tipo</th>
+                  <th className={`${thBase} text-center`}>Tipo</th>
                   <th
                     className={`${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`}
                     onClick={() => handleSort("data_postagem")}
@@ -185,6 +185,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                   const badge = tipoBadge[post.tipo];
                   const accountLabel = post._account ? getLabel(post._account) : "";
                   const accountFoto = post._account ? getFoto(post._account) : undefined;
+                  const description = post.descricao || post.legenda || "";
                   return (
                     <tr
                       key={idx}
@@ -205,33 +206,32 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                           <span className="text-xs text-[hsl(215,15%,60%)] font-medium">{accountLabel}</span>
                         </div>
                       </td>
-                      {/* Capa */}
+                      {/* Post (Capa + Descrição) */}
                       <td className="py-3 px-4">
-                        <a href={post.url_post} target="_blank" rel="noopener noreferrer">
-                          <img
-                            src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
-                            alt={`Post ${idx + 1}`}
-                            className="w-14 h-14 rounded-lg object-cover border border-transparent hover:border-[hsl(230,80%,65%)]/30 transition-colors duration-200 cursor-pointer"
-                            onError={(e) => { e.currentTarget.style.display = "none"; }}
-                          />
-                        </a>
-                      </td>
-                      {/* Legenda */}
-                      <td className="py-3 px-4 max-w-[200px]">
-                        <span className="text-xs text-[hsl(215,15%,60%)] line-clamp-2">
-                          {post.legenda || "—"}
-                        </span>
+                        <div className="flex items-start gap-3">
+                          <a href={post.url_post} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                            <img
+                              src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
+                              alt={`Post ${idx + 1}`}
+                              className="w-[72px] h-[72px] rounded-lg object-cover border border-transparent hover:border-[hsl(230,80%,65%)]/30 transition-colors duration-200 cursor-pointer"
+                              onError={(e) => { e.currentTarget.style.display = "none"; }}
+                            />
+                          </a>
+                          <span className="text-xs text-[hsl(215,15%,60%)] line-clamp-2 pt-1 leading-relaxed">
+                            {description || "—"}
+                          </span>
+                        </div>
                       </td>
                       {/* Likes */}
-                      <td className="py-3 px-4 text-right font-display text-sm font-semibold">
+                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">
                         {formatNum(post.likes)}
                       </td>
                       {/* Comentários */}
-                      <td className="py-3 px-4 text-right font-display text-sm font-semibold">
+                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">
                         {formatNum(post.comentarios)}
                       </td>
                       {/* Tipo */}
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 text-center">
                         <span
                           className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold border border-transparent"
                           style={{
