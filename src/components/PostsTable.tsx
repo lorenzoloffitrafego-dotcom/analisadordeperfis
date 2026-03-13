@@ -11,6 +11,7 @@ interface PostData {
   url_post: string;
   data_postagem: string;
   legenda?: string;
+  descricao?: string;
   _account?: string;
 }
 
