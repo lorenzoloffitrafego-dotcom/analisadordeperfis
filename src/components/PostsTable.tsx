@@ -213,14 +213,19 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                       {/* Post (Capa + Descrição) */}
                       <td className="py-3 px-4">
                         <div className="flex items-start gap-3">
-                          <a href={post.url_post} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => openInstagramPost(post.url_post)}
+                            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
+                            aria-label={`Abrir post ${idx + 1} no Instagram em nova aba`}
+                          >
                             <img
                               src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
                               alt={`Post ${idx + 1}`}
                               className="w-[72px] h-[72px] rounded-lg object-cover border border-transparent hover:border-[hsl(230,80%,65%)]/30 transition-colors duration-200 cursor-pointer"
                               onError={(e) => { e.currentTarget.style.display = "none"; }}
                             />
-                          </a>
+                          </button>
                           <span className="text-xs text-[hsl(215,15%,60%)] line-clamp-2 pt-1 leading-relaxed">
                             {description || "—"}
                           </span>
