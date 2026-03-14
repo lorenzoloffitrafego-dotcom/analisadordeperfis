@@ -14,8 +14,8 @@ const InfoTooltip = ({ text }: InfoTooltipProps) => (
   <TooltipProvider delayDuration={200}>
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[hsl(215,15%,30%)] text-[hsl(215,15%,45%)] hover:text-[hsl(210,40%,80%)] hover:border-[hsl(215,15%,45%)] transition-colors duration-200 cursor-help ml-1.5 shrink-0">
-          <HelpCircle className="w-3 h-3" />
+        <span className="inline-flex items-center justify-center w-[18px] h-[18px] rounded-full bg-[hsl(220,20%,14%)] text-[hsl(210,40%,70%)] hover:bg-[hsl(230,80%,65%)] hover:text-white transition-all duration-200 cursor-help ml-2 shrink-0">
+          <HelpCircle className="w-[14px] h-[14px]" strokeWidth={2.5} />
         </span>
       </TooltipTrigger>
       <TooltipContent
