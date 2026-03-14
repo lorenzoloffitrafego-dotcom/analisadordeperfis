@@ -305,8 +305,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                           {pieData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
                         </Pie>
                         <Tooltip
-                          formatter={(value: number) => `${value}%`}
-                          contentStyle={{ background: "hsl(220 20% 8%)", border: "1px solid hsl(220 15% 14%)", borderRadius: "8px", fontSize: "12px", color: "hsl(210 40% 95%)" }}
+                          formatter={(value: number, name: string) => [`${value}%`, name]}
+                          contentStyle={{ backgroundColor: '#fff', color: '#000', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '12px', padding: '8px 12px' }}
+                          itemStyle={{ color: '#000' }}
+                          labelStyle={{ display: 'none' }}
                         />
                       </PieChart>
                     </ResponsiveContainer>
