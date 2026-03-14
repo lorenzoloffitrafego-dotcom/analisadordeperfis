@@ -251,9 +251,9 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
-                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
-                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
+                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: "hsl(160,80%,50%)", bgColor: "hsl(160,80%,50%,0.12)" },
+                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: "hsl(210,80%,60%)", bgColor: "hsl(210,80%,60%,0.12)" },
+                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: "hsl(45,90%,60%)", bgColor: "hsl(45,90%,60%,0.12)" },
               ].map(({ label, value, icon: Icon, color, bgColor }) => (
                 <div key={label} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[hsl(220,20%,10%)] transition-all duration-300">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-1" style={{ backgroundColor: bgColor }}>
@@ -331,9 +331,9 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="flex flex-col gap-3 flex-1">
               {[
-                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", tooltip: "Entenda o seu domínio de visualizações em relação ao volume total gerado pelos 3 perfis.", color: "hsl(340,80%,65%)" },
+                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", tooltip: "Entenda o seu domínio de visualizações em relação ao volume total gerado pelos 3 perfis.", color: "hsl(160,80%,50%)" },
                 { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", tooltip: "Saiba o quanto você produz comparado à atividade total do grupo analisado.", color: "hsl(45,90%,60%)" },
-                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", tooltip: "Entenda o seu tamanho de audiência dentro deste recorte de mercado.", color: "hsl(180,80%,55%)" },
+                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", tooltip: "Entenda o seu tamanho de audiência dentro deste recorte de mercado.", color: "hsl(270,80%,65%)" },
               ].map(({ field, icon: Icon, label, tooltip, color }) => (
                 <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-[hsl(220,20%,10%)] flex-1">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${color.replace(")", " / 0.12)")}` }}>
