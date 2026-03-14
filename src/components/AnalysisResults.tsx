@@ -251,14 +251,16 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye },
-                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart },
-                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle },
-              ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-[hsl(220,20%,10%)]">
-                  <Icon className="w-4 h-4 text-[hsl(215,15%,45%)]" />
-                  <span className="font-display text-lg font-bold">{fmtVal(value)}</span>
-                  <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold">{label}</span>
+                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
+                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
+                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
+              ].map(({ label, value, icon: Icon, color, bgColor }) => (
+                <div key={label} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[hsl(220,20%,10%)] transition-all duration-300">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-1" style={{ backgroundColor: bgColor }}>
+                    <Icon className="w-5 h-5" style={{ color }} />
+                  </div>
+                  <span className="font-display text-2xl font-bold transition-all duration-300" style={{ color }}>{fmtVal(value)}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight">{label}</span>
                 </div>
               ))}
             </div>
@@ -329,9 +331,9 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="flex flex-col gap-3 flex-1">
               {[
-                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", tooltip: "Entenda o seu domínio de visualizações em relação ao volume total gerado pelos 3 perfis.", color: "hsl(230,80%,70%)" },
-                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", tooltip: "Saiba o quanto você produz comparado à atividade total do grupo analisado.", color: "hsl(160,80%,50%)" },
-                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", tooltip: "Entenda o seu tamanho de audiência dentro deste recorte de mercado.", color: "hsl(40,90%,60%)" },
+                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", tooltip: "Entenda o seu domínio de visualizações em relação ao volume total gerado pelos 3 perfis.", color: "hsl(340,80%,65%)" },
+                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", tooltip: "Saiba o quanto você produz comparado à atividade total do grupo analisado.", color: "hsl(45,90%,60%)" },
+                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", tooltip: "Entenda o seu tamanho de audiência dentro deste recorte de mercado.", color: "hsl(180,80%,55%)" },
               ].map(({ field, icon: Icon, label, tooltip, color }) => (
                 <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-[hsl(220,20%,10%)] flex-1">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${color.replace(")", " / 0.12)")}` }}>

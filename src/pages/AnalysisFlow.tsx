@@ -113,7 +113,8 @@ const AnalysisFlow = () => {
                   Informe seu perfil
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite o nome de usuário da sua conta (ex: nome_da_marca)
+                  Digite o nome de usuário da sua conta<br />
+                  (ex: nome_da_marca)
                 </p>
               </div>
               <TagInput
