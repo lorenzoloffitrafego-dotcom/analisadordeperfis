@@ -65,6 +65,10 @@ type SortKey = "likes" | "comentarios" | "data_postagem" | null;
 type SortDir = "asc" | "desc";
 
 const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTableProps) => {
+  const openInstagramPost = (url?: string) => {
+    if (!url) return;
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
   const [filter, setFilter] = useState("geral");
   const [sortKey, setSortKey] = useState<SortKey>("likes");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
