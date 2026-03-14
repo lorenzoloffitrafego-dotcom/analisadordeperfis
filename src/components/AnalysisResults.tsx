@@ -251,9 +251,9 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
-                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
-                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: "hsl(340,80%,65%)", bgColor: "hsl(340,80%,65%,0.12)" },
+                { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: "hsl(160,80%,50%)", bgColor: "hsl(160,80%,50%,0.12)" },
+                { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: "hsl(210,80%,60%)", bgColor: "hsl(210,80%,60%,0.12)" },
+                { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: "hsl(45,90%,60%)", bgColor: "hsl(45,90%,60%,0.12)" },
               ].map(({ label, value, icon: Icon, color, bgColor }) => (
                 <div key={label} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[hsl(220,20%,10%)] transition-all duration-300">
                   <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-1" style={{ backgroundColor: bgColor }}>
