@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
+import InfoTooltip from "@/components/InfoTooltip";
 
 interface ProfileData {
   foto?: string;
@@ -232,13 +233,14 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
         </div>
 
-        {/* Média por Post + Engajamento */}
+        {/* Desempenho Médio por Post + Engajamento do Público */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-[hsl(230,80%,70%)]" />
-                <h3 className="font-display font-bold text-sm">Média por Post</h3>
+                <h3 className="font-display font-bold text-sm">Desempenho Médio por Post</h3>
+                <InfoTooltip text="Entenda o alcance médio do seu conteúdo através do volume de views e o engajamento direto (likes e comentários)." />
               </div>
               <Select value={avgPostAccount} onValueChange={setAvgPostAccount}>
                 <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
@@ -276,6 +278,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               <div className="flex items-center gap-2">
                 <PieChartIcon className="w-4 h-4 text-[hsl(280,80%,65%)]" />
                 <h3 className="font-display font-bold text-sm">Distribuição de Conteúdo</h3>
+                <InfoTooltip text="Saiba o quanto você postou de cada tipo de conteúdo, como Reels, Carrosséis e Imagens." />
               </div>
               <Select value={contentDistAccount} onValueChange={setContentDistAccount}>
                 <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
@@ -326,17 +329,20 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
             <div className="flex flex-col gap-3 flex-1">
               {[
-                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", color: "hsl(230,80%,70%)" },
-                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", color: "hsl(160,80%,50%)" },
-                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", color: "hsl(40,90%,60%)" },
-              ].map(({ field, icon: Icon, label, color }) => (
+                { field: "comparacao_views" as const, icon: Eye, label: "Views vs Concorrentes", tooltip: "Entenda o seu domínio de visualizações em relação ao volume total gerado pelos 3 perfis.", color: "hsl(230,80%,70%)" },
+                { field: "comparacao_posts" as const, icon: LayoutGrid, label: "Posts vs Concorrentes", tooltip: "Saiba o quanto você produz comparado à atividade total do grupo analisado.", color: "hsl(160,80%,50%)" },
+                { field: "comparacao_seguidores" as const, icon: Users, label: "Seguidores vs Concorrentes", tooltip: "Entenda o seu tamanho de audiência dentro deste recorte de mercado.", color: "hsl(40,90%,60%)" },
+              ].map(({ field, icon: Icon, label, tooltip, color }) => (
                 <div key={field} className="flex items-center gap-3 p-4 rounded-xl bg-[hsl(220,20%,10%)] flex-1">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${color.replace(")", " / 0.12)")}` }}>
                     <Icon className="w-4 h-4" style={{ color }} />
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold block">{label}</span>
-                    <span className="font-display text-sm font-bold">{formatComparacao(result.meu_perfil?.[field])}</span>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold inline-flex items-center">
+                      {label}
+                      <InfoTooltip text={tooltip} />
+                    </span>
+                    <span className="font-display text-sm font-bold block">{formatComparacao(result.meu_perfil?.[field])}</span>
                   </div>
                 </div>
               ))}

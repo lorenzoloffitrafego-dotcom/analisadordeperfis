@@ -110,10 +110,10 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Escreva o seu Instagram
+                  Informe seu perfil
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite apenas o nome da conta. Não precisa incluir o símbolo @.
+                  Digite o nome de usuário da sua conta (ex: nome_da_marca)
                 </p>
               </div>
               <TagInput
@@ -139,10 +139,10 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Adicione dois concorrentes para análise
+                  Informe dois concorrentes
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite o nome de dois perfis que você deseja comparar.
+                  Escolha dois perfis do seu nicho que você deseja monitorar nesta análise
                 </p>
               </div>
               <TagInput
