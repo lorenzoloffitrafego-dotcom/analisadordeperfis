@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import InfoTooltip from "@/components/InfoTooltip";
 
 interface PerfilData {
   engajamento_por_seguidor?: number | null;
@@ -53,7 +54,7 @@ const EngajamentoCard = ({ data }: EngajamentoCardProps) => {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-[hsl(230,80%,70%)]" />
-          <h3 className="font-display font-bold text-sm">Engajamento</h3>
+          <h3 className="font-display font-bold text-sm">Engajamento do Público</h3>
         </div>
         <Select value={selectedKey} onValueChange={setSelectedKey}>
           <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
@@ -88,8 +89,9 @@ const EngajamentoCard = ({ data }: EngajamentoCardProps) => {
           <span className="font-display text-2xl font-bold text-[hsl(230,80%,70%)] transition-all duration-300">
             {formatEngagementValue(contaSelecionada.dados.engajamento_por_seguidor)}
           </span>
-          <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight">
+          <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight inline-flex items-center gap-0.5">
             Engajamento dos Seguidores
+            <InfoTooltip text="Entenda o percentual de seguidores que reage e interage ativamente com o que você posta." />
           </span>
         </div>
 
@@ -100,8 +102,9 @@ const EngajamentoCard = ({ data }: EngajamentoCardProps) => {
           <span className="font-display text-2xl font-bold text-[hsl(160,80%,50%)] transition-all duration-300">
             {formatEngagementValue(contaSelecionada.dados.engajamento_por_views)}
           </span>
-          <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight">
+          <span className="text-[10px] uppercase tracking-wider text-[hsl(215,15%,45%)] font-semibold text-center leading-tight inline-flex items-center gap-0.5">
             Engajamento por Views
+            <InfoTooltip text="Entenda o percentual de pessoas que viram os seus posts que interagem ativamente com o que você posta." />
           </span>
         </div>
       </div>
