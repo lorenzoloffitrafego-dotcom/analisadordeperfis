@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { CalendarDays } from "lucide-react";
-import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface PostingDaysCardProps {
   profiles: Record<string, Record<string, any>>;
@@ -10,8 +11,21 @@ interface PostingDaysCardProps {
   getFoto: (key: string) => string | undefined;
 }
 
-const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-const BASE_COLOR = "#F97455";
+const DAY_LABELS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+// Map JS getDay() (0=Sun) to our order (0=Mon)
+const JS_DAY_TO_INDEX: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
+
+const BAR_COLORS = [
+  "hsl(230, 75%, 62%)",
+  "hsl(250, 70%, 65%)",
+  "hsl(270, 65%, 60%)",
+  "hsl(290, 60%, 58%)",
+  "hsl(310, 55%, 55%)",
+  "hsl(330, 60%, 58%)",
+  "hsl(350, 65%, 60%)",
+];
+
+const HIGHLIGHT_COLOR = "hsl(45, 95%, 55%)";
 
 function getPostsByDay(profile: Record<string, any>): number[] {
   const counts = [0, 0, 0, 0, 0, 0, 0];
@@ -23,7 +37,8 @@ function getPostsByDay(profile: Record<string, any>): number[] {
       if (parsed?.data_postagem) {
         const date = new Date(parsed.data_postagem + "T12:00:00");
         if (!isNaN(date.getTime())) {
-          counts[date.getDay()]++;
+          const idx = JS_DAY_TO_INDEX[date.getDay()];
+          if (idx !== undefined) counts[idx]++;
         }
       }
     } catch {}
@@ -31,31 +46,35 @@ function getPostsByDay(profile: Record<string, any>): number[] {
   return counts;
 }
 
-function getBarColor(value: number, max: number): string {
-  if (value === 0 || max === 0) return "transparent";
-  const ratio = value / max;
-  // Interpolate opacity/saturation: lighter for small, darker for max
-  const lightness = 55 - ratio * 15; // 55% -> 40%
-  const saturation = 70 + ratio * 20; // 70% -> 90%
-  return `hsl(14, ${saturation}%, ${lightness}%)`;
-}
+const CustomTooltip = ({ active, payload }: any) => {
+  if (!active || !payload?.length) return null;
+  const { day, posts, pct } = payload[0].payload;
+  return (
+    <div className="rounded-lg border border-[hsl(220,15%,85%)] bg-white px-3 py-2 shadow-lg">
+      <p className="text-sm font-bold text-[hsl(220,20%,10%)]">{day}</p>
+      <p className="text-xs text-[hsl(220,15%,40%)]">
+        {posts} {posts === 1 ? "post" : "posts"} · {pct}%
+      </p>
+    </div>
+  );
+};
 
 const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingDaysCardProps) => {
   const [account, setAccount] = useState(profileNames[0] || "meu_perfil");
 
   const profile = profiles[account] || {};
   const counts = getPostsByDay(profile);
+  const total = counts.reduce((a, b) => a + b, 0);
   const max = Math.max(...counts);
 
   const chartData = DAY_LABELS.map((day, i) => ({
     day,
     posts: counts[i],
+    pct: total > 0 ? Math.round((counts[i] / total) * 100) : 0,
+    isMax: counts[i] === max && max > 0,
   }));
 
-  // Table data: only days with posts, sorted desc
-  const tableData = chartData
-    .filter((d) => d.posts > 0)
-    .sort((a, b) => b.posts - a.posts);
+  const tableData = [...chartData].sort((a, b) => b.posts - a.posts);
 
   return (
     <div
@@ -65,8 +84,8 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <CalendarDays className="w-4 h-4 text-[#F97455]" />
-          <h3 className="font-display font-bold text-sm">Dia das Postagens</h3>
+          <CalendarDays className="w-4 h-4 text-[hsl(45,95%,55%)]" />
+          <h3 className="font-display font-bold text-sm">Distribuição por Dia da Semana</h3>
         </div>
         <Select value={account} onValueChange={setAccount}>
           <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
@@ -92,26 +111,34 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
       </div>
 
       {/* Bar Chart */}
-      <div className="w-full h-[180px] mb-4">
+      <div className="w-full h-[220px] mb-4">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 5, left: 5, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
             <XAxis
               dataKey="day"
               axisLine={false}
               tickLine={false}
               tick={{ fill: "hsl(215,15%,50%)", fontSize: 11, fontWeight: 600 }}
             />
-            <Bar dataKey="posts" radius={[6, 6, 0, 0]} maxBarSize={36}>
-              <LabelList
-                dataKey="posts"
-                position="top"
-                style={{ fill: "hsl(210,40%,85%)", fontSize: 12, fontWeight: 700 }}
-                formatter={(v: number) => (v === 0 ? "" : v)}
-              />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "hsl(215,15%,35%)", fontSize: 10 }}
+              allowDecimals={false}
+            />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(220,20%,15%)", radius: 6 }} />
+            <Bar
+              dataKey="posts"
+              radius={[8, 8, 0, 0]}
+              maxBarSize={40}
+              animationDuration={800}
+              animationEasing="ease-out"
+            >
               {chartData.map((entry, idx) => (
                 <Cell
                   key={idx}
-                  fill={getBarColor(entry.posts, max)}
+                  fill={entry.isMax ? HIGHLIGHT_COLOR : BAR_COLORS[idx % BAR_COLORS.length]}
+                  style={{ filter: entry.isMax ? "brightness(1.15) drop-shadow(0 0 6px hsl(45,95%,55%,0.4))" : undefined }}
                 />
               ))}
             </Bar>
@@ -120,32 +147,59 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
       </div>
 
       {/* Table */}
-      {tableData.length > 0 && (
-        <div className="rounded-xl overflow-hidden border border-[hsl(220,15%,14%)]/50">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,5%)]/80">
+      {tableData.some(d => d.posts > 0) && (
+        <div className="rounded-xl overflow-hidden border border-[hsl(220,15%,14%)]/50 overflow-x-auto">
+          <table className="w-full border-collapse min-w-[320px]">
+            <thead className="sticky top-0 z-10">
+              <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
                 <th className="py-2.5 px-4 text-left text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">Dia</th>
                 <th className="py-2.5 px-4 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">Posts</th>
+                <th className="py-2.5 px-4 text-left text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">% do Total</th>
               </tr>
             </thead>
             <tbody>
-              {tableData.map((row, idx) => (
-                <tr
-                  key={row.day}
-                  className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-all duration-200 hover:bg-[hsl(230,30%,12%)]/60"
-                >
-                  <td className="py-2.5 px-4 text-xs font-medium">{row.day}</td>
-                  <td className="py-2.5 px-4 text-center">
-                    <span
-                      className="font-display text-sm font-bold"
-                      style={{ color: idx === 0 ? "#F97455" : "hsl(215,15%,60%)" }}
-                    >
-                      {row.posts}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {tableData.filter(d => d.posts > 0).map((row) => {
+                const barWidth = max > 0 ? (row.posts / max) * 100 : 0;
+                return (
+                  <tr
+                    key={row.day}
+                    className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-colors duration-200 hover:bg-[hsl(230,30%,12%)]/60"
+                  >
+                    <td className="py-2.5 px-4 text-xs font-medium flex items-center gap-2">
+                      {row.day}
+                      {row.isMax && (
+                        <Badge className="text-[9px] px-1.5 py-0 bg-[hsl(45,95%,55%)] text-[hsl(220,20%,10%)] border-none font-bold">
+                          Top
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-4 text-center">
+                      <span
+                        className="font-display text-sm font-bold"
+                        style={{ color: row.isMax ? "hsl(45,95%,55%)" : "hsl(215,15%,60%)" }}
+                      >
+                        {row.posts}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-4">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 rounded-full bg-[hsl(220,15%,14%)] overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${barWidth}%`,
+                              background: row.isMax
+                                ? "linear-gradient(90deg, hsl(45,95%,55%), hsl(35,95%,50%))"
+                                : "linear-gradient(90deg, hsl(230,75%,62%), hsl(270,65%,60%))",
+                            }}
+                          />
+                        </div>
+                        <span className="text-[11px] font-semibold text-[hsl(215,15%,50%)] w-8 text-right">{row.pct}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
