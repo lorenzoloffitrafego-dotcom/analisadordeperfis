@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
+import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
 
 interface ProfileData {
