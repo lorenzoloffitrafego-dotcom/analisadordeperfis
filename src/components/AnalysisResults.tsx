@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
+import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
 
 interface ProfileData {
@@ -273,7 +274,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           }} />
         </div>
 
-        {/* Distribuição de Conteúdo + Comparação com Concorrentes */}
+        {/* Distribuição de Conteúdo + Dia das Postagens */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center justify-between mb-5">
@@ -326,6 +327,11 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             })()}
           </div>
 
+          <PostingDaysCard profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
+        </div>
+
+        {/* Comparação com Concorrentes */}
+        <div className="mt-6">
           <div className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col" style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}>
             <div className="flex items-center gap-2 mb-5">
               <TrendingUp className="w-4 h-4 text-[hsl(40,90%,60%)]" />
