@@ -179,10 +179,10 @@ const Auth = () => {
 
             <Button
               type="submit"
-              disabled={loading}
+              disabled={submitting}
               className="w-full h-12 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 text-sm font-medium"
             >
-              {loading ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
+              {submitting ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
             </Button>
           </form>
 
