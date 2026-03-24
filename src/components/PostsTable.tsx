@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FileText, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useResultsTheme, t } from "@/components/ResultsThemeContext";
 
 interface PostData {
   tipo: string;
@@ -65,6 +66,9 @@ type SortKey = "likes" | "comentarios" | "data_postagem" | null;
 type SortDir = "asc" | "desc";
 
 const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTableProps) => {
+  const theme = useResultsTheme();
+  const th = t(theme);
+
   const openInstagramPost = (url?: string) => {
     if (!url) return;
     window.open(url, "_blank", "noopener,noreferrer");
@@ -73,7 +77,6 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   const [sortKey, setSortKey] = useState<SortKey>("likes");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
-  // Collect posts
   let posts: PostData[] = [];
   if (filter === "geral") {
     profileNames.forEach((name) => {
@@ -83,7 +86,6 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
     posts = getPosts(profiles[filter], filter);
   }
 
-  // Sort
   const sorted = [...posts];
   if (sortKey) {
     sorted.sort((a, b) => {
@@ -116,26 +118,25 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
       : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />;
   };
 
-  const thBase = "py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]";
-  const thSortable = `${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`;
+  const thBase = `py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em]`;
+  const thSortable = `${thBase} text-center cursor-pointer select-none transition-colors duration-200`;
 
   return (
     <div className="mt-10">
       <div
-        className="rounded-2xl overflow-hidden border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm"
-        style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}
+        className="rounded-2xl overflow-hidden border backdrop-blur-sm transition-colors duration-500"
+        style={{ borderColor: th.cardBorder, background: th.cardBg, boxShadow: th.cardShadow }}
       >
-        {/* Header with title + dropdown INSIDE the block */}
         <div className="flex items-center justify-between px-5 pt-5 pb-2">
           <div className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-[hsl(230,80%,70%)]" />
             <h2 className="font-display text-lg font-bold">Ranking de Posts</h2>
-            <span className="text-[10px] text-[hsl(215,15%,40%)] font-medium ml-1">
+            <span className="text-[10px] font-medium ml-1" style={{ color: th.mutedText }}>
               {sorted.length} {sorted.length === 1 ? "post" : "posts"}
             </span>
           </div>
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[200px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
+            <SelectTrigger className="w-[200px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -160,24 +161,25 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
 
         {posts.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-[hsl(215,15%,45%)] text-sm">Sem posts nos últimos 3 meses</p>
+            <p className="text-sm" style={{ color: th.mutedText }}>Sem posts nos últimos 3 meses</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,5%)]/80">
-                  <th className={`${thBase} text-left`}>Conta</th>
-                  <th className={`${thBase} text-left min-w-[320px]`}>Post</th>
-                  <th className={thSortable} onClick={() => handleSort("likes")}>
+                <tr style={{ borderBottom: `1px solid ${th.borderColor}`, background: th.tableHeaderBg }}>
+                  <th className={`${thBase} text-left`} style={{ color: th.thColor }}>Conta</th>
+                  <th className={`${thBase} text-left min-w-[320px]`} style={{ color: th.thColor }}>Post</th>
+                  <th className={thSortable} style={{ color: th.thColor }} onClick={() => handleSort("likes")}>
                     <span className="inline-flex items-center justify-center">Likes<SortIcon col="likes" /></span>
                   </th>
-                  <th className={thSortable} onClick={() => handleSort("comentarios")}>
+                  <th className={thSortable} style={{ color: th.thColor }} onClick={() => handleSort("comentarios")}>
                     <span className="inline-flex items-center justify-center">Comentários<SortIcon col="comentarios" /></span>
                   </th>
-                  <th className={`${thBase} text-center`}>Tipo</th>
+                  <th className={`${thBase} text-center`} style={{ color: th.thColor }}>Tipo</th>
                   <th
-                    className={`${thBase} text-center cursor-pointer select-none hover:text-[hsl(210,40%,80%)] transition-colors duration-200`}
+                    className={`${thBase} text-center cursor-pointer select-none transition-colors duration-200`}
+                    style={{ color: th.thColor }}
                     onClick={() => handleSort("data_postagem")}
                   >
                     <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
@@ -193,11 +195,11 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                   return (
                     <tr
                       key={idx}
-                      className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-all duration-200 hover:bg-[hsl(230,30%,12%)]/60"
-                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
+                      className="last:border-b-0 transition-all duration-200"
+                      style={{ borderBottom: `1px solid ${th.borderColorLight}` }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = th.innerBgHover; e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ""; e.currentTarget.style.boxShadow = "none"; }}
                     >
-                      {/* Conta */}
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           {accountFoto && (
@@ -207,16 +209,15 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                               onError={(e) => { e.currentTarget.style.display = "none"; }}
                             />
                           )}
-                          <span className="text-xs text-[hsl(215,15%,60%)] font-medium">{accountLabel}</span>
+                          <span className="text-xs font-medium" style={{ color: th.bodyText }}>{accountLabel}</span>
                         </div>
                       </td>
-                      {/* Post (Capa + Descrição) */}
                       <td className="py-3 px-4">
                         <div className="flex items-start gap-3">
                           <button
                             type="button"
                             onClick={() => openInstagramPost(post.url_post)}
-                            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
+                            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
                             aria-label={`Abrir post ${idx + 1} no Instagram em nova aba`}
                           >
                             <img
@@ -226,20 +227,17 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                               onError={(e) => { e.currentTarget.style.display = "none"; }}
                             />
                           </button>
-                          <span className="text-xs text-[hsl(215,15%,60%)] line-clamp-2 pt-1 leading-relaxed">
+                          <span className="text-xs line-clamp-2 pt-1 leading-relaxed" style={{ color: th.bodyText }}>
                             {description || "—"}
                           </span>
                         </div>
                       </td>
-                      {/* Likes */}
                       <td className="py-3 px-4 text-center font-display text-sm font-semibold">
                         {formatNum(post.likes)}
                       </td>
-                      {/* Comentários */}
                       <td className="py-3 px-4 text-center font-display text-sm font-semibold">
                         {formatNum(post.comentarios)}
                       </td>
-                      {/* Tipo */}
                       <td className="py-3 px-4 text-center">
                         <span
                           className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold border border-transparent"
@@ -252,8 +250,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                           {post.tipo}
                         </span>
                       </td>
-                      {/* Data */}
-                      <td className="py-3 px-4 text-center text-xs text-[hsl(215,15%,50%)] font-normal">
+                      <td className="py-3 px-4 text-center text-xs font-normal" style={{ color: th.labelText }}>
                         {formatDate(post.data_postagem)}
                       </td>
                     </tr>

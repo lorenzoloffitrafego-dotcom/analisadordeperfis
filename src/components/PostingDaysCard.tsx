@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CalendarDays } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { useResultsTheme, t } from "@/components/ResultsThemeContext";
 
 interface PostingDaysCardProps {
   profiles: Record<string, Record<string, any>>;
@@ -12,7 +12,6 @@ interface PostingDaysCardProps {
 }
 
 const DAY_LABELS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-// Map JS getDay() (0=Sun) to our order (0=Mon)
 const JS_DAY_TO_INDEX: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
 
 const BAR_COLORS = [
@@ -60,6 +59,9 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingDaysCardProps) => {
+  const theme = useResultsTheme();
+  const th = t(theme);
+
   const [account, setAccount] = useState(profileNames[0] || "meu_perfil");
 
   const profile = profiles[account] || {};
@@ -74,21 +76,22 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
     isMax: counts[i] === max && max > 0,
   }));
 
-  const tableData = [...chartData].sort((a, b) => b.posts - a.posts);
+  const tickColor = theme === "light" ? "hsl(215,15%,45%)" : "hsl(215,15%,50%)";
+  const yTickColor = theme === "light" ? "hsl(215,15%,55%)" : "hsl(215,15%,35%)";
+  const cursorFill = theme === "light" ? "hsl(220,20%,93%)" : "hsl(220,20%,15%)";
 
   return (
     <div
-      className="rounded-2xl border border-[hsl(220,15%,14%)]/50 bg-[hsl(220,20%,8%)]/80 backdrop-blur-sm p-6 flex flex-col"
-      style={{ boxShadow: "0 8px 32px -8px hsl(0 0% 0% / 0.5)" }}
+      className="rounded-2xl border backdrop-blur-sm p-6 flex flex-col transition-colors duration-500"
+      style={{ borderColor: th.cardBorder, background: th.cardBg, boxShadow: th.cardShadow }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <CalendarDays className="w-4 h-4 text-[hsl(45,95%,55%)]" />
           <h3 className="font-display font-bold text-sm">Distribuição por Dia da Semana</h3>
         </div>
         <Select value={account} onValueChange={setAccount}>
-          <SelectTrigger className="w-[180px] h-8 text-xs border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
+          <SelectTrigger className="w-[180px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -110,7 +113,6 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
         </Select>
       </div>
 
-      {/* Bar Chart */}
       <div className="w-full h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
@@ -118,15 +120,15 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
               dataKey="day"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(215,15%,50%)", fontSize: 11, fontWeight: 600 }}
+              tick={{ fill: tickColor, fontSize: 11, fontWeight: 600 }}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(215,15%,35%)", fontSize: 10 }}
+              tick={{ fill: yTickColor, fontSize: 10 }}
               allowDecimals={false}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(220,20%,15%)", radius: 6 }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: cursorFill, radius: 6 }} />
             <Bar
               dataKey="posts"
               radius={[8, 8, 0, 0]}
@@ -145,7 +147,6 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
           </BarChart>
         </ResponsiveContainer>
       </div>
-
     </div>
   );
 };
