@@ -1,13 +1,53 @@
-import { BarChart3, Users, Zap, TrendingUp, ArrowRight } from "lucide-react";
+import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
   return (
     <div className="min-h-screen bg-background">
+      {/* Top nav bar */}
+      <nav className="fixed top-0 left-0 right-0 z-50 glass-surface border-b border-border/50">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+          <span className="font-display font-bold text-foreground text-lg">InstaInsight</span>
+          {!loading && (
+            <div className="flex items-center gap-3">
+              {user ? (
+                <>
+                  <span className="text-sm text-muted-foreground hidden sm:block">
+                    {user.email}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={signOut}
+                    className="gap-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden sm:inline">Sair</span>
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="accent"
+                  size="sm"
+                  onClick={() => navigate("/auth")}
+                  className="gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Entrar
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </nav>
+
       <HeroSection />
 
       {/* Features */}
