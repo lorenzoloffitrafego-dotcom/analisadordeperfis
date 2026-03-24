@@ -111,7 +111,7 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
       </div>
 
       {/* Bar Chart */}
-      <div className="w-full h-[220px] mb-4">
+      <div className="w-full h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
             <XAxis

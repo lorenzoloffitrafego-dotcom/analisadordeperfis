@@ -302,7 +302,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                   <div className="w-full h-[180px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value" stroke="none">
+                        <Pie data={pieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={0} dataKey="value" stroke="none">
                           {pieData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
                         </Pie>
                         <Tooltip
