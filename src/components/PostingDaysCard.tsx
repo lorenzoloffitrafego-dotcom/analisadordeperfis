@@ -111,7 +111,7 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
       </div>
 
       {/* Bar Chart */}
-      <div className="w-full h-[220px] mb-4">
+      <div className="w-full h-[220px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 5, left: -20, bottom: 0 }}>
             <XAxis
@@ -146,64 +146,6 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
         </ResponsiveContainer>
       </div>
 
-      {/* Table */}
-      {tableData.some(d => d.posts > 0) && (
-        <div className="rounded-xl overflow-hidden border border-[hsl(220,15%,14%)]/50 overflow-x-auto">
-          <table className="w-full border-collapse min-w-[320px]">
-            <thead className="sticky top-0 z-10">
-              <tr className="border-b border-[hsl(220,15%,14%)] bg-[hsl(220,20%,6%)]">
-                <th className="py-2.5 px-4 text-left text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">Dia</th>
-                <th className="py-2.5 px-4 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">Posts</th>
-                <th className="py-2.5 px-4 text-left text-[10px] font-semibold uppercase tracking-[0.1em] text-[hsl(215,15%,45%)]">% do Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.filter(d => d.posts > 0).map((row) => {
-                const barWidth = max > 0 ? (row.posts / max) * 100 : 0;
-                return (
-                  <tr
-                    key={row.day}
-                    className="border-b border-[hsl(220,15%,10%)] last:border-b-0 transition-colors duration-200 hover:bg-[hsl(230,30%,12%)]/60"
-                  >
-                    <td className="py-2.5 px-4 text-xs font-medium flex items-center gap-2">
-                      {row.day}
-                      {row.isMax && (
-                        <Badge className="text-[9px] px-1.5 py-0 bg-[hsl(45,95%,55%)] text-[hsl(220,20%,10%)] border-none font-bold">
-                          Top
-                        </Badge>
-                      )}
-                    </td>
-                    <td className="py-2.5 px-4 text-center">
-                      <span
-                        className="font-display text-sm font-bold"
-                        style={{ color: row.isMax ? "hsl(45,95%,55%)" : "hsl(215,15%,60%)" }}
-                      >
-                        {row.posts}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 rounded-full bg-[hsl(220,15%,14%)] overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{
-                              width: `${barWidth}%`,
-                              background: row.isMax
-                                ? "linear-gradient(90deg, hsl(45,95%,55%), hsl(35,95%,50%))"
-                                : "linear-gradient(90deg, hsl(230,75%,62%), hsl(270,65%,60%))",
-                            }}
-                          />
-                        </div>
-                        <span className="text-[11px] font-semibold text-[hsl(215,15%,50%)] w-8 text-right">{row.pct}%</span>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };
