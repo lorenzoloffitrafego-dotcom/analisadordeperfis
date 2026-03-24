@@ -1,11 +1,14 @@
-import { BarChart3, Users, Zap, TrendingUp, ArrowRight } from "lucide-react";
+import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, loading, signOut } = useAuth();
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
