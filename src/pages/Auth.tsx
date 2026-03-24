@@ -9,19 +9,19 @@ import { useAuth } from "@/hooks/useAuth";
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const Auth = () => {
-  const { user, loading } = useAuth();
-
-  // Redirect if already logged in
-  if (!loading && user) {
-    return <Navigate to="/" replace />;
-  }
+  const { user, loading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Redirect if already logged in
+  if (!authLoading && user) {
+    return <Navigate to="/" replace />;
+  }
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
