@@ -1,10 +1,11 @@
-import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut } from "lucide-react";
+import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -18,20 +19,25 @@ const Index = () => {
           {!loading && (
             <div className="flex items-center gap-3">
               {user ? (
-                <>
-                  <span className="text-sm text-muted-foreground hidden sm:block">
-                    {user.email}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={signOut}
-                    className="gap-2 text-muted-foreground hover:text-foreground"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline">Sair</span>
-                  </Button>
-                </>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground hover:text-foreground">
+                      <UserCircle className="w-6 h-6" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-auto p-4 space-y-3">
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={signOut}
+                      className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sair
+                    </Button>
+                  </PopoverContent>
+                </Popover>
               ) : (
                 <Button
                   variant="accent"
