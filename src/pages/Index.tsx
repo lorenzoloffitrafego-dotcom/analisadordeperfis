@@ -1,10 +1,11 @@
-import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut } from "lucide-react";
+import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
 import HowItWorks from "@/components/HowItWorks";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const Index = () => {
   const navigate = useNavigate();
