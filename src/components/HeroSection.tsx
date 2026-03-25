@@ -54,7 +54,7 @@ const HeroSection = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">Analise perfis do Instagram, compare métricas importantes e receba um dashboard para melhorar sua estratégia de conteúdo.
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">Analise perfis do de concorrentes, compare métricas importantes em um dashboard para melhorar sua estratégia de conteúdo.
 
         </p>
 
