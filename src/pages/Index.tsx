@@ -73,7 +73,7 @@ const Index = () => {
             description="Veja como seu perfil se posiciona frente aos seus principais concorrentes."
           />
           <FeatureCard
-            icon={<Zap className="w-5 h-5" />}
+            icon={<Clock className="w-5 h-5" />}
             title="Insights automáticos"
             description="Receba recomendações personalizadas para melhorar sua estratégia."
           />
