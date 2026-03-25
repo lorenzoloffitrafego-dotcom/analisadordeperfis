@@ -42,8 +42,8 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Cadastro realizado!", description: "Bem-vindo ao InstaInsight!" });
-        navigate("/analisar");
+        toast({ title: "Cadastro realizado!", description: "Verifique seu email para ativar sua conta." });
+        navigate("/verify-email");
       }
     } catch (error: any) {
       toast({
