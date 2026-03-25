@@ -1,4 +1,4 @@
-import { BarChart3, Users, Zap, TrendingUp, ArrowRight, LogIn, LogOut, UserCircle } from "lucide-react";
+import { BarChart3, Users, Clock, TrendingUp, ArrowRight, LogIn, LogOut, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
