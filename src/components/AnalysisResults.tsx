@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3, LayoutGrid, PieChart as PieChartIcon, ArrowUp, ArrowDown, ArrowUpDown, Sun, Moon } from "lucide-react";
+import { ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle, CalendarDays, FileText, TrendingUp, BarChart3, LayoutGrid, PieChart as PieChartIcon, ArrowUp, ArrowDown, ArrowUpDown, Sun, Moon, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -160,6 +160,17 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <div className="text-center flex-1">
               <h2 className="font-display text-3xl font-bold mb-2">Resultado da Análise</h2>
               <p className="text-sm" style={{ color: th.subtitle }}>Comparação entre os perfis analisados</p>
+              <div className="flex items-center justify-center gap-1.5 mt-2 text-xs" style={{ color: th.subtitle }}>
+                <Calendar className="w-3.5 h-3.5" />
+                <span>
+                  {(() => {
+                    const now = new Date();
+                    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                    const fmt = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+                    return `${fmt(threeMonthsAgo)} — ${fmt(now)}`;
+                  })()}
+                </span>
+              </div>
             </div>
             <div className="flex-1 flex justify-end">
               <button
