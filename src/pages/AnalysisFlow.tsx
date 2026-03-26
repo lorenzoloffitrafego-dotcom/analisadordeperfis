@@ -46,9 +46,9 @@ const AnalysisFlow = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            meu_instagram: `@${myTags[0]}`,
-            concorrente_1: `@${competitorTags[0]}`,
-            concorrente_2: `@${competitorTags[1]}`,
+            meu_instagram: `@${sanitize(mainProfile)}`,
+            concorrente_1: `@${sanitize(competitor1)}`,
+            concorrente_2: `@${sanitize(competitor2)}`,
           }),
         }
       );
