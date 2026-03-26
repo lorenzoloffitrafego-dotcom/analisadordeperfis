@@ -12,27 +12,27 @@ const HeroSection = () => {
           style={{
             background: "radial-gradient(circle, hsl(210 100% 90% / 0.5) 0%, transparent 70%)",
             top: "10%",
-            left: "15%"
-          }} />
-        
+            left: "15%",
+          }}
+        />
         <div
           className="absolute w-[400px] h-[400px] rounded-full opacity-25 animate-float"
           style={{
             background: "radial-gradient(circle, hsl(260 80% 92% / 0.5) 0%, transparent 70%)",
             top: "20%",
             right: "10%",
-            animationDelay: "2s"
-          }} />
-        
+            animationDelay: "2s",
+          }}
+        />
         <div
           className="absolute w-[300px] h-[300px] rounded-full opacity-20 animate-float"
           style={{
             background: "radial-gradient(circle, hsl(190 70% 88% / 0.5) 0%, transparent 70%)",
             bottom: "15%",
             left: "40%",
-            animationDelay: "4s"
-          }} />
-        
+            animationDelay: "4s",
+          }}
+        />
       </div>
 
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
@@ -54,8 +54,8 @@ const HeroSection = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">Analise perfis do de concorrentes, compare métricas importantes em um dashboard para melhorar sua estratégia de conteúdo.
-
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+          Analise perfis do Instagram, compare métricas importantes e receba insights automáticos para melhorar sua estratégia de conteúdo.
         </p>
 
         {/* CTA */}
@@ -66,8 +66,8 @@ const HeroSection = () => {
           </button>
         </div>
       </div>
-    </section>);
-
+    </section>
+  );
 };
 
 export default HeroSection;
