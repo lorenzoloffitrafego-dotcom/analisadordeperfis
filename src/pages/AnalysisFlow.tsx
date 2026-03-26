@@ -21,17 +21,19 @@ const AnalysisFlow = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
+  const sanitize = (v: string) => v.replace(/@/g, "").trim();
+
   const handleNext = () => {
-    if (myTags.length === 0) {
-      toast.error("Por favor, adicione seu nome de usuário do Instagram.");
+    if (!sanitize(mainProfile)) {
+      toast.error("Por favor, informe o perfil principal.");
       return;
     }
     setStep(2);
   };
 
   const handleSubmit = async () => {
-    if (competitorTags.length < 2) {
-      toast.error("Por favor, adicione dois perfis de concorrentes.");
+    if (!sanitize(competitor1) || !sanitize(competitor2)) {
+      toast.error("Por favor, preencha os dois perfis concorrentes.");
       return;
     }
 
