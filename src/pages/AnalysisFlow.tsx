@@ -145,18 +145,32 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Informe dois concorrentes
+                  Defina dois concorrentes
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Escolha dois perfis do seu nicho que você deseja monitorar nesta análise
+                  Insira os @ de dois perfis para análise comparativa de métricas.
                 </p>
               </div>
-              <TagInput
-                tags={competitorTags}
-                onTagsChange={setCompetitorTags}
-                placeholder="concorrente"
-                maxTags={2}
-              />
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                  <span className="text-muted-foreground text-sm">@</span>
+                  <input
+                    value={competitor1}
+                    onChange={(e) => setCompetitor1(e.target.value)}
+                    placeholder="perfil_concorrente_1"
+                    className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                  />
+                </div>
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                  <span className="text-muted-foreground text-sm">@</span>
+                  <input
+                    value={competitor2}
+                    onChange={(e) => setCompetitor2(e.target.value)}
+                    placeholder="perfil_concorrente_2"
+                    className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                  />
+                </div>
+              </div>
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => setStep(1)}>
                   <ArrowLeft className="w-4 h-4" />
