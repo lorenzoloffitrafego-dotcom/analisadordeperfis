@@ -113,19 +113,21 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Informe seu perfil
+                  Defina o perfil principal
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite o nome de usuário da sua conta<br />
-                  (ex: nome_da_marca)
+                  Digite o @ do Instagram que você deseja monitorar.
                 </p>
               </div>
-              <TagInput
-                tags={myTags}
-                onTagsChange={setMyTags}
-                placeholder="nomedaconta"
-                maxTags={1}
-              />
+              <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                <span className="text-muted-foreground text-sm">@</span>
+                <input
+                  value={mainProfile}
+                  onChange={(e) => setMainProfile(e.target.value)}
+                  placeholder="perfil_principal"
+                  className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                />
+              </div>
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => navigate("/")}>
                   <ArrowLeft className="w-4 h-4" />
