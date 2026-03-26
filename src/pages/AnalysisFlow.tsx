@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import TagInput from "@/components/TagInput";
 import AnalysisResults from "@/components/AnalysisResults";
 import { toast } from "sonner";
 
@@ -16,8 +15,9 @@ interface AnalysisResult {
 const AnalysisFlow = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [myTags, setMyTags] = useState<string[]>([]);
-  const [competitorTags, setCompetitorTags] = useState<string[]>([]);
+  const [mainProfile, setMainProfile] = useState("");
+  const [competitor1, setCompetitor1] = useState("");
+  const [competitor2, setCompetitor2] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
