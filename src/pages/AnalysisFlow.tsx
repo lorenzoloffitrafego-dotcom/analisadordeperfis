@@ -71,8 +71,9 @@ const AnalysisFlow = () => {
 
   const handleReset = () => {
     setStep(1);
-    setMyTags([]);
-    setCompetitorTags([]);
+    setMainProfile("");
+    setCompetitor1("");
+    setCompetitor2("");
     setResult(null);
   };
 
