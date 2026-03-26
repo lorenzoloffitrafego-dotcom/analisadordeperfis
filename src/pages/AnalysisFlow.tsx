@@ -39,14 +39,14 @@ const AnalysisFlow = () => {
 
     try {
       const response = await fetch(
-        "https://n8n.srv1414258.hstgr.cloud/webhook-test/7392a7ab-3d13-400b-8f00-079fc44a82f6",
+        "https://n8n.srv1414258.hstgr.cloud/webhook/7392a7ab-3d13-400b-8f00-079fc44a82f6",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            meu_instagram: myTags[0],
-            concorrente_1: competitorTags[0],
-            concorrente_2: competitorTags[1],
+            meu_instagram: `@${myTags[0]}`,
+            concorrente_1: `@${competitorTags[0]}`,
+            concorrente_2: `@${competitorTags[1]}`,
           }),
         }
       );
