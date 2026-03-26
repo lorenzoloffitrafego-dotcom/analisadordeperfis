@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import TagInput from "@/components/TagInput";
 import AnalysisResults from "@/components/AnalysisResults";
 import { toast } from "sonner";
 
@@ -16,22 +15,25 @@ interface AnalysisResult {
 const AnalysisFlow = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [myTags, setMyTags] = useState<string[]>([]);
-  const [competitorTags, setCompetitorTags] = useState<string[]>([]);
+  const [mainProfile, setMainProfile] = useState("");
+  const [competitor1, setCompetitor1] = useState("");
+  const [competitor2, setCompetitor2] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
+  const sanitize = (v: string) => v.replace(/@/g, "").trim();
+
   const handleNext = () => {
-    if (myTags.length === 0) {
-      toast.error("Por favor, adicione seu nome de usuário do Instagram.");
+    if (!sanitize(mainProfile)) {
+      toast.error("Por favor, informe o perfil principal.");
       return;
     }
     setStep(2);
   };
 
   const handleSubmit = async () => {
-    if (competitorTags.length < 2) {
-      toast.error("Por favor, adicione dois perfis de concorrentes.");
+    if (!sanitize(competitor1) || !sanitize(competitor2)) {
+      toast.error("Por favor, preencha os dois perfis concorrentes.");
       return;
     }
 
@@ -44,9 +46,9 @@ const AnalysisFlow = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            meu_instagram: `@${myTags[0]}`,
-            concorrente_1: `@${competitorTags[0]}`,
-            concorrente_2: `@${competitorTags[1]}`,
+            meu_instagram: `@${sanitize(mainProfile)}`,
+            concorrente_1: `@${sanitize(competitor1)}`,
+            concorrente_2: `@${sanitize(competitor2)}`,
           }),
         }
       );
@@ -69,8 +71,9 @@ const AnalysisFlow = () => {
 
   const handleReset = () => {
     setStep(1);
-    setMyTags([]);
-    setCompetitorTags([]);
+    setMainProfile("");
+    setCompetitor1("");
+    setCompetitor2("");
     setResult(null);
   };
 
@@ -110,19 +113,21 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Informe seu perfil
+                  Defina o perfil principal
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite o nome de usuário da sua conta<br />
-                  (ex: nome_da_marca)
+                  Digite o @ do Instagram que você deseja monitorar.
                 </p>
               </div>
-              <TagInput
-                tags={myTags}
-                onTagsChange={setMyTags}
-                placeholder="nomedaconta"
-                maxTags={1}
-              />
+              <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                <span className="text-muted-foreground text-sm">@</span>
+                <input
+                  value={mainProfile}
+                  onChange={(e) => setMainProfile(e.target.value)}
+                  placeholder="perfil_principal"
+                  className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                />
+              </div>
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => navigate("/")}>
                   <ArrowLeft className="w-4 h-4" />
@@ -140,18 +145,32 @@ const AnalysisFlow = () => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="font-display text-2xl font-bold text-foreground">
-                  Informe dois concorrentes
+                  Defina dois concorrentes
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Escolha dois perfis do seu nicho que você deseja monitorar nesta análise
+                  Insira os @ de dois perfis para análise comparativa de métricas.
                 </p>
               </div>
-              <TagInput
-                tags={competitorTags}
-                onTagsChange={setCompetitorTags}
-                placeholder="concorrente"
-                maxTags={2}
-              />
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                  <span className="text-muted-foreground text-sm">@</span>
+                  <input
+                    value={competitor1}
+                    onChange={(e) => setCompetitor1(e.target.value)}
+                    placeholder="perfil_concorrente_1"
+                    className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                  />
+                </div>
+                <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
+                  <span className="text-muted-foreground text-sm">@</span>
+                  <input
+                    value={competitor2}
+                    onChange={(e) => setCompetitor2(e.target.value)}
+                    placeholder="perfil_concorrente_2"
+                    className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
+                  />
+                </div>
+              </div>
               <div className="flex gap-3">
                 <Button variant="accent-outline" size="lg" className="flex-1" onClick={() => setStep(1)}>
                   <ArrowLeft className="w-4 h-4" />
