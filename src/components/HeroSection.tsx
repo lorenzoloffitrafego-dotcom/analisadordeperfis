@@ -4,53 +4,20 @@ import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
   const navigate = useNavigate();
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center aurora-bg overflow-hidden">
-      {/* Floating orbs for depth */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full opacity-30 animate-float"
-          style={{
-            background: "radial-gradient(circle, hsl(210 100% 90% / 0.5) 0%, transparent 70%)",
-            top: "10%",
-            left: "15%",
-          }}
-        />
-        <div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-25 animate-float"
-          style={{
-            background: "radial-gradient(circle, hsl(260 80% 92% / 0.5) 0%, transparent 70%)",
-            top: "20%",
-            right: "10%",
-            animationDelay: "2s",
-          }}
-        />
-        <div
-          className="absolute w-[300px] h-[300px] rounded-full opacity-20 animate-float"
-          style={{
-            background: "radial-gradient(circle, hsl(190 70% 88% / 0.5) 0%, transparent 70%)",
-            bottom: "15%",
-            left: "40%",
-            animationDelay: "4s",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-background">
+      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center pt-20">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 glass-surface rounded-full px-4 py-1.5 mb-8 tactile-shadow">
+        <div className="inline-flex items-center gap-2 rounded-full px-5 py-2 mb-8 border border-accent/30 bg-accent/5">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse-soft" />
-          <span className="text-sm font-medium text-muted-foreground">Análise inteligente de Instagram</span>
+          <span className="text-sm font-medium text-accent">Insights em 60 segundos</span>
         </div>
 
         {/* Headline */}
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-6">
-          Compare seu perfil com concorrentes e receba insights em{" "}
-          <span className="relative inline-block">
-            60 segundos
-            <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 200 8" fill="none">
-              <path d="M2 6C50 2 150 2 198 6" stroke="hsl(230 80% 65%)" strokeWidth="3" strokeLinecap="round" />
-            </svg>
-          </span>
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.1] mb-2">
+          Análise Inteligente de
+        </h1>
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 text-accent">
+          Instagram
         </h1>
 
         {/* Subtitle */}
@@ -59,12 +26,13 @@ const HeroSection = () => {
         </p>
 
         {/* CTA */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button onClick={() => navigate("/analisar")} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-medium text-base tactile-shadow hover:tactile-shadow-pressed active:scale-[0.98] transition-all duration-150 cursor-pointer">
-            Analisar Perfis
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
+        <button
+          onClick={() => navigate("/analisar")}
+          className="inline-flex items-center gap-2 bg-[hsl(0,75%,55%)] hover:bg-[hsl(0,75%,48%)] text-white px-8 py-3.5 rounded-full font-medium text-base shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-150 cursor-pointer"
+        >
+          Iniciar
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
     </section>
   );
