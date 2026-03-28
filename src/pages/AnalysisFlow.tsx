@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnalysisResults from "@/components/AnalysisResults";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AnalysisResult {
   meu_perfil: Record<string, any>;
