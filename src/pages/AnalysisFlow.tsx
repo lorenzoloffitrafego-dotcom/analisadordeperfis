@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnalysisResults from "@/components/AnalysisResults";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AnalysisResult {
   meu_perfil: Record<string, any>;
@@ -61,6 +62,13 @@ const AnalysisFlow = () => {
       }
 
       setResult(output);
+
+      // Increment analysis counter
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.rpc('increment_analises' as any, { user_id_input: user.id });
+      }
+
       toast.success("Análise concluída!");
     } catch {
       toast.error("Erro ao analisar os perfis. Tente novamente.");
