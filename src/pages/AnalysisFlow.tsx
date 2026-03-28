@@ -62,6 +62,13 @@ const AnalysisFlow = () => {
       }
 
       setResult(output);
+
+      // Increment analysis counter
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.rpc('increment_analises' as any, { user_id_input: user.id });
+      }
+
       toast.success("Análise concluída!");
     } catch {
       toast.error("Erro ao analisar os perfis. Tente novamente.");
