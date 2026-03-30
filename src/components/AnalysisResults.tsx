@@ -138,8 +138,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                   <div className="flex items-center gap-3 mb-4">
                     <img
                       src={`https://images.weserv.nl/?url=${encodeURIComponent(p?.foto || "")}`}
-                      className="w-11 h-11 rounded-full object-cover ring-2"
-                      style={{ ringColor: isMain ? th.accentBlue : th.cardBorder }}
+                      className={`w-11 h-11 rounded-full object-cover ring-2 ${isMain ? "ring-[hsl(230,80%,65%)]" : "ring-transparent"}`}
                       onError={(e) => { e.currentTarget.style.display = "none"; }}
                     />
                     <div>
