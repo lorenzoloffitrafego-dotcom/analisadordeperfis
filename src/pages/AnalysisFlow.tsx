@@ -66,7 +66,7 @@ const AnalysisFlow = () => {
       // Increment analysis counter
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.rpc('increment_analises' as any, { user_id_input: user.id });
+        await (supabase.rpc as any)('increment_analises', { user_id_input: user.id });
       }
 
       toast.success("Análise concluída!");
