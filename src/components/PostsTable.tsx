@@ -24,14 +24,8 @@ interface PostsTableProps {
 }
 
 function formatNum(n: number): string {
-  if (n >= 1_000_000) {
-    const v = n / 1_000_000;
-    return v % 1 === 0 ? `${v}M` : `${v.toFixed(1)}M`;
-  }
-  if (n >= 1_000) {
-    const v = n / 1_000;
-    return v % 1 === 0 ? `${v}K` : `${v.toFixed(1)}K`;
-  }
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
   return String(n);
 }
 
@@ -41,10 +35,10 @@ function formatDate(d: string): string {
   return `${day}/${m}/${y}`;
 }
 
-const tipoBadge: Record<string, { bg: string; text: string; glow: string }> = {
-  Reel: { bg: "linear-gradient(135deg, rgba(139,92,246,0.25), rgba(139,92,246,0.1))", text: "#A78BFA", glow: "0 0 12px rgba(139,92,246,0.3)" },
-  Imagem: { bg: "linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.1))", text: "#60A5FA", glow: "0 0 12px rgba(59,130,246,0.3)" },
-  Carrossel: { bg: "linear-gradient(135deg, rgba(249,115,22,0.25), rgba(249,115,22,0.1))", text: "#FB923C", glow: "0 0 12px rgba(249,115,22,0.3)" },
+const tipoBadge: Record<string, { bg: string; color: string }> = {
+  Reel: { bg: "hsl(270,70%,60%)", color: "#fff" },
+  Imagem: { bg: "hsl(210,80%,55%)", color: "#fff" },
+  Carrossel: { bg: "hsl(25,90%,55%)", color: "#fff" },
 };
 
 function getPosts(perfil: Record<string, any>, accountKey?: string): PostData[] {
@@ -55,9 +49,7 @@ function getPosts(perfil: Record<string, any>, accountKey?: string): PostData[] 
       try {
         const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
         return { ...parsed, _account: accountKey };
-      } catch {
-        return null;
-      }
+      } catch { return null; }
     })
     .filter(Boolean) as PostData[];
 }
@@ -69,19 +61,13 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   const theme = useResultsTheme();
   const th = t(theme);
 
-  const openInstagramPost = (url?: string) => {
-    if (!url) return;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
   const [filter, setFilter] = useState("geral");
   const [sortKey, setSortKey] = useState<SortKey>("likes");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   let posts: PostData[] = [];
   if (filter === "geral") {
-    profileNames.forEach((name) => {
-      posts.push(...getPosts(profiles[name], name));
-    });
+    profileNames.forEach((name) => posts.push(...getPosts(profiles[name], name)));
   } else {
     posts = getPosts(profiles[filter], filter);
   }
@@ -105,52 +91,37 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
     if (sortKey === key) {
       if (sortDir === "desc") setSortDir("asc");
       else { setSortKey(null); setSortDir("desc"); }
-    } else {
-      setSortKey(key);
-      setSortDir("desc");
-    }
+    } else { setSortKey(key); setSortDir("desc"); }
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
     if (sortKey !== col) return <ArrowUpDown className="w-3 h-3 ml-1 opacity-30" />;
     return sortDir === "desc"
-      ? <ArrowDown className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />
-      : <ArrowUp className="w-3 h-3 ml-1 text-[hsl(230,80%,70%)]" />;
+      ? <ArrowDown className="w-3 h-3 ml-1" style={{ color: th.accentBlue }} />
+      : <ArrowUp className="w-3 h-3 ml-1" style={{ color: th.accentBlue }} />;
   };
 
-  const thBase = `py-3 px-4 text-[10px] font-semibold uppercase tracking-[0.1em]`;
-  const thSortable = `${thBase} text-center cursor-pointer select-none transition-colors duration-200`;
-
   return (
-    <div className="mt-10">
-      <div
-        className="rounded-2xl overflow-hidden border backdrop-blur-sm transition-colors duration-500"
-        style={{ borderColor: th.cardBorder, background: th.cardBg, boxShadow: th.cardShadow }}
-      >
-        <div className="flex items-center justify-between px-5 pt-5 pb-2">
+    <div className="mt-4">
+      <div className="rounded-2xl overflow-hidden transition-colors duration-500" style={{ background: th.cardBg, border: `1px solid ${th.cardBorder}`, boxShadow: th.cardShadow }}>
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-[hsl(230,80%,70%)]" />
-            <h2 className="font-display text-lg font-bold">Ranking de Posts</h2>
+            <FileText className="w-4 h-4" style={{ color: th.accentBlue }} />
+            <h2 className="font-display font-bold text-sm">Ranking de Posts</h2>
             <span className="text-[10px] font-medium ml-1" style={{ color: th.mutedText }}>
-              {sorted.length} {sorted.length === 1 ? "post" : "posts"}
+              {sorted.length} posts
             </span>
           </div>
           <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[200px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
+            <SelectTrigger className="w-[180px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="geral" className="text-xs">
-                <span className="font-medium">Geral</span>
-              </SelectItem>
+              <SelectItem value="geral" className="text-xs"><span className="font-medium">Geral</span></SelectItem>
               {profileNames.map((name) => (
                 <SelectItem key={name} value={name} className="text-xs">
                   <div className="flex items-center gap-2">
-                    <img
-                      src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`}
-                      className="w-5 h-5 rounded-full object-cover"
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
+                    <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                     {getLabel(name)}
                   </div>
                 </SelectItem>
@@ -168,21 +139,17 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
             <table className="w-full border-collapse">
               <thead>
                 <tr style={{ borderBottom: `1px solid ${th.borderColor}`, background: th.tableHeaderBg }}>
-                  <th className={`${thBase} text-left`} style={{ color: th.thColor }}>Conta</th>
-                  <th className={`${thBase} text-left min-w-[320px]`} style={{ color: th.thColor }}>Post</th>
-                  <th className={thSortable} style={{ color: th.thColor }} onClick={() => handleSort("likes")}>
-                    <span className="inline-flex items-center justify-center">Likes<SortIcon col="likes" /></span>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-left" style={{ color: th.thColor }}>Conta</th>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-left min-w-[280px]" style={{ color: th.thColor }}>Post</th>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-center cursor-pointer select-none" style={{ color: th.thColor }} onClick={() => handleSort("likes")}>
+                    <span className="inline-flex items-center">Likes<SortIcon col="likes" /></span>
                   </th>
-                  <th className={thSortable} style={{ color: th.thColor }} onClick={() => handleSort("comentarios")}>
-                    <span className="inline-flex items-center justify-center">Comentários<SortIcon col="comentarios" /></span>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-center cursor-pointer select-none" style={{ color: th.thColor }} onClick={() => handleSort("comentarios")}>
+                    <span className="inline-flex items-center">Comentários<SortIcon col="comentarios" /></span>
                   </th>
-                  <th className={`${thBase} text-center`} style={{ color: th.thColor }}>Tipo</th>
-                  <th
-                    className={`${thBase} text-center cursor-pointer select-none transition-colors duration-200`}
-                    style={{ color: th.thColor }}
-                    onClick={() => handleSort("data_postagem")}
-                  >
-                    <span className="inline-flex items-center justify-center">Data<SortIcon col="data_postagem" /></span>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-center" style={{ color: th.thColor }}>Tipo</th>
+                  <th className="py-3 px-4 text-[10px] font-semibold uppercase tracking-wider text-center cursor-pointer select-none" style={{ color: th.thColor }} onClick={() => handleSort("data_postagem")}>
+                    <span className="inline-flex items-center">Data<SortIcon col="data_postagem" /></span>
                   </th>
                 </tr>
               </thead>
@@ -195,35 +162,25 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                   return (
                     <tr
                       key={idx}
-                      className="last:border-b-0 transition-all duration-200"
+                      className="transition-colors duration-150"
                       style={{ borderBottom: `1px solid ${th.borderColorLight}` }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = th.innerBgHover; e.currentTarget.style.boxShadow = "0 2px 8px -2px hsl(230 80% 65% / 0.08)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ""; e.currentTarget.style.boxShadow = "none"; }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = th.innerBgHover; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = ""; }}
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           {accountFoto && (
-                            <img
-                              src={`https://images.weserv.nl/?url=${encodeURIComponent(accountFoto)}`}
-                              className="w-5 h-5 rounded-full object-cover"
-                              onError={(e) => { e.currentTarget.style.display = "none"; }}
-                            />
+                            <img src={`https://images.weserv.nl/?url=${encodeURIComponent(accountFoto)}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                           )}
                           <span className="text-xs font-medium" style={{ color: th.bodyText }}>{accountLabel}</span>
                         </div>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-start gap-3">
-                          <button
-                            type="button"
-                            onClick={() => openInstagramPost(post.url_post)}
-                            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
-                            aria-label={`Abrir post ${idx + 1} no Instagram em nova aba`}
-                          >
+                          <button type="button" onClick={() => post.url_post && window.open(post.url_post, "_blank", "noopener,noreferrer")} className="shrink-0 rounded-lg overflow-hidden">
                             <img
                               src={`https://images.weserv.nl/?url=${encodeURIComponent(post.thumbnail || "")}`}
-                              alt={`Post ${idx + 1}`}
-                              className="w-[72px] h-[72px] rounded-lg object-cover border border-transparent hover:border-[hsl(230,80%,65%)]/30 transition-colors duration-200 cursor-pointer"
+                              className="w-16 h-16 rounded-lg object-cover hover:scale-105 transition-transform duration-200"
                               onError={(e) => { e.currentTarget.style.display = "none"; }}
                             />
                           </button>
@@ -232,25 +189,15 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                           </span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">
-                        {formatNum(post.likes)}
-                      </td>
-                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">
-                        {formatNum(post.comentarios)}
-                      </td>
+                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">{formatNum(post.likes)}</td>
+                      <td className="py-3 px-4 text-center font-display text-sm font-semibold">{formatNum(post.comentarios)}</td>
                       <td className="py-3 px-4 text-center">
-                        <span
-                          className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold border border-transparent"
-                          style={{
-                            background: badge?.bg || "rgba(100,100,100,0.2)",
-                            color: badge?.text || "#aaa",
-                            boxShadow: badge?.glow || "none",
-                          }}
-                        >
+                        <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold text-white"
+                          style={{ background: badge?.bg || "hsl(0,0%,40%)" }}>
                           {post.tipo}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-center text-xs font-normal" style={{ color: th.labelText }}>
+                      <td className="py-3 px-4 text-center text-xs" style={{ color: th.labelText }}>
                         {formatDate(post.data_postagem)}
                       </td>
                     </tr>
