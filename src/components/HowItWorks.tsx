@@ -1,84 +1,75 @@
-import { Search, Settings, BarChart3 } from "lucide-react";
+import { Check, Loader2, Sparkles } from "lucide-react";
 
 const steps = [
   {
-    icon: <Search className="w-8 h-8 text-[hsl(160,70%,42%)]" />,
+    n: "01",
     title: "Insira os perfis",
-    description: "Adicione seu perfil e os perfis dos concorrentes que deseja comparar.",
-    mockup: (
-      <div className="bg-secondary/60 rounded-xl px-4 py-2.5 flex items-center gap-2 w-48 mx-auto md:mx-0">
-        <Search className="w-3.5 h-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">@perfil</span>
+    desc: "Adicione até 3 handles do Instagram que deseja comparar — o seu e os dos concorrentes.",
+    visual: (
+      <div className="rounded-lg bg-background border border-border px-3.5 py-2.5 flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">@</span>
+        <span className="text-sm text-foreground font-medium">perfil</span>
+        <span className="w-px h-4 bg-foreground animate-pulse ml-0.5" />
       </div>
     ),
   },
   {
-    icon: <Settings className="w-8 h-8 text-[hsl(160,70%,42%)]" />,
+    n: "02",
     title: "Análise automática",
-    description: "Nosso sistema coleta e compara métricas de engajamento, crescimento e conteúdo.",
-    mockup: (
-      <div className="flex gap-1.5 justify-center md:justify-start">
-        {[40, 65, 50, 80].map((v, i) => (
-          <div key={i} className="w-6 rounded bg-[hsl(160,70%,42%)]/70" style={{ height: `${v * 0.5}px` }} />
-        ))}
+    desc: "Nosso sistema coleta e compara métricas de engajamento, crescimento e conteúdo em tempo real.",
+    visual: (
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-500" />
+          Processando perfis…
+        </div>
+        <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+          <div className="h-full w-2/3 bg-brand-gradient rounded-full" />
+        </div>
       </div>
     ),
   },
   {
-    icon: <BarChart3 className="w-8 h-8 text-accent" />,
+    n: "03",
     title: "Receba insights",
-    description: "Obtenha dados claros e acionáveis para melhorar sua estratégia.",
-    mockup: (
-      <div className="flex gap-1 justify-center md:justify-start">
-        {[25, 55, 45, 70, 60].map((v, i) => (
-          <div key={i} className="w-5 rounded-sm bg-accent/60" style={{ height: `${v * 0.45}px` }} />
-        ))}
+    desc: "Obtenha dados claros e acionáveis. Descubra o que funciona e melhore sua estratégia.",
+    visual: (
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 font-medium">
+          <Check className="w-3 h-3" /> Insight gerado
+        </span>
+        <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100 font-medium ml-1">
+          <Sparkles className="w-3 h-3" /> +3 oportunidades
+        </span>
       </div>
     ),
   },
 ];
 
-const HowItWorks = () => {
-  return (
-    <section className="px-6 py-24 bg-secondary/20">
-      <div className="max-w-5xl mx-auto">
-        <p className="text-center text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-3">
-          Como funciona
-        </p>
-        <h2 className="text-center font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-16">
-          Simples. Rápido. Fácil.
-        </h2>
+const HowItWorks = () => (
+  <section className="px-6 py-24 bg-secondary/30">
+    <div className="max-w-6xl mx-auto">
+      <p className="text-center text-xs font-semibold tracking-[0.22em] uppercase text-rose-500 mb-4">
+        Como funciona
+      </p>
+      <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-3">
+        Simples. Rápido.{" "}
+        <span className="font-display italic font-medium text-brand-gradient">Fácil.</span>
+      </h2>
+      <p className="text-center text-muted-foreground mb-16">Três passos para transformar perfis em estratégia.</p>
 
-        <div className="space-y-10">
-          {steps.map((s, i) => {
-            const isEven = i % 2 === 1;
-            return (
-              <div
-                key={i}
-                className={`flex flex-col md:flex-row items-center gap-8 ${isEven ? "md:flex-row-reverse" : ""}`}
-              >
-                {/* Text side */}
-                <div className={`flex-1 ${isEven ? "md:text-right" : "md:text-left"} text-center`}>
-                  <h3 className="font-display font-bold text-xl text-foreground mb-2">{s.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto md:mx-0" style={isEven ? { marginLeft: "auto" } : {}}>
-                    {s.description}
-                  </p>
-                </div>
-
-                {/* Card side */}
-                <div className="flex-1 flex justify-center">
-                  <div className="w-56 h-36 rounded-2xl bg-card border border-border shadow-sm flex flex-col items-center justify-center gap-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                    {s.icon}
-                    {s.mockup}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {steps.map((s) => (
+          <div key={s.n} className="rounded-2xl bg-card border border-border shadow-card-soft p-7 hover:-translate-y-0.5 transition">
+            <div className="font-display italic text-5xl font-medium text-brand-gradient mb-4">{s.n}</div>
+            <h3 className="font-bold text-lg text-foreground mb-2">{s.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{s.desc}</p>
+            {s.visual}
+          </div>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default HowItWorks;
