@@ -1,31 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 25% 10%;
+    --background: 40 14% 97%;
+    --foreground: 240 14% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 240 14% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 240 14% 8%;
 
-    --primary: 220 25% 10%;
-    --primary-foreground: 220 20% 97%;
+    --primary: 240 14% 8%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 93%;
-    --secondary-foreground: 220 25% 10%;
+    --secondary: 40 10% 94%;
+    --secondary-foreground: 240 14% 8%;
 
-    --muted: 220 15% 93%;
-    --muted-foreground: 220 10% 50%;
+    --muted: 40 8% 95%;
+    --muted-foreground: 240 5% 45%;
 
-    --accent: 230 80% 65%;
+    --accent: 345 90% 60%;
     --accent-foreground: 0 0% 100%;
+
+    --brand-rose: 350 89% 60%;
+    --brand-purple: 271 91% 65%;
+    --gradient-brand: linear-gradient(135deg, hsl(350 89% 60%) 0%, hsl(271 91% 65%) 100%);
+    --shadow-card: 0 1px 3px hsl(240 14% 8% / 0.06), 0 4px 16px hsl(240 14% 8% / 0.04);
+    --shadow-glow: 0 20px 60px -20px hsl(345 90% 60% / 0.35);
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
