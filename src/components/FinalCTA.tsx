@@ -10,8 +10,8 @@ const FinalCTA = () => {
           Pronto para crescer{" "}
           <span className="text-brand-gradient">no Instagram?</span>
         </h2>
-        <p className="text-muted-foreground mb-10">
-          Lorem ipsum dolor sit amet, comece sua primeira análise agora mesmo.
+        <p className="text-muted-foreground mb-10 text-slate-800">
+          Comece a analisar seus dados e monte estratégias.
         </p>
         <button
           onClick={() => navigate("/analisar")}
