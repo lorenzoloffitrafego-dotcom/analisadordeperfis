@@ -26,7 +26,7 @@ const HeroSection = () => {
           do <span className="text-brand-gradient">Instagram</span>
         </h1>
 
-        <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-slate-800">
           Analise perfis do Instagram, compare estatísticas-chave e obtenha
           insights automatizados para melhorar sua estratégia de conteúdo.
         </p>

@@ -29,7 +29,7 @@ const Index = () => {
               Recursos
             </button>
             <button onClick={() => scrollTo("how")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Como usar
+              Como funciona
             </button>
           </div>
 
