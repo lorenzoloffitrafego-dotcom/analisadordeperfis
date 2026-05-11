@@ -1,10 +1,8 @@
 import { LogOut, UserCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
-import SocialProof from "@/components/SocialProof";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
-import Testimonials from "@/components/Testimonials";
 import FinalCTA from "@/components/FinalCTA";
 import SiteFooter from "@/components/SiteFooter";
 import Logo from "@/components/Logo";
@@ -22,9 +20,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-border/60">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Logo />
 
           <div className="hidden md:flex items-center gap-8">
@@ -32,10 +29,7 @@ const Index = () => {
               Recursos
             </button>
             <button onClick={() => scrollTo("how")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Como funciona
-            </button>
-            <button onClick={() => scrollTo("pricing")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Preços
+              Como usar
             </button>
           </div>
 
@@ -59,7 +53,7 @@ const Index = () => {
               ) : (
                 <button
                   onClick={() => navigate("/auth")}
-                  className="inline-flex items-center gap-1 bg-brand-gradient text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-brand-glow hover:opacity-95 active:scale-[0.98] transition"
+                  className="inline-flex items-center gap-1 bg-brand-gradient text-primary-foreground px-5 py-2.5 rounded-full text-sm font-semibold shadow-brand-glow hover:opacity-95 active:scale-[0.98] transition"
                 >
                   Começar grátis
                 </button>
@@ -69,14 +63,11 @@ const Index = () => {
         </div>
       </nav>
 
-      <div id="top" />
       <HeroSection />
-      <SocialProof />
       <div id="features" />
       <FeaturesSection />
       <div id="how" />
       <HowItWorks />
-      <Testimonials />
       <FinalCTA />
       <SiteFooter />
     </div>

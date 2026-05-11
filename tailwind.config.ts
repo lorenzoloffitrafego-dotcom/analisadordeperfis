@@ -13,8 +13,8 @@ export default {
       },
     },
     fontFamily: {
-      sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
-      display: ["Fraunces", "Plus Jakarta Sans", "serif"],
+      sans: ["Inter", "system-ui", "sans-serif"],
+      display: ["Inter", "system-ui", "sans-serif"],
     },
     extend: {
       colors: {
