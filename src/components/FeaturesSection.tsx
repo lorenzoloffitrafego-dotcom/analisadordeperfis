@@ -13,7 +13,7 @@ const FeaturesSection = () => {
 
   return (
     <section className="px-6 py-24 bg-secondary/40">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto text-lg">
         <h2 className="text-center text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.15] mb-12">
           Pronto para transformar a sua
           <br />
