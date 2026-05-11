@@ -41,7 +41,7 @@ const FeaturesSection = () => {
             </div>
 
             {/* Chart area: y-axis + bars */}
-            <div className="flex gap-3 h-56">
+            <div className="flex gap-3 h-80">
               <div className="flex flex-col justify-between text-[11px] text-muted-foreground py-1">
                 {yTicks.map((n) => <span key={n}>{n}</span>)}
               </div>
