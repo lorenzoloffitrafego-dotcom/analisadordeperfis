@@ -41,7 +41,7 @@ const FeaturesSection = () => {
             </div>
 
             {/* Chart area: y-axis + bars */}
-            <div className="flex gap-3 h-56">
+            <div className="flex gap-3 h-80">
               <div className="flex flex-col justify-between text-[11px] text-muted-foreground py-1">
                 {yTicks.map((n) => <span key={n}>{n}</span>)}
               </div>
@@ -108,21 +108,20 @@ const FeaturesSection = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-3">
                 <div className="relative shrink-0">
                   <div
-                    className="w-[88px] h-[88px] rounded-full"
+                    className="w-[92px] h-[92px] rounded-full"
                     style={{
                       background:
                         "conic-gradient(hsl(262 70% 55%) 0% 60%, hsl(255 65% 45%) 60% 85%, hsl(320 90% 65%) 85% 100%)",
                     }}
                   />
-                  <div className="absolute inset-[14px] rounded-full bg-card" />
                   <div className="absolute -right-2 top-1 bg-card border border-border rounded-full px-2 py-0.5 text-[9px] font-semibold text-foreground shadow-card-soft whitespace-nowrap">
                     <span className="text-primary">●</span> 60% Reels
                   </div>
                 </div>
-                <ul className="space-y-1 text-[11px]">
+                <ul className="space-y-1.5 text-[11px] pr-1">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(262 70% 55%)" }} />
                     <span className="text-muted-foreground">60% Reels</span>
