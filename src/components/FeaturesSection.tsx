@@ -22,7 +22,7 @@ const FeaturesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* ── Calendário de Postagem ── */}
-          <div className="rounded-3xl bg-card border border-border p-7 shadow-tactile hover:-translate-y-1 transition-all duration-300">
+          <div className="rounded-3xl bg-card border border-border p-7 shadow-card-soft hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-start justify-between mb-6">
               <div className="flex gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -59,7 +59,7 @@ const FeaturesSection = () => {
           {/* ── Right column: 2 stacked cards ── */}
           <div className="flex flex-col gap-6">
             {/* Benchmark */}
-            <div className="rounded-3xl bg-card border border-border p-7 shadow-tactile hover:-translate-y-1 transition-all duration-300">
+            <div className="rounded-3xl bg-card border border-border p-7 shadow-card-soft hover:-translate-y-1 transition-all duration-300">
               <div className="flex gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-primary" />
@@ -87,7 +87,7 @@ const FeaturesSection = () => {
             </div>
 
             {/* Distribuição */}
-            <div className="rounded-3xl bg-card border border-border p-7 shadow-tactile hover:-translate-y-1 transition-all duration-300">
+            <div className="rounded-3xl bg-card border border-border p-7 shadow-card-soft hover:-translate-y-1 transition-all duration-300">
               <div className="flex gap-3 mb-5">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                   <PieChartIcon className="w-5 h-5 text-primary" />
