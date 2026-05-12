@@ -120,11 +120,11 @@ const AnalysisFlow = () => {
           {step === 1 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <h2 className="font-display text-2xl font-bold text-foreground">
+                <h2 className="text-2xl font-medium text-foreground">
                   Defina o perfil principal
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Digite o @ do Instagram que você deseja monitorar.
+                  Insira o @ do seu Instagram principal que você deseja monitorar.
                 </p>
               </div>
               <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
