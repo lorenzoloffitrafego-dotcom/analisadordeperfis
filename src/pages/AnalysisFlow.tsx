@@ -152,7 +152,7 @@ const AnalysisFlow = () => {
           {step === 2 && (
             <div className="space-y-6">
               <div className="space-y-2">
-                <h2 className="font-display text-2xl font-bold text-foreground">
+                <h2 className="text-2xl font-medium text-foreground">
                   Defina dois concorrentes
                 </h2>
                 <p className="text-sm text-muted-foreground">
