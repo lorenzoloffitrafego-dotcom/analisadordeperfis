@@ -67,11 +67,32 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const selectedAvgProfile = result[avgPostAccount];
 
+  const ProfileAvatar = ({ name, size = 20 }: { name: string; size?: number }) => {
+    const foto = getFoto(name);
+    const fallback = PROFILE_DOTS[name];
+    if (!foto) {
+      return <span className="rounded-full shrink-0" style={{ width: size, height: size, background: fallback }} />;
+    }
+    return (
+      <img
+        src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
+        className="rounded-full object-cover shrink-0"
+        style={{ width: size, height: size, border: `1.5px solid ${fallback}` }}
+        onError={(e) => {
+          const el = e.currentTarget;
+          el.style.display = "none";
+          const sib = el.nextElementSibling as HTMLElement | null;
+          if (sib) sib.style.display = "inline-block";
+        }}
+      />
+    );
+  };
+
   const renderProfileOptions = () =>
     profileKeys.map((name) => (
       <SelectItem key={name} value={name} className="text-xs">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full" style={{ background: PROFILE_DOTS[name] }} />
+          <ProfileAvatar name={name} size={20} />
           {getLabel(name)}
         </div>
       </SelectItem>
@@ -134,7 +155,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                       <tr key={key} style={{ borderTop: "1px solid hsl(220,15%,94%)" }}>
                         <td className="py-5 px-6">
                           <div className="flex items-center gap-3">
-                            <span className="w-3 h-3 rounded-full shrink-0" style={{ background: PROFILE_DOTS[key] }} />
+                            <ProfileAvatar name={key} size={28} />
                             <span className="text-sm font-medium" style={{ color: "hsl(225,30%,20%)" }}>{getLabel(key)}</span>
                           </div>
                         </td>
