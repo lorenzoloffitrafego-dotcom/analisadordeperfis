@@ -106,30 +106,26 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
   return (
     <div className="mt-4">
       <div className="rounded-2xl overflow-hidden transition-colors duration-500" style={{ background: th.cardBg, border: `1px solid ${th.cardBorder}`, boxShadow: th.cardShadow }}>
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4" style={{ color: th.accentBlue }} />
-            <h2 className="font-display font-bold text-sm">Ranking de Posts</h2>
-            <span className="text-[10px] font-medium ml-1" style={{ color: th.mutedText }}>
-              {sorted.length} posts
-            </span>
+        <div className="relative flex items-center justify-center px-5 pt-5 pb-3">
+          <h2 className="font-display font-bold text-base" style={{ color: "hsl(225,30%,15%)" }}>Ranking de Posts</h2>
+          <div className="absolute right-5">
+            <Select value={filter} onValueChange={setFilter}>
+              <SelectTrigger className="w-[150px] h-9 rounded-full text-xs bg-white" style={{ borderColor: "hsl(220,15%,90%)" }}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="geral" className="text-xs"><span className="font-medium">Geral</span></SelectItem>
+                {profileNames.map((name) => (
+                  <SelectItem key={name} value={name} className="text-xs">
+                    <div className="flex items-center gap-2">
+                      <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                      {getLabel(name)}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-[180px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="geral" className="text-xs"><span className="font-medium">Geral</span></SelectItem>
-              {profileNames.map((name) => (
-                <SelectItem key={name} value={name} className="text-xs">
-                  <div className="flex items-center gap-2">
-                    <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                    {getLabel(name)}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
 
         {posts.length === 0 ? (
