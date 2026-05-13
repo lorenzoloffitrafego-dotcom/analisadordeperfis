@@ -118,7 +118,15 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </button>
             <div className="flex items-center gap-2 text-sm" style={{ color: "hsl(220,15%,40%)" }}>
               <Calendar className="w-4 h-4" />
-              <span>Data da Análise (30D)</span>
+              <span>
+                {(() => {
+                  const fmt = (d: Date) => `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+                  const today = new Date();
+                  const past = new Date();
+                  past.setDate(today.getDate() - 30);
+                  return `${fmt(past)} – ${fmt(today)}`;
+                })()}
+              </span>
             </div>
           </div>
 
@@ -278,7 +286,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                       </span>
                     </div>
                     <p className="font-display text-4xl font-extrabold mb-3" style={{ color: "hsl(225,30%,15%)" }}>{formatComparacao(rawVal)}</p>
-                    <div className="w-full h-2 rounded-full" style={{ background: `${color}25` }}>
+                    <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: `${color}20` }}>
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(pct, 100)}%`, background: color }} />
                     </div>
                   </div>
