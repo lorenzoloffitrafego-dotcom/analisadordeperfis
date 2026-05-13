@@ -36,9 +36,11 @@ function formatDate(d: string): string {
 }
 
 const tipoBadge: Record<string, { bg: string; color: string }> = {
-  Reel: { bg: "hsl(270,70%,60%)", color: "#fff" },
-  Imagem: { bg: "hsl(210,80%,55%)", color: "#fff" },
-  Carrossel: { bg: "hsl(25,90%,55%)", color: "#fff" },
+  Reel: { bg: "hsl(258, 80%, 62%)", color: "#fff" },
+  Reels: { bg: "hsl(258, 80%, 62%)", color: "#fff" },
+  Imagem: { bg: "hsl(190, 80%, 55%)", color: "#fff" },
+  Imagens: { bg: "hsl(190, 80%, 55%)", color: "#fff" },
+  Carrossel: { bg: "hsl(5, 80%, 70%)", color: "#fff" },
 };
 
 function getPosts(perfil: Record<string, any>, accountKey?: string): PostData[] {
