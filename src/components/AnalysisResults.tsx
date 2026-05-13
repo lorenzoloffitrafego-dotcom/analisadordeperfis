@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ArrowLeft, RotateCcw, Users, Eye, Heart, MessageCircle,
-  CalendarDays, FileText, TrendingUp, BarChart3, PieChart as PieChartIcon,
-  ArrowUp, ArrowDown, ArrowUpDown, Sun, Moon, Calendar, Sparkles
+  Home, Eye, Heart, MessageCircle, Users, FileText,
+  PieChart as PieChartIcon, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,7 +11,7 @@ import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
-import { ResultsThemeContext, ResultsTheme, t } from "@/components/ResultsThemeContext";
+import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
@@ -33,17 +32,27 @@ function formatComparacao(raw: unknown): string {
   if (raw === null || raw === undefined) return "—";
   const num = typeof raw === "number" ? raw : parseFloat(String(raw));
   if (isNaN(num) || num === 0) return "—";
-  const pct = num * 100;
-  return `${pct.toFixed(1)}%`;
+  return `${(num * 100).toFixed(0)}%`;
 }
 
 const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
 
+// Dot colors matching the reference (teal, lavender, coral)
+const PROFILE_DOTS: Record<string, string> = {
+  meu_perfil: "hsl(170, 65%, 60%)",
+  perfil1: "hsl(250, 70%, 78%)",
+  perfil2: "hsl(0, 75%, 82%)",
+};
+
 const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profiles = profileKeys.map((k) => result[k]);
-  const [theme, setTheme] = useState<ResultsTheme>("dark");
+  const theme = "light" as const;
   const th = t(theme);
+
+  const PURPLE = "hsl(258, 80%, 62%)";
+  const CYAN = "hsl(190, 80%, 55%)";
+  const CORAL = "hsl(5, 80%, 70%)";
 
   const getLabel = (key: string): string => {
     if (key === "meu_perfil") return "Meu Perfil";
@@ -62,11 +71,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
     profileKeys.map((name) => (
       <SelectItem key={name} value={name} className="text-xs">
         <div className="flex items-center gap-2">
-          <img
-            src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`}
-            className="w-5 h-5 rounded-full object-cover"
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
-          />
+          <span className="w-2.5 h-2.5 rounded-full" style={{ background: PROFILE_DOTS[name] }} />
           {getLabel(name)}
         </div>
       </SelectItem>
@@ -75,126 +80,85 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const profilesRecord: Record<string, Record<string, any>> = {};
   profileKeys.forEach((k) => { profilesRecord[k] = result[k]; });
 
-  // Date range
-  const now = new Date();
-  const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-  const fmt = (d: Date) => d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
-
   return (
     <ResultsThemeContext.Provider value={theme}>
-      <div className="min-h-screen px-4 py-8 transition-colors duration-500" style={{ background: th.pageBg, color: th.pageText }}>
+      <div className="min-h-screen px-4 sm:px-8 py-6" style={{ background: "#f5f6fb", color: th.pageText }}>
         <div className="w-full max-w-6xl mx-auto">
 
-          {/* ── Header ── */}
-          <div className="flex items-start justify-between mb-8">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/")}
-              className="text-xs gap-1.5 opacity-60 hover:opacity-100"
-              style={{ color: th.pageText }}
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Início
-            </Button>
-
-            <div className="text-center">
-              <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 mb-3 text-[10px] font-semibold uppercase tracking-wider"
-                style={{ background: `${th.accentBlue}15`, color: th.accentBlue }}>
-                <Sparkles className="w-3 h-3" /> Análise Completa
-              </div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold mb-1">Resultado da Análise</h1>
-              <div className="flex items-center justify-center gap-1.5 text-xs" style={{ color: th.subtitle }}>
-                <Calendar className="w-3 h-3" />
-                <span>{fmt(threeMonthsAgo)} — {fmt(now)}</span>
-              </div>
-            </div>
-
+          {/* ── Top Bar ── */}
+          <div className="flex items-center justify-between mb-6">
             <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105"
-              style={{ background: th.innerBg, border: `1px solid ${th.cardBorder}` }}
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
+              style={{ color: PURPLE }}
             >
-              {theme === "dark" ? <Sun className="w-4 h-4 text-[hsl(45,95%,65%)]" /> : <Moon className="w-4 h-4 text-[hsl(230,60%,50%)]" />}
+              <Home className="w-4 h-4" />
+              <span>Início</span>
             </button>
+            <div className="flex items-center gap-2 text-sm" style={{ color: "hsl(220,15%,40%)" }}>
+              <Calendar className="w-4 h-4" />
+              <span>Data da Análise (30D)</span>
+            </div>
           </div>
 
-          {/* ── Profile Cards Row ── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {profileKeys.map((key, i) => {
-              const p = profiles[i];
-              const isMain = i === 0;
-              return (
-                <div
-                  key={key}
-                  className="rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5"
-                  style={{
-                    background: th.cardBg,
-                    border: `1px solid ${isMain ? th.accentBlue + "40" : th.cardBorder}`,
-                    boxShadow: isMain
-                      ? `${th.cardShadow}, 0 0 0 1px ${th.accentBlue}15`
-                      : th.cardShadow,
-                  }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <img
-                      src={`https://images.weserv.nl/?url=${encodeURIComponent(p?.foto || "")}`}
-                      className={`w-11 h-11 rounded-full object-cover ring-2 ${isMain ? "ring-[hsl(230,80%,65%)]" : "ring-transparent"}`}
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
-                    <div>
-                      <p className="font-display font-bold text-sm" style={{ color: isMain ? th.accentBlue : th.pageText }}>
-                        {getLabel(key)}
-                      </p>
-                      {isMain && (
-                        <span className="text-[9px] uppercase tracking-widest font-semibold" style={{ color: th.accentBlue + "90" }}>
-                          Seu perfil
-                        </span>
-                      )}
-                    </div>
-                  </div>
+          {/* ── Title ── */}
+          <div className="mb-6">
+            <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1" style={{ color: "hsl(225, 30%, 15%)" }}>
+              Dashboard Pronto!
+            </h1>
+            <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
+          </div>
 
-                  <div className="grid grid-cols-3 gap-2">
-                    {[
-                      { label: "Seguidores", value: p?.seguidores, icon: Users },
-                      { label: "Posts", value: p?.total_posts_3m, icon: FileText },
-                      { label: "Views", value: p?.total_views, icon: Eye },
-                    ].map(({ label, value, icon: Icon }) => (
-                      <div key={label} className="text-center p-2 rounded-lg" style={{ background: th.innerBg }}>
-                        <Icon className="w-3.5 h-3.5 mx-auto mb-1" style={{ color: th.mutedText }} />
-                        <p className="font-display text-sm font-bold">{fmtVal(value)}</p>
-                        <p className="text-[9px] uppercase tracking-wider" style={{ color: th.mutedText }}>{label}</p>
-                      </div>
+          {/* ── Perfis Table ── */}
+          <div className="rounded-2xl bg-white mb-6 overflow-hidden" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    {["Perfis", "Seguidores", "Quantidade de Posts", "Total de Visualizações", "Total de Curtidas", "Total de Comentários"].map((h, i) => (
+                      <th
+                        key={h}
+                        className={`py-5 px-6 text-xs font-semibold ${i === 0 ? "text-left" : "text-center"}`}
+                        style={{ color: "hsl(220,15%,35%)" }}
+                      >
+                        {h}
+                      </th>
                     ))}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    {[
-                      { label: "Likes", value: p?.total_likes, color: th.accentBlue },
-                      { label: "Comentários", value: p?.total_comentarios, color: th.accentYellow },
-                    ].map(({ label, value, color }) => (
-                      <div key={label} className="text-center p-2 rounded-lg" style={{ background: th.innerBg }}>
-                        <p className="font-display text-sm font-bold" style={{ color }}>{fmtVal(value)}</p>
-                        <p className="text-[9px] uppercase tracking-wider" style={{ color: th.mutedText }}>{label}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {profileKeys.map((key, i) => {
+                    const p = profiles[i];
+                    const isLast = i === profileKeys.length - 1;
+                    return (
+                      <tr key={key} style={{ borderTop: "1px solid hsl(220,15%,94%)" }}>
+                        <td className="py-5 px-6">
+                          <div className="flex items-center gap-3">
+                            <span className="w-3 h-3 rounded-full shrink-0" style={{ background: PROFILE_DOTS[key] }} />
+                            <span className="text-sm font-medium" style={{ color: "hsl(225,30%,20%)" }}>{getLabel(key)}</span>
+                          </div>
+                        </td>
+                        <td className="py-5 px-6 text-center font-display text-sm font-bold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(p?.seguidores)}</td>
+                        <td className="py-5 px-6 text-center font-display text-sm font-bold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(p?.total_posts_3m)}</td>
+                        <td className="py-5 px-6 text-center font-display text-sm font-bold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(p?.total_views)}</td>
+                        <td className="py-5 px-6 text-center font-display text-sm font-bold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(p?.total_likes)}</td>
+                        <td className="py-5 px-6 text-center font-display text-sm font-bold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(p?.total_comentarios)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* ── Desempenho Médio + Engajamento ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Desempenho Médio */}
-            <div className="rounded-2xl p-5 transition-colors duration-500" style={{ background: th.cardBg, border: `1px solid ${th.cardBorder}`, boxShadow: th.cardShadow }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" style={{ color: th.accentBlue }} />
-                  <h3 className="font-display font-bold text-sm">Desempenho Médio por Post</h3>
-                  <InfoTooltip text="Alcance médio do seu conteúdo: views, likes e comentários por post." />
-                </div>
+            <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="font-display font-bold text-base" style={{ color: "hsl(225,30%,15%)" }}>Desempenho Médio por Post</h3>
                 <Select value={avgPostAccount} onValueChange={setAvgPostAccount}>
-                  <SelectTrigger className="w-[160px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
+                  <SelectTrigger className="w-[150px] h-9 rounded-full text-xs bg-white" style={{ borderColor: "hsl(220,15%,90%)" }}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>{renderProfileOptions()}</SelectContent>
@@ -202,16 +166,14 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Views", value: selectedAvgProfile?.media_views_por_post, icon: Eye, color: th.accentGreen },
-                  { label: "Likes", value: selectedAvgProfile?.media_likes_por_post, icon: Heart, color: th.accentBlue },
-                  { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle, color: th.accentYellow },
-                ].map(({ label, value, icon: Icon, color }) => (
-                  <div key={label} className="flex flex-col items-center gap-2 p-4 rounded-xl" style={{ background: th.innerBg }}>
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: `${color}18` }}>
-                      <Icon className="w-4 h-4" style={{ color }} />
-                    </div>
-                    <span className="font-display text-xl font-bold" style={{ color }}>{fmtVal(value)}</span>
-                    <span className="text-[9px] uppercase tracking-wider font-semibold" style={{ color: th.mutedText }}>{label}</span>
+                  { label: "Visualizações", value: selectedAvgProfile?.media_views_por_post, icon: Eye },
+                  { label: "Curtidas", value: selectedAvgProfile?.media_likes_por_post, icon: Heart },
+                  { label: "Comentários", value: selectedAvgProfile?.media_comentarios_por_post, icon: MessageCircle },
+                ].map(({ label, value, icon: Icon }) => (
+                  <div key={label} className="flex flex-col items-center gap-3 py-6 rounded-xl" style={{ border: "1px solid hsl(220,15%,93%)" }}>
+                    <Icon className="w-6 h-6" style={{ color: PURPLE }} />
+                    <span className="font-display text-3xl font-extrabold" style={{ color: "hsl(225,30%,15%)" }}>{fmtVal(value)}</span>
+                    <span className="text-xs" style={{ color: "hsl(220,15%,50%)" }}>{label}</span>
                   </div>
                 ))}
               </div>
@@ -220,18 +182,14 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <EngajamentoCard data={{ meu_perfil: { ...result.meu_perfil }, perfil1: { ...result.perfil1 }, perfil2: { ...result.perfil2 } }} />
           </div>
 
-          {/* ── Distribuição de Conteúdo + Dia das Postagens ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* ── Distribuição de Conteúdo + Distribuição por Dia ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Pie chart */}
-            <div className="rounded-2xl p-5 flex flex-col transition-colors duration-500" style={{ background: th.cardBg, border: `1px solid ${th.cardBorder}`, boxShadow: th.cardShadow }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <PieChartIcon className="w-4 h-4" style={{ color: th.accentPurple }} />
-                  <h3 className="font-display font-bold text-sm">Distribuição de Conteúdo</h3>
-                  <InfoTooltip text="Proporção de Reels, Carrosséis e Imagens postados." />
-                </div>
+            <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="font-display font-bold text-base" style={{ color: "hsl(225,30%,15%)" }}>Distribuição de Conteúdo</h3>
                 <Select value={contentDistAccount} onValueChange={setContentDistAccount}>
-                  <SelectTrigger className="w-[160px] h-8 text-xs" style={{ borderColor: th.selectBorder, background: th.selectBg }}>
+                  <SelectTrigger className="w-[150px] h-9 rounded-full text-xs bg-white" style={{ borderColor: "hsl(220,15%,90%)" }}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>{renderProfileOptions()}</SelectContent>
@@ -240,30 +198,30 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               {(() => {
                 const profile = result[contentDistAccount];
                 const pieData = [
-                  { name: "Reels", value: profile?.porcentagem_reels || 0, color: th.accentPurple },
-                  { name: "Imagens", value: profile?.porcentagem_imagens || 0, color: th.accentBlue },
-                  { name: "Carrossel", value: profile?.porcentagem_carrossel || 0, color: th.accentPink },
+                  { name: "Imagem", value: profile?.porcentagem_imagens || 0, color: CYAN },
+                  { name: "Carrossel", value: profile?.porcentagem_carrossel || 0, color: CORAL },
+                  { name: "Reels", value: profile?.porcentagem_reels || 0, color: PURPLE },
                 ];
                 return (
-                  <div className="flex-1 flex flex-col items-center justify-center gap-4">
-                    <div className="w-full h-[170px]">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="w-[200px] h-[200px] shrink-0">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                          <Pie data={pieData} cx="50%" cy="50%" innerRadius={48} outerRadius={72} paddingAngle={2} dataKey="value" stroke="none">
+                          <Pie data={pieData} cx="50%" cy="50%" innerRadius={0} outerRadius={95} dataKey="value" stroke="#fff" strokeWidth={2}>
                             {pieData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
                           </Pie>
                           <Tooltip
                             formatter={(value: number, name: string) => [`${value}%`, name]}
-                            contentStyle={{ backgroundColor: theme === "dark" ? "#1a1a2e" : "#fff", color: th.pageText, border: `1px solid ${th.cardBorder}`, borderRadius: "10px", fontSize: "12px", padding: "8px 12px" }}
+                            contentStyle={{ backgroundColor: "#fff", border: "1px solid hsl(220,15%,90%)", borderRadius: "10px", fontSize: "12px", padding: "8px 12px" }}
                           />
                         </PieChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className="flex gap-5">
+                    <div className="flex flex-col gap-3">
                       {pieData.map(({ name, value, color }) => (
-                        <div key={name} className="flex items-center gap-2">
+                        <div key={name} className="flex items-center gap-2.5">
                           <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                          <span className="text-xs font-medium" style={{ color: th.labelText }}>{name} — {value}%</span>
+                          <span className="text-sm font-medium" style={{ color: "hsl(225,30%,25%)" }}>{name} – {value}%</span>
                         </div>
                       ))}
                     </div>
@@ -276,36 +234,30 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Comparação com Concorrentes ── */}
-          <div className="rounded-2xl p-5 mb-4 transition-colors duration-500" style={{ background: th.cardBg, border: `1px solid ${th.cardBorder}`, boxShadow: th.cardShadow }}>
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4" style={{ color: th.accentOrange }} />
-              <h3 className="font-display font-bold text-sm">Comparação com Concorrentes</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="rounded-2xl bg-white p-6 mb-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+            <h3 className="font-display font-bold text-base text-center mb-6" style={{ color: "hsl(225,30%,15%)" }}>Comparação com Concorrentes</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
-                { field: "comparacao_views", icon: Eye, label: "Views", tooltip: "Seu domínio de visualizações em relação ao volume total.", color: th.accentGreen },
-                { field: "comparacao_posts", icon: FileText, label: "Posts", tooltip: "Quanto você produz comparado à atividade total do grupo.", color: th.accentYellow },
-                { field: "comparacao_seguidores", icon: Users, label: "Seguidores", tooltip: "Seu tamanho de audiência no recorte analisado.", color: th.accentPurple },
+                { field: "comparacao_views", icon: Eye, label: "Visualizações x Concorrentes", tooltip: "Seu domínio de visualizações em relação ao volume total.", color: PURPLE },
+                { field: "comparacao_posts", icon: FileText, label: "Posts x Concorrentes", tooltip: "Quanto você produz comparado à atividade total do grupo.", color: CYAN },
+                { field: "comparacao_seguidores", icon: Users, label: "Seguidores x Concorrentes", tooltip: "Seu tamanho de audiência no recorte analisado.", color: CORAL },
               ].map(({ field, icon: Icon, label, tooltip, color }) => {
                 const rawVal = result.meu_perfil?.[field];
                 const numVal = typeof rawVal === "number" ? rawVal : parseFloat(String(rawVal));
                 const pct = !isNaN(numVal) ? numVal * 100 : 0;
                 return (
-                  <div key={field} className="p-4 rounded-xl" style={{ background: th.innerBg }}>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}18` }}>
+                  <div key={field} className="p-5 rounded-xl" style={{ border: "1px solid hsl(220,15%,93%)" }}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: `${color}20` }}>
                         <Icon className="w-4 h-4" style={{ color }} />
                       </div>
-                      <div>
-                        <span className="text-[10px] uppercase tracking-wider font-semibold flex items-center gap-0.5" style={{ color: th.mutedText }}>
-                          {label} vs Concorrentes
-                          <InfoTooltip text={tooltip} />
-                        </span>
-                      </div>
+                      <span className="text-sm font-medium inline-flex items-center gap-1" style={{ color: "hsl(225,30%,25%)" }}>
+                        {label}
+                        <InfoTooltip text={tooltip} />
+                      </span>
                     </div>
-                    <p className="font-display text-2xl font-bold mb-2" style={{ color }}>{formatComparacao(rawVal)}</p>
-                    {/* Progress bar */}
-                    <div className="w-full h-1.5 rounded-full" style={{ background: `${color}15` }}>
+                    <p className="font-display text-4xl font-extrabold mb-3" style={{ color: "hsl(225,30%,15%)" }}>{formatComparacao(rawVal)}</p>
+                    <div className="w-full h-2 rounded-full" style={{ background: `${color}25` }}>
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(pct, 100)}%`, background: color }} />
                     </div>
                   </div>
@@ -322,19 +274,19 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-xl transition-colors duration-300"
-              style={{ borderColor: th.cardBorder, background: th.cardBg, color: th.pageText }}
+              className="rounded-xl bg-white"
+              style={{ borderColor: "hsl(220,15%,88%)", color: "hsl(225,30%,20%)" }}
               onClick={() => navigate("/")}
             >
-              <ArrowLeft className="w-4 h-4 mr-1.5" /> Início
+              Início
             </Button>
             <Button
               size="lg"
               className="rounded-xl text-white"
-              style={{ background: th.accentBlue }}
+              style={{ background: PURPLE }}
               onClick={onReset}
             >
-              <RotateCcw className="w-4 h-4 mr-1.5" /> Nova Análise
+              Nova Análise
             </Button>
           </div>
         </div>
