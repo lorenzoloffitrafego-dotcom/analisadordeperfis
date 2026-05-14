@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import HowItWorks from "@/components/HowItWorks";
+import Pricing from "@/components/Pricing";
 import FinalCTA from "@/components/FinalCTA";
 import SiteFooter from "@/components/SiteFooter";
 import Logo from "@/components/Logo";
@@ -68,6 +69,7 @@ const Index = () => {
       <FeaturesSection />
       <div id="how" />
       <HowItWorks />
+      <Pricing />
       <FinalCTA />
       <SiteFooter />
     </div>
