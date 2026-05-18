@@ -132,7 +132,7 @@ const AnalysisFlow = () => {
                 <input
                   value={mainProfile}
                   onChange={(e) => setMainProfile(e.target.value)}
-                  placeholder="@Perfil_principal ou instagram.com/perfil_principal"
+                  placeholder="@perfil_principal ou instagram.com/perfil"
                   className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                 />
               </div>
@@ -165,7 +165,7 @@ const AnalysisFlow = () => {
                   <input
                     value={competitor1}
                     onChange={(e) => setCompetitor1(e.target.value)}
-                    placeholder="@Perfil_concorrente_1 ou instagram.com/perfil_concorrente_1"
+                    placeholder="@perfil_concorrente_1 ou instagram.com/perfil"
                     className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                   />
                 </div>
@@ -174,7 +174,7 @@ const AnalysisFlow = () => {
                   <input
                     value={competitor2}
                     onChange={(e) => setCompetitor2(e.target.value)}
-                    placeholder="@Perfil_concorrente_2 ou instagram.com/perfil_concorrente_2"
+                    placeholder="@perfil_concorrente_2 ou instagram.com/perfil"
                     className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                   />
                 </div>
