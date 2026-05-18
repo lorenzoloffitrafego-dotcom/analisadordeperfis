@@ -139,14 +139,16 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
           </div>
 
-          {/* ── Resumo da IA (dados vêm do N8N via `result`) ── */}
-          {/* TODO N8N: campos esperados no payload -> result.resumo_ia.{objetivo, contexto, solucao, conclusao} */}
+          {/* ── Resumo da IA (dados vêm do N8N via `result.resumo_ia`) ── */}
+          {/* N8N payload: `resumo_ia` pode ser string OU objeto { objetivo, contexto, solucao, conclusao } */}
           <ResumoIACard
-            objetivo={result.resumo_ia?.objetivo}
-            contexto={result.resumo_ia?.contexto}
-            solucao={result.resumo_ia?.solucao}
-            conclusao={result.resumo_ia?.conclusao}
+            resumo={typeof result.resumo_ia === "string" ? result.resumo_ia : undefined}
+            objetivo={typeof result.resumo_ia === "object" ? result.resumo_ia?.objetivo : undefined}
+            contexto={typeof result.resumo_ia === "object" ? result.resumo_ia?.contexto : undefined}
+            solucao={typeof result.resumo_ia === "object" ? result.resumo_ia?.solucao : undefined}
+            conclusao={typeof result.resumo_ia === "object" ? result.resumo_ia?.conclusao : undefined}
           />
+
 
           {/* ── Perfis Table ── */}
           <div className="rounded-2xl bg-white mb-6 overflow-hidden" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
