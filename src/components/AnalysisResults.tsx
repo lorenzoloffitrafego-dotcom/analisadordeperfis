@@ -11,6 +11,7 @@ import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
+import ResumoIACard from "@/components/ResumoIACard";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
 
 interface AnalysisResultsProps {
