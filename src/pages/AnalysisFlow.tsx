@@ -124,7 +124,7 @@ const AnalysisFlow = () => {
                   Defina o perfil principal
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Insira o @ do seu Instagram principal que você deseja monitorar.
+                  Insira o @ ou a URL do seu Instagram principal que você deseja monitorar.
                 </p>
               </div>
               <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
@@ -132,7 +132,7 @@ const AnalysisFlow = () => {
                 <input
                   value={mainProfile}
                   onChange={(e) => setMainProfile(e.target.value)}
-                  placeholder="perfil_principal"
+                  placeholder="@Perfil_principal ou instagram.com/perfil_principal"
                   className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                 />
               </div>
@@ -156,7 +156,7 @@ const AnalysisFlow = () => {
                   Defina dois concorrentes
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Insira os @ de dois perfis para análise comparativa de métricas.
+                  Insira os @ ou as URLs de dois perfis para análise comparativa de métricas.
                 </p>
               </div>
               <div className="space-y-3">
@@ -165,7 +165,7 @@ const AnalysisFlow = () => {
                   <input
                     value={competitor1}
                     onChange={(e) => setCompetitor1(e.target.value)}
-                    placeholder="perfil_concorrente_1"
+                    placeholder="@Perfil_concorrente_1 ou instagram.com/perfil_concorrente_1"
                     className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                   />
                 </div>
@@ -174,7 +174,7 @@ const AnalysisFlow = () => {
                   <input
                     value={competitor2}
                     onChange={(e) => setCompetitor2(e.target.value)}
-                    placeholder="perfil_concorrente_2"
+                    placeholder="@Perfil_concorrente_2 ou instagram.com/perfil_concorrente_2"
                     className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/60 text-sm"
                   />
                 </div>
