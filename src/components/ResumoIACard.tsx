@@ -54,10 +54,13 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
       {/* Conteúdo - dados do N8N entram aqui */}
       {expanded && (
         <div className="space-y-4">
-          {sections.length === 0 ? (
+          {!hasContent ? (
             <p className="text-sm" style={{ color: "hsl(220,15%,55%)" }}>
-              {/* TODO: Quando N8N não retorna dados, exibe placeholder */}
               O resumo da IA aparecerá aqui assim que os dados forem processados.
+            </p>
+          ) : hasResumoText ? (
+            <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "hsl(220,15%,35%)" }}>
+              {resumo}
             </p>
           ) : (
             sections.map((s, i) => (
