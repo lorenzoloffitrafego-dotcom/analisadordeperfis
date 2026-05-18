@@ -139,6 +139,15 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
           </div>
 
+          {/* ── Resumo da IA (dados vêm do N8N via `result`) ── */}
+          {/* TODO N8N: campos esperados no payload -> result.resumo_ia.{objetivo, contexto, solucao, conclusao} */}
+          <ResumoIACard
+            objetivo={result.resumo_ia?.objetivo}
+            contexto={result.resumo_ia?.contexto}
+            solucao={result.resumo_ia?.solucao}
+            conclusao={result.resumo_ia?.conclusao}
+          />
+
           {/* ── Perfis Table ── */}
           <div className="rounded-2xl bg-white mb-6 overflow-hidden" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
             <div className="overflow-x-auto">
