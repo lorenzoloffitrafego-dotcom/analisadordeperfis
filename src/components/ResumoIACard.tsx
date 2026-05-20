@@ -59,9 +59,35 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
               O resumo da IA aparecerá aqui assim que os dados forem processados.
             </p>
           ) : hasResumoText ? (
-            <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "hsl(220,15%,35%)" }}>
-              {resumo}
-            </p>
+            <div style={{ color: "#000000" }}>
+              {resumo!
+                .split(/\n+/)
+                .map((line) => line.trim())
+                .filter((line) => line.length > 0)
+                .map((line, idx) => {
+                  if (line.startsWith("###")) {
+                    const text = line.replace(/^#+\s*/, "");
+                    return (
+                      <p
+                        key={idx}
+                        className="font-bold"
+                        style={{ fontSize: "1rem", marginTop: idx === 0 ? 0 : "1.25rem", marginBottom: "0.5rem" }}
+                      >
+                        {text}
+                      </p>
+                    );
+                  }
+                  return (
+                    <p
+                      key={idx}
+                      className="text-sm leading-relaxed"
+                      style={{ marginBottom: "0.75rem" }}
+                    >
+                      {line}
+                    </p>
+                  );
+                })}
+            </div>
           ) : (
             sections.map((s, i) => (
               <div key={s.title} className={i > 0 ? "pt-4 border-t" : ""} style={i > 0 ? { borderColor: "hsl(220,15%,93%)" } : {}}>
