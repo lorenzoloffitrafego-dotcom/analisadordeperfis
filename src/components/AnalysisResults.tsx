@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Home, Eye, Heart, MessageCircle, Users, FileText,
-  PieChart as PieChartIcon, Calendar
+  PieChart as PieChartIcon, Calendar, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
@@ -65,6 +67,54 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
+  const dashboardRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!dashboardRef.current || exporting) return;
+    setExporting(true);
+    try {
+      const element = dashboardRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#f5f6fb",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      pdf.save("dashboard.pdf");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const DownloadPdfButton = () => (
+    <Button
+      size="lg"
+      onClick={handleDownloadPDF}
+      disabled={exporting}
+      className="rounded-xl text-white gap-2"
+      style={{ background: PURPLE }}
+    >
+      <Download className="w-4 h-4" />
+      {exporting ? "Gerando PDF..." : "Baixar em PDF"}
+    </Button>
+  );
 
   const selectedAvgProfile = result[avgPostAccount];
 
@@ -105,7 +155,13 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   return (
     <ResultsThemeContext.Provider value={theme}>
       <div className="min-h-screen px-4 sm:px-8 py-6" style={{ background: "#f5f6fb", color: th.pageText }}>
-        <div className="w-full max-w-6xl mx-auto">
+        <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
+
+          {/* ── Top: Download PDF ── */}
+          <div className="flex justify-end mb-4" data-html2canvas-ignore="true">
+            <DownloadPdfButton />
+          </div>
+
 
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-6">
@@ -311,7 +367,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8">
+          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true">
             <Button
               variant="outline"
               size="lg"
@@ -329,6 +385,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             >
               Nova Análise
             </Button>
+            <DownloadPdfButton />
           </div>
         </div>
       </div>
