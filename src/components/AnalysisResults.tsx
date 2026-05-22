@@ -67,6 +67,54 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
 
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
+  const dashboardRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!dashboardRef.current || exporting) return;
+    setExporting(true);
+    try {
+      const element = dashboardRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#f5f6fb",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      pdf.save("dashboard.pdf");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const DownloadPdfButton = () => (
+    <Button
+      size="lg"
+      onClick={handleDownloadPDF}
+      disabled={exporting}
+      className="rounded-xl text-white gap-2"
+      style={{ background: PURPLE }}
+    >
+      <Download className="w-4 h-4" />
+      {exporting ? "Gerando PDF..." : "Baixar em PDF"}
+    </Button>
+  );
 
   const selectedAvgProfile = result[avgPostAccount];
 
