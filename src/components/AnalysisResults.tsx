@@ -184,7 +184,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               </h1>
               <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
             </div>
-            <div data-html2canvas-ignore="true" className="shrink-0">
+            <div data-html2canvas-ignore="true" data-print-hide="true" className="shrink-0">
               <DownloadPdfButton />
             </div>
           </div>
