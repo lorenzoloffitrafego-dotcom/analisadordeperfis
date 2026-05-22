@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Home, Eye, Heart, MessageCircle, Users, FileText,
-  PieChart as PieChartIcon, Calendar
+  PieChart as PieChartIcon, Calendar, Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
