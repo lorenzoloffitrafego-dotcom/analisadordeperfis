@@ -34,8 +34,8 @@ function fmtVal(value: unknown): string {
 function formatComparacao(raw: unknown): string {
   if (raw === null || raw === undefined) return "—";
   const num = typeof raw === "number" ? raw : parseFloat(String(raw));
-  if (isNaN(num) || num === 0) return "—";
-  return `${(num * 100).toFixed(0)}%`;
+  if (isNaN(num)) return "—";
+  return `${(num * 100).toFixed(2)}%`;
 }
 
 const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
