@@ -177,7 +177,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Title + Download PDF ── */}
-          <div className="flex items-start justify-between gap-4 mb-6">
+          <div className="flex items-start justify-between gap-4 mb-6" data-print-hide="true">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1" style={{ color: "hsl(225, 30%, 15%)" }}>
                 Dashboard Pronto!
