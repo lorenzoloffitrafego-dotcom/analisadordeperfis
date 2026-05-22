@@ -243,7 +243,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Desempenho Médio + Engajamento ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
             {/* Desempenho Médio */}
             <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
               <div className="flex items-center justify-between mb-5">
