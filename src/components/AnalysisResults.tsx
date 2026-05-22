@@ -171,7 +171,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
 
           {/* ── Top Bar ── */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-12">
             <button
               onClick={() => navigate("/")}
               className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
