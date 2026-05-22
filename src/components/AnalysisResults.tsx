@@ -73,6 +73,19 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const handleDownloadPDF = async () => {
     if (!dashboardRef.current || exporting) return;
     setExporting(true);
+
+    // Expand the AI Summary so the full content is captured in the PDF,
+    // regardless of its current collapsed/expanded state on screen.
+    const summaryEl = dashboardRef.current.querySelector<HTMLElement>(
+      "[data-resumo-ia-content]"
+    );
+    const prevMaxHeight = summaryEl?.style.maxHeight ?? "";
+    const prevTransition = summaryEl?.style.transition ?? "";
+    if (summaryEl) {
+      summaryEl.style.transition = "none";
+      summaryEl.style.maxHeight = "none";
+    }
+
     try {
       const element = dashboardRef.current;
       const canvas = await html2canvas(element, {
@@ -94,6 +107,11 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
       pdf.save("dashboard.pdf");
     } finally {
+      // Restore the AI Summary's previous collapsed/expanded state
+      if (summaryEl) {
+        summaryEl.style.maxHeight = prevMaxHeight;
+        summaryEl.style.transition = prevTransition;
+      }
       setExporting(false);
     }
   };
