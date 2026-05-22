@@ -177,7 +177,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Title + Download PDF ── */}
-          <div className="flex items-start justify-between gap-4 mb-6">
+          <div className="flex items-start justify-between gap-4 mb-6" data-print-hide="true">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1" style={{ color: "hsl(225, 30%, 15%)" }}>
                 Dashboard Pronto!
@@ -243,7 +243,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Desempenho Médio + Engajamento ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
             {/* Desempenho Médio */}
             <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
               <div className="flex items-center justify-between mb-5">
@@ -274,7 +274,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Distribuição de Conteúdo + Distribuição por Dia ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
             {/* Pie chart */}
             <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
               <div className="flex items-center justify-between mb-5">
@@ -325,7 +325,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Comparação com Concorrentes ── */}
-          <div className="rounded-2xl bg-white p-6 mb-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+          <div className="rounded-2xl bg-white p-6 mb-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }} data-print-hide="true">
             <h3 className="font-display font-bold text-base text-center mb-6" style={{ color: "hsl(225,30%,15%)" }}>Comparação com Concorrentes</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
@@ -358,7 +358,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Posts Table ── */}
-          <PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
+          <div data-print-hide="true"><PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} /></div>
 
           {/* ── Actions ── */}
           <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
