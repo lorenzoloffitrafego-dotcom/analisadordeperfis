@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 
 interface ResumoIACardProps {
@@ -12,11 +12,15 @@ interface ResumoIACardProps {
 }
 
 const PURPLE = "hsl(258, 80%, 62%)";
+// Altura aproximada para mostrar ~4 linhas quando colapsado
+const COLLAPSED_HEIGHT = 110;
 
 const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: ResumoIACardProps) => {
-  const [expanded, setExpanded] = useState(true);
+  // Colapsado por padrão
+  const [expanded, setExpanded] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [fullHeight, setFullHeight] = useState(0);
 
-  // Seções estruturadas (quando o N8N retorna objeto)
   const sections = [
     { title: "Objetivo", text: objetivo },
     { title: "Contexto", text: contexto },
@@ -27,10 +31,17 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
   const hasResumoText = resumo && String(resumo).trim().length > 0;
   const hasContent = hasResumoText || sections.length > 0;
 
+  useEffect(() => {
+    if (contentRef.current) {
+      setFullHeight(contentRef.current.scrollHeight);
+    }
+  }, [resumo, objetivo, contexto, solucao, conclusao]);
+
   return (
     <div
       className="rounded-2xl bg-white p-6 mb-6"
       style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}
+      data-resumo-ia-card
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
@@ -51,9 +62,17 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
         </span>
       </div>
 
-      {/* Conteúdo - dados do N8N entram aqui */}
-      {expanded && (
-        <div className="space-y-4">
+      {/* Conteúdo - colapsável com transição suave */}
+      <div
+        data-resumo-ia-content
+        style={{
+          maxHeight: expanded ? `${fullHeight || 9999}px` : `${COLLAPSED_HEIGHT}px`,
+          overflow: "hidden",
+          transition: "max-height 400ms ease",
+          position: "relative",
+        }}
+      >
+        <div ref={contentRef} className="space-y-4">
           {!hasContent ? (
             <p className="text-sm" style={{ color: "hsl(220,15%,55%)" }}>
               O resumo da IA aparecerá aqui assim que os dados forem processados.
@@ -101,10 +120,26 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
             ))
           )}
         </div>
-      )}
+
+        {/* Fade overlay quando colapsado */}
+        {!expanded && hasContent && (
+          <div
+            data-html2canvas-ignore="true"
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "40px",
+              background: "linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))",
+              pointerEvents: "none",
+            }}
+          />
+        )}
+      </div>
 
       {/* Toggle */}
-      <div className="flex justify-center mt-5">
+      <div className="flex justify-center mt-5" data-html2canvas-ignore="true">
         <button
           onClick={() => setExpanded((v) => !v)}
           className="flex items-center gap-1.5 text-sm font-semibold hover:opacity-80 transition-opacity"
