@@ -325,7 +325,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Comparação com Concorrentes ── */}
-          <div className="rounded-2xl bg-white p-6 mb-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
+          <div className="rounded-2xl bg-white p-6 mb-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }} data-print-hide="true">
             <h3 className="font-display font-bold text-base text-center mb-6" style={{ color: "hsl(225,30%,15%)" }}>Comparação com Concorrentes</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
