@@ -143,11 +143,10 @@
 /* ── Print styles for dashboard PDF export ── */
 @media print {
   @page {
-    size: A4 landscape;
     margin: 16px;
   }
   html, body {
-    background: #f5f6fb !important;
+    background: #ffffff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -158,7 +157,7 @@
   [data-print-hide="true"] {
     display: none !important;
   }
-  .rounded-2xl, .rounded-xl,
+  [data-resumo-ia-card],
   table, tr, .recharts-wrapper {
     page-break-inside: avoid;
     break-inside: avoid;
@@ -167,8 +166,11 @@
     word-break: break-word;
     overflow: visible !important;
   }
-  body.printing [data-resumo-ia-content] {
+  body.printing [data-resumo-ia-content],
+  [data-resumo-ia-content] {
     max-height: none !important;
     transition: none !important;
+    overflow: visible !important;
   }
 }
+
