@@ -361,7 +361,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true">
+          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
             <Button
               variant="outline"
               size="lg"
