@@ -358,7 +358,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Posts Table ── */}
-          <PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
+          <div data-print-hide="true"><PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} /></div>
 
           {/* ── Actions ── */}
           <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
