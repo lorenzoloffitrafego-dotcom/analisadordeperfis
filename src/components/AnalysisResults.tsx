@@ -152,23 +152,17 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
       <div className="min-h-screen px-4 sm:px-8 py-6" style={{ background: "#f5f6fb", color: th.pageText }}>
         <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
 
-          {/* ── Top: Download PDF ── */}
-          <div className="flex justify-end mb-4" data-html2canvas-ignore="true">
-            <DownloadPdfButton />
-          </div>
-
-
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={() => navigate("/")}
               className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
-              style={{ color: PURPLE }}
+              style={{ color: "#000000" }}
             >
               <Home className="w-4 h-4" />
               <span>Início</span>
             </button>
-            <div className="flex items-center gap-2 text-sm" style={{ color: "hsl(220,15%,40%)" }}>
+            <div className="flex items-center gap-2 text-sm" style={{ color: "#000000" }}>
               <Calendar className="w-4 h-4" />
               <span>
                 {(() => {
@@ -182,12 +176,17 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
           </div>
 
-          {/* ── Title ── */}
-          <div className="mb-6">
-            <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1" style={{ color: "hsl(225, 30%, 15%)" }}>
-              Dashboard Pronto!
-            </h1>
-            <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
+          {/* ── Title + Download PDF ── */}
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <div>
+              <h1 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1" style={{ color: "hsl(225, 30%, 15%)" }}>
+                Dashboard Pronto!
+              </h1>
+              <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
+            </div>
+            <div data-html2canvas-ignore="true" className="shrink-0">
+              <DownloadPdfButton />
+            </div>
           </div>
 
           {/* ── Resumo da IA (dados vêm do N8N via `result.resumo_ia`) ── */}
