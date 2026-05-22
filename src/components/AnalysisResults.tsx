@@ -71,49 +71,31 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const [exporting, setExporting] = useState(false);
 
   const handleDownloadPDF = async () => {
-    if (!dashboardRef.current || exporting) return;
+    if (exporting) return;
     setExporting(true);
 
-    // Expand the AI Summary so the full content is captured in the PDF,
-    // regardless of its current collapsed/expanded state on screen.
-    const summaryEl = dashboardRef.current.querySelector<HTMLElement>(
-      "[data-resumo-ia-content]"
-    );
-    const prevMaxHeight = summaryEl?.style.maxHeight ?? "";
-    const prevTransition = summaryEl?.style.transition ?? "";
-    if (summaryEl) {
-      summaryEl.style.transition = "none";
-      summaryEl.style.maxHeight = "none";
-    }
+    // Force-expand AI Summary for printing via body class hook (see index.css)
+    document.body.classList.add("printing");
+
+    // Allow the DOM to flush before invoking the print dialog
+    await new Promise((r) => setTimeout(r, 50));
+
+    const cleanup = () => {
+      document.body.classList.remove("printing");
+      setExporting(false);
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
 
     try {
-      const element = dashboardRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 1,
-        useCORS: true,
-        backgroundColor: "#f5f6fb",
-        logging: false,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      // Single-page PDF sized to the captured canvas
-      const pdf = new jsPDF({
-        orientation: canvas.width >= canvas.height ? "landscape" : "portrait",
-        unit: "px",
-        format: [canvas.width, canvas.height],
-        hotfixes: ["px_scaling"],
-      });
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save("dashboard.pdf");
-    } finally {
-      // Restore the AI Summary's previous collapsed/expanded state
-      if (summaryEl) {
-        summaryEl.style.maxHeight = prevMaxHeight;
-        summaryEl.style.transition = prevTransition;
-      }
-      setExporting(false);
+      window.print();
+    } catch {
+      cleanup();
     }
+    // Fallback in case afterprint never fires (some browsers)
+    setTimeout(() => {
+      if (document.body.classList.contains("printing")) cleanup();
+    }, 2000);
   };
 
   const DownloadPdfButton = () => (
