@@ -34,8 +34,8 @@ function fmtVal(value: unknown): string {
 function formatComparacao(raw: unknown): string {
   if (raw === null || raw === undefined) return "—";
   const num = typeof raw === "number" ? raw : parseFloat(String(raw));
-  if (isNaN(num) || num === 0) return "—";
-  return `${(num * 100).toFixed(0)}%`;
+  if (isNaN(num)) return "—";
+  return `${(num * 100).toFixed(2)}%`;
 }
 
 const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
@@ -71,49 +71,31 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const [exporting, setExporting] = useState(false);
 
   const handleDownloadPDF = async () => {
-    if (!dashboardRef.current || exporting) return;
+    if (exporting) return;
     setExporting(true);
 
-    // Expand the AI Summary so the full content is captured in the PDF,
-    // regardless of its current collapsed/expanded state on screen.
-    const summaryEl = dashboardRef.current.querySelector<HTMLElement>(
-      "[data-resumo-ia-content]"
-    );
-    const prevMaxHeight = summaryEl?.style.maxHeight ?? "";
-    const prevTransition = summaryEl?.style.transition ?? "";
-    if (summaryEl) {
-      summaryEl.style.transition = "none";
-      summaryEl.style.maxHeight = "none";
-    }
+    // Force-expand AI Summary for printing via body class hook (see index.css)
+    document.body.classList.add("printing");
+
+    // Allow the DOM to flush before invoking the print dialog
+    await new Promise((r) => setTimeout(r, 50));
+
+    const cleanup = () => {
+      document.body.classList.remove("printing");
+      setExporting(false);
+      window.removeEventListener("afterprint", cleanup);
+    };
+    window.addEventListener("afterprint", cleanup);
 
     try {
-      const element = dashboardRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 1,
-        useCORS: true,
-        backgroundColor: "#f5f6fb",
-        logging: false,
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      // Single-page PDF sized to the captured canvas
-      const pdf = new jsPDF({
-        orientation: canvas.width >= canvas.height ? "landscape" : "portrait",
-        unit: "px",
-        format: [canvas.width, canvas.height],
-        hotfixes: ["px_scaling"],
-      });
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save("dashboard.pdf");
-    } finally {
-      // Restore the AI Summary's previous collapsed/expanded state
-      if (summaryEl) {
-        summaryEl.style.maxHeight = prevMaxHeight;
-        summaryEl.style.transition = prevTransition;
-      }
-      setExporting(false);
+      window.print();
+    } catch {
+      cleanup();
     }
+    // Fallback in case afterprint never fires (some browsers)
+    setTimeout(() => {
+      if (document.body.classList.contains("printing")) cleanup();
+    }, 2000);
   };
 
   const DownloadPdfButton = () => (
@@ -171,7 +153,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
 
           {/* ── Top Bar ── */}
-          <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center justify-between mb-20" data-print-hide="true" data-html2canvas-ignore="true">
             <button
               onClick={() => navigate("/")}
               className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
@@ -202,7 +184,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
               </h1>
               <p className="text-base" style={{ color: "hsl(220,15%,55%)" }}>Visão geral do seu desempenho</p>
             </div>
-            <div data-html2canvas-ignore="true" className="shrink-0">
+            <div data-html2canvas-ignore="true" data-print-hide="true" className="shrink-0">
               <DownloadPdfButton />
             </div>
           </div>
@@ -379,7 +361,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <PostsTable profiles={profilesRecord} profileNames={[...profileKeys]} getLabel={getLabel} getFoto={getFoto} />
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true">
+          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
             <Button
               variant="outline"
               size="lg"

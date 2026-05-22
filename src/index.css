@@ -139,3 +139,36 @@
     animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) both;
   }
 }
+
+/* ── Print styles for dashboard PDF export ── */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 16px;
+  }
+  html, body {
+    background: #f5f6fb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  [data-print-hide="true"] {
+    display: none !important;
+  }
+  .rounded-2xl, .rounded-xl,
+  table, tr, .recharts-wrapper {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  td, th, p, span, h1, h2, h3, h4 {
+    word-break: break-word;
+    overflow: visible !important;
+  }
+  body.printing [data-resumo-ia-content] {
+    max-height: none !important;
+    transition: none !important;
+  }
+}
