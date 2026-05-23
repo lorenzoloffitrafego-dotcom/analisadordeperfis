@@ -163,8 +163,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
           </div>
 
-          {/* ── Title + Download PDF ── */}
-          <div className="flex items-start justify-between gap-4 mb-6" data-html2canvas-ignore="true">
+          {/* ── Title + Share ── */}
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div>
               <h1
                 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1"
@@ -176,8 +176,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 Visão geral do seu desempenho
               </p>
             </div>
-            <div data-html2canvas-ignore="true" data-print-hide="true" className="shrink-0">
-              <DownloadPdfButton />
+            <div className="shrink-0">
+              <ShareLinkButton />
             </div>
           </div>
 
