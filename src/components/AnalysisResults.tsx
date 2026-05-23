@@ -146,7 +146,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
     (td as HTMLElement).style.overflow = "visible";
     (td as HTMLElement).style.height = "auto";
   });
-},
+        },
+      });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageW = pdf.internal.pageSize.getWidth();
