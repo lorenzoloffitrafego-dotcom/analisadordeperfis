@@ -485,7 +485,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
+          <div className="flex justify-center gap-3 mt-8 pb-8">
             <Button
               variant="outline"
               size="lg"
@@ -498,7 +498,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
               Nova Análise
             </Button>
-            <DownloadPdfButton />
+            <ShareLinkButton />
           </div>
         </div>
       </div>
