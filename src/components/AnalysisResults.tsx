@@ -485,23 +485,26 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
           </div>
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8">
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-xl bg-white"
-              style={{ borderColor: "hsl(220,15%,88%)", color: "hsl(225,30%,20%)" }}
-              onClick={() => navigate("/")}
-            >
-              Início
-            </Button>
-            <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
-              Nova Análise
-            </Button>
-            <ShareLinkButton />
-          </div>
+          {!readOnly && (
+            <div className="flex justify-center gap-3 mt-8 pb-8">
+              <Button
+                variant="outline"
+                size="lg"
+                className="rounded-xl bg-white"
+                style={{ borderColor: "hsl(220,15%,88%)", color: "hsl(225,30%,20%)" }}
+                onClick={() => navigate("/")}
+              >
+                Início
+              </Button>
+              <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
+                Nova Análise
+              </Button>
+              <ShareButton />
+            </div>
+          )}
         </div>
       </div>
+      <ShareDialog open={shareOpen} onClose={() => setShareOpen(false)} result={result} />
     </ResultsThemeContext.Provider>
   );
 };
