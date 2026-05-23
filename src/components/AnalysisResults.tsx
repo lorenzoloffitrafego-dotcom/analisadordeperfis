@@ -55,7 +55,7 @@ const PROFILE_DOTS: Record<string, string> = {
   perfil2: "hsl(0, 75%, 82%)",
 };
 
-const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
@@ -73,28 +73,20 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
-  const { toast } = useToast();
+  useToast();
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
+  const [shareOpen, setShareOpen] = useState(false);
 
-  const handleShareLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast({ title: "Link copiado!", description: "Compartilhe com quem quiser." });
-    } catch {
-      toast({ title: "Não foi possível copiar", description: window.location.href });
-    }
-  };
-
-  const ShareLinkButton = () => (
+  const ShareButton = () => (
     <Button
       size="lg"
-      onClick={handleShareLink}
+      onClick={() => setShareOpen(true)}
       className="rounded-xl text-white gap-2"
       style={{ background: PURPLE }}
     >
       <Share2 className="w-4 h-4" />
-      Compartilhar link
+      Compartilhar
     </Button>
   );
 
