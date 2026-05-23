@@ -72,7 +72,7 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
-  useToast();
+  
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
   const [shareOpen, setShareOpen] = useState(false);
