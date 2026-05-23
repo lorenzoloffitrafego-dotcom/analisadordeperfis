@@ -14,17 +14,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { useToast } from "@/hooks/use-toast";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResumoIACard from "@/components/ResumoIACard";
+import ShareDialog from "@/components/ShareDialog";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
   onReset: () => void;
+  readOnly?: boolean;
 }
 
 function fmtVal(value: unknown): string {
@@ -53,7 +54,7 @@ const PROFILE_DOTS: Record<string, string> = {
   perfil2: "hsl(0, 75%, 82%)",
 };
 
-const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsProps) => {
   const navigate = useNavigate();
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
@@ -71,28 +72,20 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
-  const { toast } = useToast();
+  
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
+  const [shareOpen, setShareOpen] = useState(false);
 
-  const handleShareLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast({ title: "Link copiado!", description: "Compartilhe com quem quiser." });
-    } catch {
-      toast({ title: "Não foi possível copiar", description: window.location.href });
-    }
-  };
-
-  const ShareLinkButton = () => (
+  const ShareButton = () => (
     <Button
       size="lg"
-      onClick={handleShareLink}
+      onClick={() => setShareOpen(true)}
       className="rounded-xl text-white gap-2"
       style={{ background: PURPLE }}
     >
       <Share2 className="w-4 h-4" />
-      Compartilhar link
+      Compartilhar
     </Button>
   );
 
@@ -140,14 +133,18 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         <div className="w-full max-w-6xl mx-auto">
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
-              style={{ color: "#000000" }}
-            >
-              <Home className="w-4 h-4" />
-              <span>Início</span>
-            </button>
+            {readOnly ? (
+              <span />
+            ) : (
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
+                style={{ color: "#000000" }}
+              >
+                <Home className="w-4 h-4" />
+                <span>Início</span>
+              </button>
+            )}
             <div className="flex items-center gap-2 text-sm" style={{ color: "#000000" }}>
               <Calendar className="w-4 h-4" />
               <span>
@@ -176,9 +173,11 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 Visão geral do seu desempenho
               </p>
             </div>
-            <div className="shrink-0">
-              <ShareLinkButton />
-            </div>
+            {!readOnly && (
+              <div className="shrink-0">
+                <ShareButton />
+              </div>
+            )}
           </div>
 
           {/* ── Resumo da IA (dados vêm do N8N via `result.resumo_ia`) ── */}
@@ -485,23 +484,26 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8">
-            <Button
-              variant="outline"
-              size="lg"
-              className="rounded-xl bg-white"
-              style={{ borderColor: "hsl(220,15%,88%)", color: "hsl(225,30%,20%)" }}
-              onClick={() => navigate("/")}
-            >
-              Início
-            </Button>
-            <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
-              Nova Análise
-            </Button>
-            <ShareLinkButton />
-          </div>
+          {!readOnly && (
+            <div className="flex justify-center gap-3 mt-8 pb-8">
+              <Button
+                variant="outline"
+                size="lg"
+                className="rounded-xl bg-white"
+                style={{ borderColor: "hsl(220,15%,88%)", color: "hsl(225,30%,20%)" }}
+                onClick={() => navigate("/")}
+              >
+                Início
+              </Button>
+              <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
+                Nova Análise
+              </Button>
+              <ShareButton />
+            </div>
+          )}
         </div>
       </div>
+      <ShareDialog open={shareOpen} onClose={() => setShareOpen(false)} result={result} />
     </ResultsThemeContext.Provider>
   );
 };
