@@ -271,7 +271,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Desempenho Médio + Engajamento ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Desempenho Médio */}
             <div
               className="rounded-2xl bg-white p-6"
@@ -324,7 +324,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Distribuição de Conteúdo + Distribuição por Dia ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Pie chart */}
             <div
               className="rounded-2xl bg-white p-6"
@@ -410,7 +410,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <div
             className="rounded-2xl bg-white p-6 mb-6"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}
-            data-print-hide="true"
+           
           >
             <h3 className="font-display font-bold text-base text-center mb-6" style={{ color: "hsl(225,30%,15%)" }}>
               Comparação com Concorrentes
@@ -475,7 +475,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Posts Table ── */}
-          <div data-print-hide="true">
+          <div>
             <PostsTable
               profiles={profilesRecord}
               profileNames={[...profileKeys]}

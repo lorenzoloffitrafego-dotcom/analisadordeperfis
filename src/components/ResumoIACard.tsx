@@ -124,7 +124,7 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
         {/* Fade overlay quando colapsado */}
         {!expanded && hasContent && (
           <div
-            data-html2canvas-ignore="true"
+           
             style={{
               position: "absolute",
               bottom: 0,
@@ -139,7 +139,7 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
       </div>
 
       {/* Toggle */}
-      <div className="flex justify-center mt-5" data-html2canvas-ignore="true">
+      <div className="flex justify-center mt-5">
         <button
           onClick={() => setExpanded((v) => !v)}
           className="flex items-center gap-1.5 text-sm font-semibold hover:opacity-80 transition-opacity"
