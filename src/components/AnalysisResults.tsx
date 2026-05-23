@@ -20,11 +20,13 @@ import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResumoIACard from "@/components/ResumoIACard";
+import ShareDialog from "@/components/ShareDialog";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
   onReset: () => void;
+  readOnly?: boolean;
 }
 
 function fmtVal(value: unknown): string {
