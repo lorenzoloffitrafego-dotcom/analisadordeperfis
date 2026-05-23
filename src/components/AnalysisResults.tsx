@@ -141,7 +141,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
             <button
-              data-html2canvas-ignore="true"
               onClick={() => navigate("/")}
               className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
               style={{ color: "#000000" }}
