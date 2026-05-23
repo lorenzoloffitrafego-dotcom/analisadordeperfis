@@ -71,115 +71,28 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
+  const { toast } = useToast();
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
-  const dashboardRef = useRef<HTMLDivElement>(null);
-  const [exporting, setExporting] = useState(false);
 
-  const handleDownloadPDF = async () => {
-    if (exporting || !dashboardRef.current) return;
-    setExporting(true);
+  const handleShareLink = async () => {
     try {
-      const canvas = await html2canvas(dashboardRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        scrollY: 0,
-        windowWidth: dashboardRef.current.scrollWidth,
-        windowHeight: dashboardRef.current.scrollHeight,
-        ignoreElements: (el) => el.hasAttribute("data-html2canvas-ignore"),
-        onclone: (clonedDoc) => {
-          // 1. Resumo da IA expandido
-  const resumoContent = clonedDoc.querySelector("[data-resumo-ia-content]") as HTMLElement;
-  if (resumoContent) {
-    resumoContent.style.maxHeight = "none";
-    resumoContent.style.overflow = "visible";
-  }
-
-  // 2. SVGs com tamanho explícito (corrige ícone de data e outros)
-  clonedDoc.querySelectorAll("svg").forEach((svg) => {
-    const el = svg as SVGElement;
-    const cls = el.getAttribute("class") || "";
-    let size = "16px";
-    if (cls.includes("w-3")) size = "12px";
-    else if (cls.includes("w-4")) size = "16px";
-    else if (cls.includes("w-5")) size = "20px";
-    else if (cls.includes("w-6")) size = "24px";
-    else if (cls.includes("w-8")) size = "32px";
-    el.setAttribute("width", size);
-    el.setAttribute("height", size);
-    el.style.display = "inline-block";
-    el.style.verticalAlign = "middle";
-    el.style.flexShrink = "0";
-  });
-
-  // 3. Flex containers — força alinhamento (corrige dropdowns e ícone de data)
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='flex']").forEach((el) => {
-    const cls = el.getAttribute("class") || "";
-    if (cls.includes("items-center")) {
-      el.style.display = cls.includes("inline-flex") ? "inline-flex" : "flex";
-      el.style.alignItems = "center";
-    }
-    if (cls.includes("justify-between")) el.style.justifyContent = "space-between";
-    if (cls.includes("justify-center")) el.style.justifyContent = "center";
-  });
-
-  // 4. Remove line-clamp dos textos do Ranking de Posts
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='line-clamp']").forEach((el) => {
-    el.style.overflow = "visible";
-    el.style.display = "block";
-    el.style.setProperty("-webkit-line-clamp", "unset");
-    el.style.setProperty("-webkit-box-orient", "unset");
-    el.style.whiteSpace = "normal";
-    el.style.maxHeight = "none";
-  });
-
-  // 5. Badges inline-flex (Carrossel, Reels, Imagem)
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='inline-flex']").forEach((el) => {
-    el.style.display = "inline-flex";
-    el.style.alignItems = "center";
-  });
-
-  // 6. Células da tabela
-  clonedDoc.querySelectorAll("td").forEach((td) => {
-    (td as HTMLElement).style.overflow = "visible";
-    (td as HTMLElement).style.height = "auto";
-  });
-        },
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pageW) / canvas.width;
-      let posY = 0;
-      let remaining = imgH;
-      pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
-      remaining -= pageH;
-      while (remaining > 0) {
-        posY -= pageH;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
-        remaining -= pageH;
-      }
-      pdf.save("dashboard-analise.pdf");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setExporting(false);
+      await navigator.clipboard.writeText(window.location.href);
+      toast({ title: "Link copiado!", description: "Compartilhe com quem quiser." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: window.location.href });
     }
   };
 
-  const DownloadPdfButton = () => (
+  const ShareLinkButton = () => (
     <Button
       size="lg"
-      onClick={handleDownloadPDF}
-      disabled={exporting}
+      onClick={handleShareLink}
       className="rounded-xl text-white gap-2"
       style={{ background: PURPLE }}
     >
-      <Download className="w-4 h-4" />
-      {exporting ? "Gerando PDF..." : "Baixar em PDF"}
+      <Share2 className="w-4 h-4" />
+      Compartilhar link
     </Button>
   );
 
