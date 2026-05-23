@@ -80,7 +80,6 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   const handleDownloadPDF = async () => {
     if (exporting || !dashboardRef.current) return;
     setExporting(true);
-
     try {
       const canvas = await html2canvas(dashboardRef.current, {
         scale: 2,
@@ -90,27 +89,48 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         windowWidth: dashboardRef.current.scrollWidth,
         windowHeight: dashboardRef.current.scrollHeight,
         ignoreElements: (el) => el.hasAttribute("data-html2canvas-ignore"),
+        onclone: (clonedDoc) => {
+          // 1. Força expandir o Resumo da IA
+          const resumoContent = clonedDoc.querySelector("[data-resumo-ia-content]") as HTMLElement;
+          if (resumoContent) {
+            resumoContent.style.maxHeight = "none";
+            resumoContent.style.overflow = "visible";
+          }
+          // 2. Corrige ícones SVG desalinhados
+          clonedDoc.querySelectorAll("svg").forEach((svg) => {
+            (svg as SVGElement).style.display = "inline-block";
+            (svg as SVGElement).style.verticalAlign = "middle";
+            (svg as SVGElement).style.flexShrink = "0";
+          });
+          // 3. Corrige texto cortado e badges no Ranking de Posts
+          clonedDoc.querySelectorAll("td").forEach((td) => {
+            (td as HTMLElement).style.overflow = "visible";
+            (td as HTMLElement).style.whiteSpace = "normal";
+            (td as HTMLElement).style.maxWidth = "none";
+            (td as HTMLElement).style.height = "auto";
+          });
+          // 4. Corrige alinhamento dos dropdowns
+          clonedDoc.querySelectorAll('[role="combobox"]').forEach((el) => {
+            (el as HTMLElement).style.display = "flex";
+            (el as HTMLElement).style.alignItems = "center";
+          });
+        },
       });
-
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
       const imgH = (canvas.height * pageW) / canvas.width;
-
       let posY = 0;
       let remaining = imgH;
       pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
       remaining -= pageH;
-
       while (remaining > 0) {
         posY -= pageH;
         pdf.addPage();
         pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
         remaining -= pageH;
       }
-
       pdf.save("dashboard-analise.pdf");
     } catch (err) {
       console.error(err);
