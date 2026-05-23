@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import AnalysisFlow from "./pages/AnalysisFlow";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
+import SharedAnalysis from "./pages/SharedAnalysis";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/analisar" element={<ProtectedRoute><AnalysisFlow /></ProtectedRoute>} />
+          <Route path="/share/:id" element={<SharedAnalysis />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
