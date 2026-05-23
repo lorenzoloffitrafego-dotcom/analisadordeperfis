@@ -134,14 +134,18 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
         <div className="w-full max-w-6xl mx-auto">
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
-              style={{ color: "#000000" }}
-            >
-              <Home className="w-4 h-4" />
-              <span>Início</span>
-            </button>
+            {readOnly ? (
+              <span />
+            ) : (
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
+                style={{ color: "#000000" }}
+              >
+                <Home className="w-4 h-4" />
+                <span>Início</span>
+              </button>
+            )}
             <div className="flex items-center gap-2 text-sm" style={{ color: "#000000" }}>
               <Calendar className="w-4 h-4" />
               <span>
@@ -170,9 +174,11 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
                 Visão geral do seu desempenho
               </p>
             </div>
-            <div className="shrink-0">
-              <ShareLinkButton />
-            </div>
+            {!readOnly && (
+              <div className="shrink-0">
+                <ShareButton />
+              </div>
+            )}
           </div>
 
           {/* ── Resumo da IA (dados vêm do N8N via `result.resumo_ia`) ── */}
