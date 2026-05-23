@@ -137,7 +137,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   return (
     <ResultsThemeContext.Provider value={theme}>
       <div className="min-h-screen px-4 sm:px-8 py-6" style={{ background: "#f5f6fb", color: th.pageText }}>
-        <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
             <button
