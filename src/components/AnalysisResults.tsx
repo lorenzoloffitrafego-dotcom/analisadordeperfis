@@ -90,32 +90,63 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
         windowHeight: dashboardRef.current.scrollHeight,
         ignoreElements: (el) => el.hasAttribute("data-html2canvas-ignore"),
         onclone: (clonedDoc) => {
-          // 1. Força expandir o Resumo da IA
-          const resumoContent = clonedDoc.querySelector("[data-resumo-ia-content]") as HTMLElement;
-          if (resumoContent) {
-            resumoContent.style.maxHeight = "none";
-            resumoContent.style.overflow = "visible";
-          }
-          // 2. Corrige ícones SVG desalinhados
-          clonedDoc.querySelectorAll("svg").forEach((svg) => {
-            (svg as SVGElement).style.display = "inline-block";
-            (svg as SVGElement).style.verticalAlign = "middle";
-            (svg as SVGElement).style.flexShrink = "0";
-          });
-          // 3. Corrige texto cortado e badges no Ranking de Posts
-          clonedDoc.querySelectorAll("td").forEach((td) => {
-            (td as HTMLElement).style.overflow = "visible";
-            (td as HTMLElement).style.whiteSpace = "normal";
-            (td as HTMLElement).style.maxWidth = "none";
-            (td as HTMLElement).style.height = "auto";
-          });
-          // 4. Corrige alinhamento dos dropdowns
-          clonedDoc.querySelectorAll('[role="combobox"]').forEach((el) => {
-            (el as HTMLElement).style.display = "flex";
-            (el as HTMLElement).style.alignItems = "center";
-          });
-        },
-      });
+          // 1. Resumo da IA expandido
+  const resumoContent = clonedDoc.querySelector("[data-resumo-ia-content]") as HTMLElement;
+  if (resumoContent) {
+    resumoContent.style.maxHeight = "none";
+    resumoContent.style.overflow = "visible";
+  }
+
+  // 2. SVGs com tamanho explícito (corrige ícone de data e outros)
+  clonedDoc.querySelectorAll("svg").forEach((svg) => {
+    const el = svg as SVGElement;
+    const cls = el.getAttribute("class") || "";
+    let size = "16px";
+    if (cls.includes("w-3")) size = "12px";
+    else if (cls.includes("w-4")) size = "16px";
+    else if (cls.includes("w-5")) size = "20px";
+    else if (cls.includes("w-6")) size = "24px";
+    else if (cls.includes("w-8")) size = "32px";
+    el.setAttribute("width", size);
+    el.setAttribute("height", size);
+    el.style.display = "inline-block";
+    el.style.verticalAlign = "middle";
+    el.style.flexShrink = "0";
+  });
+
+  // 3. Flex containers — força alinhamento (corrige dropdowns e ícone de data)
+  clonedDoc.querySelectorAll<HTMLElement>("[class*='flex']").forEach((el) => {
+    const cls = el.getAttribute("class") || "";
+    if (cls.includes("items-center")) {
+      el.style.display = cls.includes("inline-flex") ? "inline-flex" : "flex";
+      el.style.alignItems = "center";
+    }
+    if (cls.includes("justify-between")) el.style.justifyContent = "space-between";
+    if (cls.includes("justify-center")) el.style.justifyContent = "center";
+  });
+
+  // 4. Remove line-clamp dos textos do Ranking de Posts
+  clonedDoc.querySelectorAll<HTMLElement>("[class*='line-clamp']").forEach((el) => {
+    el.style.overflow = "visible";
+    el.style.display = "block";
+    el.style.setProperty("-webkit-line-clamp", "unset");
+    el.style.setProperty("-webkit-box-orient", "unset");
+    el.style.whiteSpace = "normal";
+    el.style.maxHeight = "none";
+  });
+
+  // 5. Badges inline-flex (Carrossel, Reels, Imagem)
+  clonedDoc.querySelectorAll<HTMLElement>("[class*='inline-flex']").forEach((el) => {
+    el.style.display = "inline-flex";
+    el.style.alignItems = "center";
+  });
+
+  // 6. Células da tabela
+  clonedDoc.querySelectorAll("td").forEach((td) => {
+    (td as HTMLElement).style.overflow = "visible";
+    (td as HTMLElement).style.height = "auto";
+  });
+},
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageW = pdf.internal.pageSize.getWidth();
