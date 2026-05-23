@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Home,
@@ -9,13 +9,12 @@ import {
   FileText,
   PieChart as PieChartIcon,
   Calendar,
-  Download,
+  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { useToast } from "@/hooks/use-toast";
 import PostsTable from "@/components/PostsTable";
 import EngajamentoCard from "@/components/EngajamentoCard";
 import PostingDaysCard from "@/components/PostingDaysCard";
@@ -72,115 +71,28 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
+  const { toast } = useToast();
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
-  const dashboardRef = useRef<HTMLDivElement>(null);
-  const [exporting, setExporting] = useState(false);
 
-  const handleDownloadPDF = async () => {
-    if (exporting || !dashboardRef.current) return;
-    setExporting(true);
+  const handleShareLink = async () => {
     try {
-      const canvas = await html2canvas(dashboardRef.current, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        scrollY: 0,
-        windowWidth: dashboardRef.current.scrollWidth,
-        windowHeight: dashboardRef.current.scrollHeight,
-        ignoreElements: (el) => el.hasAttribute("data-html2canvas-ignore"),
-        onclone: (clonedDoc) => {
-          // 1. Resumo da IA expandido
-  const resumoContent = clonedDoc.querySelector("[data-resumo-ia-content]") as HTMLElement;
-  if (resumoContent) {
-    resumoContent.style.maxHeight = "none";
-    resumoContent.style.overflow = "visible";
-  }
-
-  // 2. SVGs com tamanho explícito (corrige ícone de data e outros)
-  clonedDoc.querySelectorAll("svg").forEach((svg) => {
-    const el = svg as SVGElement;
-    const cls = el.getAttribute("class") || "";
-    let size = "16px";
-    if (cls.includes("w-3")) size = "12px";
-    else if (cls.includes("w-4")) size = "16px";
-    else if (cls.includes("w-5")) size = "20px";
-    else if (cls.includes("w-6")) size = "24px";
-    else if (cls.includes("w-8")) size = "32px";
-    el.setAttribute("width", size);
-    el.setAttribute("height", size);
-    el.style.display = "inline-block";
-    el.style.verticalAlign = "middle";
-    el.style.flexShrink = "0";
-  });
-
-  // 3. Flex containers — força alinhamento (corrige dropdowns e ícone de data)
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='flex']").forEach((el) => {
-    const cls = el.getAttribute("class") || "";
-    if (cls.includes("items-center")) {
-      el.style.display = cls.includes("inline-flex") ? "inline-flex" : "flex";
-      el.style.alignItems = "center";
-    }
-    if (cls.includes("justify-between")) el.style.justifyContent = "space-between";
-    if (cls.includes("justify-center")) el.style.justifyContent = "center";
-  });
-
-  // 4. Remove line-clamp dos textos do Ranking de Posts
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='line-clamp']").forEach((el) => {
-    el.style.overflow = "visible";
-    el.style.display = "block";
-    el.style.setProperty("-webkit-line-clamp", "unset");
-    el.style.setProperty("-webkit-box-orient", "unset");
-    el.style.whiteSpace = "normal";
-    el.style.maxHeight = "none";
-  });
-
-  // 5. Badges inline-flex (Carrossel, Reels, Imagem)
-  clonedDoc.querySelectorAll<HTMLElement>("[class*='inline-flex']").forEach((el) => {
-    el.style.display = "inline-flex";
-    el.style.alignItems = "center";
-  });
-
-  // 6. Células da tabela
-  clonedDoc.querySelectorAll("td").forEach((td) => {
-    (td as HTMLElement).style.overflow = "visible";
-    (td as HTMLElement).style.height = "auto";
-  });
-        },
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pageW) / canvas.width;
-      let posY = 0;
-      let remaining = imgH;
-      pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
-      remaining -= pageH;
-      while (remaining > 0) {
-        posY -= pageH;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, posY, pageW, imgH);
-        remaining -= pageH;
-      }
-      pdf.save("dashboard-analise.pdf");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setExporting(false);
+      await navigator.clipboard.writeText(window.location.href);
+      toast({ title: "Link copiado!", description: "Compartilhe com quem quiser." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: window.location.href });
     }
   };
 
-  const DownloadPdfButton = () => (
+  const ShareLinkButton = () => (
     <Button
       size="lg"
-      onClick={handleDownloadPDF}
-      disabled={exporting}
+      onClick={handleShareLink}
       className="rounded-xl text-white gap-2"
       style={{ background: PURPLE }}
     >
-      <Download className="w-4 h-4" />
-      {exporting ? "Gerando PDF..." : "Baixar em PDF"}
+      <Share2 className="w-4 h-4" />
+      Compartilhar link
     </Button>
   );
 
@@ -225,11 +137,10 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
   return (
     <ResultsThemeContext.Provider value={theme}>
       <div className="min-h-screen px-4 sm:px-8 py-6" style={{ background: "#f5f6fb", color: th.pageText }}>
-        <div ref={dashboardRef} className="w-full max-w-6xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
             <button
-              data-html2canvas-ignore="true"
               onClick={() => navigate("/")}
               className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
               style={{ color: "#000000" }}
@@ -252,8 +163,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             </div>
           </div>
 
-          {/* ── Title + Download PDF ── */}
-          <div className="flex items-start justify-between gap-4 mb-6" data-html2canvas-ignore="true">
+          {/* ── Title + Share ── */}
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div>
               <h1
                 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-1"
@@ -265,8 +176,8 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
                 Visão geral do seu desempenho
               </p>
             </div>
-            <div data-html2canvas-ignore="true" data-print-hide="true" className="shrink-0">
-              <DownloadPdfButton />
+            <div className="shrink-0">
+              <ShareLinkButton />
             </div>
           </div>
 
@@ -360,7 +271,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Desempenho Médio + Engajamento ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Desempenho Médio */}
             <div
               className="rounded-2xl bg-white p-6"
@@ -413,7 +324,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Distribuição de Conteúdo + Distribuição por Dia ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6" data-print-hide="true">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             {/* Pie chart */}
             <div
               className="rounded-2xl bg-white p-6"
@@ -499,7 +410,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           <div
             className="rounded-2xl bg-white p-6 mb-6"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}
-            data-print-hide="true"
+           
           >
             <h3 className="font-display font-bold text-base text-center mb-6" style={{ color: "hsl(225,30%,15%)" }}>
               Comparação com Concorrentes
@@ -564,7 +475,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Posts Table ── */}
-          <div data-print-hide="true">
+          <div>
             <PostsTable
               profiles={profilesRecord}
               profileNames={[...profileKeys]}
@@ -574,7 +485,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
           </div>
 
           {/* ── Actions ── */}
-          <div className="flex justify-center gap-3 mt-8 pb-8" data-html2canvas-ignore="true" data-print-hide="true">
+          <div className="flex justify-center gap-3 mt-8 pb-8">
             <Button
               variant="outline"
               size="lg"
@@ -587,7 +498,7 @@ const AnalysisResults = ({ result, onReset }: AnalysisResultsProps) => {
             <Button size="lg" className="rounded-xl text-white" style={{ background: PURPLE }} onClick={onReset}>
               Nova Análise
             </Button>
-            <DownloadPdfButton />
+            <ShareLinkButton />
           </div>
         </div>
       </div>
