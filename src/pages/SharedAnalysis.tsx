@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import AnalysisResults from "@/components/AnalysisResults";
 
 const SharedAnalysis = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [result, setResult] = useState<Record<string, any> | null>(null);
   const [status, setStatus] = useState<"loading" | "ok" | "notfound">("loading");
 
@@ -28,7 +31,7 @@ const SharedAnalysis = () => {
     })();
   }, [id]);
 
-  if (status === "loading") {
+  if (status === "loading" || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#f5f6fb" }}>
         <p className="text-sm" style={{ color: "#6b7280" }}>Carregando análise...</p>
@@ -51,6 +54,12 @@ const SharedAnalysis = () => {
     );
   }
 
+  // Logged-in visitor: render the exact same header/actions as the authenticated dashboard.
+  if (user) {
+    return <AnalysisResults result={result} onReset={() => navigate("/analisar")} />;
+  }
+
+  // Anonymous visitor: read-only view with conversion CTAs.
   return <AnalysisResults result={result} onReset={() => {}} readOnly publicView />;
 };
 
