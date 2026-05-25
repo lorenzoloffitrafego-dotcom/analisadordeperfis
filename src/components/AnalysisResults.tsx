@@ -28,6 +28,7 @@ interface AnalysisResultsProps {
   result: Record<string, any>;
   onReset: () => void;
   readOnly?: boolean;
+  publicView?: boolean;
 }
 
 function fmtVal(value: unknown): string {
