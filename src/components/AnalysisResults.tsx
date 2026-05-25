@@ -528,6 +528,20 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
               <ShareButton />
             </div>
           )}
+
+          {readOnly && publicView && !user && (
+            <div className="flex justify-center mt-8 py-8">
+              <Button
+                size="lg"
+                onClick={() => (window.location.href = signupUrl)}
+                className="rounded-xl text-white gap-2"
+                style={{ background: PURPLE }}
+              >
+                <Rocket className="w-5 h-5" />
+                Testar grátis
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <ShareDialog open={shareOpen} onClose={() => setShareOpen(false)} result={result} />
