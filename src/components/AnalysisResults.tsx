@@ -139,7 +139,29 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
             {readOnly ? (
-              <span />
+              publicView ? (
+                user ? (
+                  <button
+                    onClick={() => navigate("/analisar")}
+                    className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
+                    style={{ color: "#000000" }}
+                  >
+                    <Home className="w-4 h-4" />
+                    <span>Início</span>
+                  </button>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() => (window.location.href = signupUrl)}
+                    className="rounded-lg text-white"
+                    style={{ background: PURPLE }}
+                  >
+                    Testar grátis
+                  </Button>
+                )
+              ) : (
+                <span />
+              )
             ) : (
               <button
                 onClick={() => navigate("/")}
