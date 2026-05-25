@@ -51,7 +51,7 @@ const SharedAnalysis = () => {
     );
   }
 
-  return <AnalysisResults result={result} onReset={() => {}} readOnly />;
+  return <AnalysisResults result={result} onReset={() => {}} readOnly publicView />;
 };
 
 export default SharedAnalysis;

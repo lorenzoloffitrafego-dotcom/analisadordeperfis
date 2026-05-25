@@ -10,7 +10,9 @@ import {
   PieChart as PieChartIcon,
   Calendar,
   Share2,
+  Rocket,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -26,6 +28,7 @@ interface AnalysisResultsProps {
   result: Record<string, any>;
   onReset: () => void;
   readOnly?: boolean;
+  publicView?: boolean;
 }
 
 function fmtVal(value: unknown): string {
@@ -54,8 +57,10 @@ const PROFILE_DOTS: Record<string, string> = {
   perfil2: "hsl(0, 75%, 82%)",
 };
 
-const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false }: AnalysisResultsProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
   const th = t(theme);
@@ -134,7 +139,29 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
           {/* ── Top Bar ── */}
           <div className="flex items-center justify-between mb-20">
             {readOnly ? (
-              <span />
+              publicView ? (
+                user ? (
+                  <button
+                    onClick={() => navigate("/analisar")}
+                    className="flex items-center gap-2 text-sm font-medium hover:opacity-80 transition-opacity"
+                    style={{ color: "#000000" }}
+                  >
+                    <Home className="w-4 h-4" />
+                    <span>Início</span>
+                  </button>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() => (window.location.href = signupUrl)}
+                    className="rounded-lg text-white"
+                    style={{ background: PURPLE }}
+                  >
+                    Testar grátis
+                  </Button>
+                )
+              ) : (
+                <span />
+              )
             ) : (
               <button
                 onClick={() => navigate("/")}
@@ -499,6 +526,20 @@ const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsP
                 Nova Análise
               </Button>
               <ShareButton />
+            </div>
+          )}
+
+          {readOnly && publicView && !user && (
+            <div className="flex justify-center mt-8 py-8">
+              <Button
+                size="lg"
+                onClick={() => (window.location.href = signupUrl)}
+                className="rounded-xl text-white gap-2"
+                style={{ background: PURPLE }}
+              >
+                <Rocket className="w-5 h-5" />
+                Testar grátis
+              </Button>
             </div>
           )}
         </div>
