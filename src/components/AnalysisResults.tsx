@@ -57,8 +57,10 @@ const PROFILE_DOTS: Record<string, string> = {
   perfil2: "hsl(0, 75%, 82%)",
 };
 
-const AnalysisResults = ({ result, onReset, readOnly = false }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false }: AnalysisResultsProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
   const th = t(theme);
