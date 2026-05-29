@@ -80,13 +80,21 @@ const FeaturesSection = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                {["B", "F"].map((l) => (
+                {[
+                  { l: "B", followers: "4.832", eng: "8,4%" },
+                  { l: "F", followers: "2.104", eng: "3,1%" },
+                ].map(({ l, followers, eng }) => (
                   <div
                     key={l}
                     className="flex items-center justify-between rounded-xl bg-secondary/70 px-3 py-2"
                   >
-                    <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center">
-                      {l}
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center">
+                        {l}
+                      </div>
+                      <span className="text-[11px] text-muted-foreground">
+                        · {followers} seguidores · eng. {eng}
+                      </span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground" />
                   </div>
