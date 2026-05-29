@@ -92,12 +92,12 @@ const FeaturesSection = () => {
                       <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center shrink-0">
                         {l}
                       </div>
-                      <div className="flex items-center justify-around flex-1">
+                      <div className="flex items-center justify-between flex-1">
                         {stats.map((stat, i) => (
-                          <div key={`${l}-${i}`} className="flex items-center">
-                            <span className="text-base font-semibold text-foreground">{stat}</span>
+                          <div key={`${l}-${i}`} className="flex items-center flex-1 justify-center">
+                            <span className="text-sm font-semibold text-muted-foreground">{stat}</span>
                             {i < stats.length - 1 && (
-                              <hr className="w-px h-5 border-0 bg-foreground/15 mx-1" />
+                              <hr className="w-px h-5 border-0 bg-foreground/15 ml-auto" />
                             )}
                           </div>
                         ))}
