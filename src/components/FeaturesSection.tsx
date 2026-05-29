@@ -94,12 +94,12 @@ const FeaturesSection = () => {
                       </div>
                       <div className="flex items-center justify-around flex-1">
                         {stats.map((stat, i) => (
-                          <>
+                          <React.Fragment key={`${l}-${i}`}>
                             <span className="text-base font-semibold text-foreground">{stat}</span>
                             {i < stats.length - 1 && (
                               <hr className="w-px h-5 border-0 bg-foreground/15 mx-1" />
                             )}
-                          </>
+                          </React.Fragment>
                         ))}
                       </div>
                     </div>
