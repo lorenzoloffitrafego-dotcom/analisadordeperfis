@@ -1,7 +1,7 @@
 const steps = [
-  { n: "01", title: "Insira os perfis", desc: "Obtenha dados claros e acionáveis para melhorar sua estratégia." },
-  { n: "02", title: "Análise automática", desc: "Consectetur adipiscing elit. Nossos algoritmos processam os dados." },
-  { n: "03", title: "Receba insights", desc: "Sed do eiusmod tempor. Visualize tudo em um dashboard claro." },
+  { n: "01", title: "Insira os perfis", desc: "Insira o seu perfil e o de 2 concorrentes\n" },
+  { n: "02", title: "Análise automática", desc: "Nosso sistema coleta métricas, compara os perfis e gera os insights automaticamente" },
+  { n: "03", title: "Receba insights", desc: "Visualize tudo em um dashboard personalizado para você\n\n" },
 ];
 
 const HowItWorks = () => (
@@ -18,10 +18,10 @@ const HowItWorks = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
         {steps.map((s) => (
-          <div key={s.n} className="text-center md:text-left">
+          <div key={s.n} className="md:text-left">
             <div className="text-5xl font-bold text-brand-gradient mb-4">{s.n}</div>
             <h3 className="font-semibold text-lg text-foreground mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800">{s.desc}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800 text-center">{s.desc}</p>
           </div>
         ))}
       </div>
