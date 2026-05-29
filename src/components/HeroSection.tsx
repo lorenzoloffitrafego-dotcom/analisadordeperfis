@@ -21,14 +21,13 @@ const HeroSection = () => {
         </div>
 
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.05] mb-6">
-          Análise Inteligente
+          Economize tempo
           <br />
-          do <span className="text-brand-gradient">Instagram</span>
+          analisando seus concorrentes no <span className="text-brand-gradient">Instagram</span>
         </h1>
 
         <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed text-slate-800">
-          Analise perfis do Instagram, compare estatísticas-chave e obtenha
-          insights automatizados para melhorar sua estratégia de conteúdo.
+          Adicione seu perfil e 2 concorrentes. O MétricaFácil processa tudo e entrega métricas, comparativos e insights de IA num único dashboard.
         </p>
 
         <button
