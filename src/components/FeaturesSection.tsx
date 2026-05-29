@@ -81,7 +81,7 @@ const FeaturesSection = () => {
               </div>
               <div className="space-y-2">
                 {[
-                  { l: "B", stats: ["385K", "890", "12%"] },
+                  { l: "B", stats: ["385K", " 890", "12%"] },
                   { l: "F", stats: ["1800", "2K", "53%"] },
                 ].map(({ l, stats }) => (
                   <div
