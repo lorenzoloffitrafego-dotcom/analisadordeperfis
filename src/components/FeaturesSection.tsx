@@ -81,9 +81,9 @@ const FeaturesSection = () => {
               </div>
               <div className="space-y-2">
                 {[
-                  { l: "B", followers: "4.832", eng: "8,4%" },
-                  { l: "F", followers: "2.104", eng: "3,1%" },
-                ].map(({ l, followers, eng }) => (
+                  { l: "B", stats: "385K 890 12%" },
+                  { l: "F", stats: "1800 2K 53%" },
+                ].map(({ l, stats }) => (
                   <div
                     key={l}
                     className="flex items-center justify-between rounded-xl bg-secondary/70 px-3 py-2"
@@ -92,8 +92,8 @@ const FeaturesSection = () => {
                       <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center">
                         {l}
                       </div>
-                      <span className="text-[11px] text-muted-foreground">
-                        · {followers} seguidores · eng. {eng}
+                      <span className="text-[11px] text-muted-foreground mx-[20px] my-[4px] py-0 px-[10px]">
+                        {stats}
                       </span>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground" />

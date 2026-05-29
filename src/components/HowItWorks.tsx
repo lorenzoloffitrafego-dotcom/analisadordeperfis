@@ -21,7 +21,7 @@ const HowItWorks = () => (
           <div key={s.n} className="md:text-left">
             <div className="text-5xl font-bold text-brand-gradient mb-4">{s.n}</div>
             <h3 className="font-semibold text-lg text-foreground mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800 text-center">{s.desc}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800 text-left">{s.desc}</p>
           </div>
         ))}
       </div>
