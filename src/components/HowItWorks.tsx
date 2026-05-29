@@ -16,12 +16,12 @@ const HowItWorks = () => (
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
         {steps.map((s) => (
-          <div key={s.n} className="md:text-left">
-            <div className="text-5xl font-bold text-brand-gradient mb-4">{s.n}</div>
-            <h3 className="font-semibold text-lg text-foreground mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800 text-left">{s.desc}</p>
+          <div key={s.n} className="text-center">
+            <div className="text-5xl font-bold text-brand-gradient mb-5">{s.n}</div>
+            <h3 className="font-semibold text-2xl text-foreground mb-3">{s.title}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed text-slate-800 text-center">{s.desc}</p>
           </div>
         ))}
       </div>
