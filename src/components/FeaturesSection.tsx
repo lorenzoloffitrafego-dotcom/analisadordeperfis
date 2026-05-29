@@ -81,22 +81,29 @@ const FeaturesSection = () => {
               </div>
               <div className="space-y-2">
                 {[
-                  { l: "B", stats: "385K 890 12%" },
-                  { l: "F", stats: "1800 2K 53%" },
+                  { l: "B", stats: ["385K", "890", "12%"] },
+                  { l: "F", stats: ["1800", "2K", "53%"] },
                 ].map(({ l, stats }) => (
                   <div
                     key={l}
                     className="flex items-center justify-between rounded-xl bg-secondary/70 px-3 py-2"
                   >
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center shrink-0">
                         {l}
                       </div>
-                      <span className="text-[11px] text-muted-foreground mx-[20px] my-[4px] py-0 px-[10px]">
-                        {stats}
-                      </span>
+                      <div className="flex items-center justify-around flex-1">
+                        {stats.map((stat, i) => (
+                          <>
+                            <span className="text-base font-semibold text-foreground">{stat}</span>
+                            {i < stats.length - 1 && (
+                              <hr className="w-px h-5 border-0 bg-foreground/15 mx-1" />
+                            )}
+                          </>
+                        ))}
+                      </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
                   </div>
                 ))}
               </div>
