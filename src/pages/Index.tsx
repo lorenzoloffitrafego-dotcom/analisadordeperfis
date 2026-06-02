@@ -68,7 +68,6 @@ const Index = () => {
       <FeaturesSection />
       <div id="how" />
       <HowItWorks />
-      <Pricing />
       <FinalCTA />
       <SiteFooter />
     </div>
