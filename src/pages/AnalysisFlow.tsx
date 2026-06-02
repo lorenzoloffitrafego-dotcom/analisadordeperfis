@@ -21,6 +21,7 @@ const AnalysisFlow = () => {
   const [competitor2, setCompetitor2] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [error, setError] = useState(false);
 
   const sanitize = (v: string) => v.replace(/@/g, "").trim();
 
