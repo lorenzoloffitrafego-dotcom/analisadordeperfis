@@ -21,6 +21,7 @@ const AnalysisFlow = () => {
   const [competitor2, setCompetitor2] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [error, setError] = useState(false);
 
   const sanitize = (v: string) => v.replace(/@/g, "").trim();
 
@@ -39,6 +40,7 @@ const AnalysisFlow = () => {
     }
 
     setLoading(true);
+    setError(false);
 
     try {
       const response = await fetch(
@@ -71,7 +73,7 @@ const AnalysisFlow = () => {
 
       toast.success("Análise concluída!");
     } catch {
-      toast.error("Erro ao analisar os perfis. Tente novamente.");
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -83,7 +85,27 @@ const AnalysisFlow = () => {
     setCompetitor1("");
     setCompetitor2("");
     setResult(null);
+    setError(false);
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen aurora-bg flex items-center justify-center px-6">
+        <div className="text-center max-w-md">
+          <h2 className="font-display text-2xl font-bold text-foreground mb-3">
+            Não foi possível coletar os dados do perfil.
+          </h2>
+          <p className="text-muted-foreground text-sm mb-8">
+            Por favor, verifique se o nome está correto e tente novamente.
+          </p>
+          <Button variant="accent" size="lg" onClick={handleReset}>
+            <RotateCcw className="w-4 h-4" />
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
