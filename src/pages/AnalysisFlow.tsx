@@ -40,6 +40,7 @@ const AnalysisFlow = () => {
     }
 
     setLoading(true);
+    setError(false);
 
     try {
       const response = await fetch(
@@ -72,7 +73,7 @@ const AnalysisFlow = () => {
 
       toast.success("Análise concluída!");
     } catch {
-      toast.error("Erro ao analisar os perfis. Tente novamente.");
+      setError(true);
     } finally {
       setLoading(false);
     }
