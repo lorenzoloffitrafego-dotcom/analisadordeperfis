@@ -237,7 +237,7 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
                       <tr key={key} style={{ borderTop: "1px solid hsl(220,15%,94%)" }}>
                         <td className="py-5 px-6">
                           <div className="flex items-center gap-3">
-                            <ProfileAvatar name={key} size={28} />
+                            <ProfileAvatar label={getLabel(key)} foto={getFoto(key)} size={32} ringColor={PROFILE_DOTS[key]} />
                             <span className="text-sm font-medium" style={{ color: "hsl(225,30%,20%)" }}>
                               {getLabel(key)}
                             </span>
