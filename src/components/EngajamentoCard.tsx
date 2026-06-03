@@ -49,16 +49,7 @@ const EngajamentoCard = ({ data }: EngajamentoCardProps) => {
             {contas.map((c) => (
               <SelectItem key={c.key} value={c.key} className="text-xs">
                 <div className="flex items-center gap-2">
-                  {c.dados?.foto ? (
-                    <img
-                      src={`https://images.weserv.nl/?url=${encodeURIComponent(c.dados.foto)}`}
-                      className="w-5 h-5 rounded-full object-cover"
-                      style={{ border: `1.5px solid ${PROFILE_DOTS[c.key]}` }}
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
-                  ) : (
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ background: PROFILE_DOTS[c.key] }} />
-                  )}
+                  <ProfileAvatar label={c.label} foto={c.dados?.foto} size={32} ringColor={PROFILE_DOTS[c.key]} />
                   {c.label}
                 </div>
               </SelectItem>
