@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, CartesianGrid } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ProfileAvatar from "@/components/ProfileAvatar";
 
 interface PostingDaysCardProps {
   profiles: Record<string, Record<string, any>>;
@@ -66,7 +65,16 @@ const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingD
               return (
                 <SelectItem key={name} value={name} className="text-xs">
                   <div className="flex items-center gap-2">
-                    <ProfileAvatar label={getLabel(name)} foto={foto} size={32} ringColor={PROFILE_DOTS[name]} />
+                    {foto ? (
+                      <img
+                        src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
+                        className="w-5 h-5 rounded-full object-cover"
+                        style={{ border: `1.5px solid ${PROFILE_DOTS[name]}` }}
+                        onError={(e) => { e.currentTarget.style.display = "none"; }}
+                      />
+                    ) : (
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ background: PROFILE_DOTS[name] }} />
+                    )}
                     {getLabel(name)}
                   </div>
                 </SelectItem>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FileText, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useResultsTheme, t } from "@/components/ResultsThemeContext";
-import ProfileAvatar from "@/components/ProfileAvatar";
 
 interface PostData {
   tipo: string;
@@ -119,7 +118,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                 {profileNames.map((name) => (
                   <SelectItem key={name} value={name} className="text-xs">
                     <div className="flex items-center gap-2">
-                      <ProfileAvatar label={getLabel(name)} foto={getFoto(name)} size={32} />
+                      <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                       {getLabel(name)}
                     </div>
                   </SelectItem>
@@ -168,7 +167,9 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <ProfileAvatar label={accountLabel} foto={accountFoto} size={32} />
+                          {accountFoto && (
+                            <img src={`https://images.weserv.nl/?url=${encodeURIComponent(accountFoto)}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                          )}
                           <span className="text-xs font-medium" style={{ color: th.bodyText }}>{accountLabel}</span>
                         </div>
                       </td>

@@ -2,13 +2,16 @@ import { useState } from "react";
 import { Users, Eye } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import InfoTooltip from "@/components/InfoTooltip";
-import ProfileAvatar from "@/components/ProfileAvatar";
+
+interface PerfilData {
+  engajamento_por_seguidor?: number | null;
+  engajamento_por_views?: number | null;
+  nome?: string;
+  foto?: string;
+}
 
 interface EngajamentoCardProps {
-  profiles: Record<string, Record<string, any>>;
-  profileNames: string[];
-  getLabel: (key: string) => string;
-  getFoto: (key: string) => string | undefined;
+  data: { meu_perfil: PerfilData; perfil1?: PerfilData; perfil2?: PerfilData };
 }
 
 const PURPLE = "hsl(258, 80%, 62%)";
@@ -20,12 +23,18 @@ const PROFILE_DOTS: Record<string, string> = {
 
 function formatEngagementValue(value: number | null | undefined): string {
   if (value === null || value === undefined || value === 0) return "—";
-  return `${Number(value).toFixed(1)}%`;
+  return `${value.toFixed(1)}%`;
 }
 
-const EngajamentoCard = ({ profiles, profileNames, getLabel, getFoto }: EngajamentoCardProps) => {
-  const [selectedKey, setSelectedKey] = useState(profileNames[0] || "meu_perfil");
-  const dados = profiles[selectedKey] || {};
+const EngajamentoCard = ({ data }: EngajamentoCardProps) => {
+  const contas = [
+    { key: "meu_perfil", label: "Meu Perfil", dados: data.meu_perfil },
+    { key: "perfil1", label: data.perfil1?.nome || "Perfil 1", dados: data.perfil1 || {} },
+    { key: "perfil2", label: data.perfil2?.nome || "Perfil 2", dados: data.perfil2 || {} },
+  ];
+
+  const [selectedKey, setSelectedKey] = useState("meu_perfil");
+  const contaSelecionada = contas.find((c) => c.key === selectedKey) || contas[0];
 
   return (
     <div className="rounded-2xl bg-white p-6" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.05)" }}>
@@ -36,11 +45,20 @@ const EngajamentoCard = ({ profiles, profileNames, getLabel, getFoto }: Engajame
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {profileNames.map((key) => (
-              <SelectItem key={key} value={key} className="text-xs">
+            {contas.map((c) => (
+              <SelectItem key={c.key} value={c.key} className="text-xs">
                 <div className="flex items-center gap-2">
-                  <ProfileAvatar label={getLabel(key)} foto={getFoto(key)} size={32} ringColor={PROFILE_DOTS[key]} />
-                  {getLabel(key)}
+                  {c.dados?.foto ? (
+                    <img
+                      src={`https://images.weserv.nl/?url=${encodeURIComponent(c.dados.foto)}`}
+                      className="w-5 h-5 rounded-full object-cover"
+                      style={{ border: `1.5px solid ${PROFILE_DOTS[c.key]}` }}
+                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    />
+                  ) : (
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ background: PROFILE_DOTS[c.key] }} />
+                  )}
+                  {c.label}
                 </div>
               </SelectItem>
             ))}
@@ -52,13 +70,13 @@ const EngajamentoCard = ({ profiles, profileNames, getLabel, getFoto }: Engajame
         {[
           {
             label: "Engajamento por Seguidor",
-            value: dados.engajamento_por_seguidor,
+            value: contaSelecionada.dados.engajamento_por_seguidor,
             icon: Users,
             tip: "Percentual de seguidores que interage ativamente com seus posts.",
           },
           {
             label: "Engajamento por Views",
-            value: dados.engajamento_por_views,
+            value: contaSelecionada.dados.engajamento_por_views,
             icon: Eye,
             tip: "Percentual de quem viu seus posts que interage com eles.",
           },

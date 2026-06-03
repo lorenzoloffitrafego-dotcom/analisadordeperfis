@@ -22,7 +22,6 @@ import PostingDaysCard from "@/components/PostingDaysCard";
 import InfoTooltip from "@/components/InfoTooltip";
 import ResumoIACard from "@/components/ResumoIACard";
 import ShareDialog from "@/components/ShareDialog";
-import ProfileAvatar from "@/components/ProfileAvatar";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
 
 interface AnalysisResultsProps {
@@ -49,6 +48,8 @@ function formatComparacao(raw: unknown): string {
   return `${(num * 100).toFixed(2)}%`;
 }
 
+const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
+
 // Dot colors matching the reference (teal, lavender, coral)
 const PROFILE_DOTS: Record<string, string> = {
   meu_perfil: "hsl(170, 65%, 60%)",
@@ -60,13 +61,6 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
   const navigate = useNavigate();
   const { user } = useAuth();
   const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
-
-  // Dynamically discover competitor profile keys (perfil1, perfil2, perfil3, ...).
-  const competitorKeys = Object.keys(result)
-    .filter((k) => /^perfil\d+$/.test(k))
-    .sort((a, b) => Number(a.replace("perfil", "")) - Number(b.replace("perfil", "")));
-  const profileKeys = ["meu_perfil", ...competitorKeys];
-
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
   const th = t(theme);
@@ -79,11 +73,11 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
     if (key === "meu_perfil") return "Meu Perfil";
     const profile = result[key];
     if (profile?.nome) return String(profile.nome).charAt(0).toUpperCase() + String(profile.nome).slice(1);
-    const n = key.replace("perfil", "");
-    return `Perfil ${n}`;
+    return key === "perfil1" ? "Perfil 1" : "Perfil 2";
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
 
+  
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
   const [shareOpen, setShareOpen] = useState(false);
@@ -102,11 +96,32 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
 
   const selectedAvgProfile = result[avgPostAccount];
 
+  const ProfileAvatar = ({ name, size = 20 }: { name: string; size?: number }) => {
+    const foto = getFoto(name);
+    const fallback = PROFILE_DOTS[name];
+    if (!foto) {
+      return <span className="rounded-full shrink-0" style={{ width: size, height: size, background: fallback }} />;
+    }
+    return (
+      <img
+        src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
+        className="rounded-full object-cover shrink-0"
+        style={{ width: size, height: size, border: `1.5px solid ${fallback}` }}
+        onError={(e) => {
+          const el = e.currentTarget;
+          el.style.display = "none";
+          const sib = el.nextElementSibling as HTMLElement | null;
+          if (sib) sib.style.display = "inline-block";
+        }}
+      />
+    );
+  };
+
   const renderProfileOptions = () =>
     profileKeys.map((name) => (
       <SelectItem key={name} value={name} className="text-xs">
         <div className="flex items-center gap-2">
-          <ProfileAvatar label={getLabel(name)} foto={getFoto(name)} size={32} ringColor={PROFILE_DOTS[name]} />
+          <ProfileAvatar name={name} size={20} />
           {getLabel(name)}
         </div>
       </SelectItem>
@@ -237,7 +252,7 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
                       <tr key={key} style={{ borderTop: "1px solid hsl(220,15%,94%)" }}>
                         <td className="py-5 px-6">
                           <div className="flex items-center gap-3">
-                            <ProfileAvatar label={getLabel(key)} foto={getFoto(key)} size={32} ringColor={PROFILE_DOTS[key]} />
+                            <ProfileAvatar name={key} size={28} />
                             <span className="text-sm font-medium" style={{ color: "hsl(225,30%,20%)" }}>
                               {getLabel(key)}
                             </span>
@@ -326,10 +341,11 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
             </div>
 
             <EngajamentoCard
-              profiles={profilesRecord}
-              profileNames={[...profileKeys]}
-              getLabel={getLabel}
-              getFoto={getFoto}
+              data={{
+                meu_perfil: { ...result.meu_perfil },
+                perfil1: { ...result.perfil1 },
+                perfil2: { ...result.perfil2 },
+              }}
             />
           </div>
 
