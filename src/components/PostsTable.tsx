@@ -119,7 +119,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                 {profileNames.map((name) => (
                   <SelectItem key={name} value={name} className="text-xs">
                     <div className="flex items-center gap-2">
-                      <img src={`https://images.weserv.nl/?url=${encodeURIComponent(getFoto(name) || "")}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                      <ProfileAvatar label={getLabel(name)} foto={getFoto(name)} size={32} />
                       {getLabel(name)}
                     </div>
                   </SelectItem>
