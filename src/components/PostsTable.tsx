@@ -168,9 +168,7 @@ const PostsTable = ({ profiles, profileNames, getLabel, getFoto }: PostsTablePro
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          {accountFoto && (
-                            <img src={`https://images.weserv.nl/?url=${encodeURIComponent(accountFoto)}`} className="w-5 h-5 rounded-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                          )}
+                          <ProfileAvatar label={accountLabel} foto={accountFoto} size={32} />
                           <span className="text-xs font-medium" style={{ color: th.bodyText }}>{accountLabel}</span>
                         </div>
                       </td>
