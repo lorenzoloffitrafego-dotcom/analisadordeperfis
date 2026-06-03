@@ -326,11 +326,10 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
             </div>
 
             <EngajamentoCard
-              data={{
-                meu_perfil: { ...result.meu_perfil },
-                perfil1: { ...result.perfil1 },
-                perfil2: { ...result.perfil2 },
-              }}
+              profiles={profilesRecord}
+              profileNames={[...profileKeys]}
+              getLabel={getLabel}
+              getFoto={getFoto}
             />
           </div>
 
