@@ -51,12 +51,20 @@ function formatComparacao(raw: unknown): string {
 
 const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
 
-// Dot colors matching the reference (teal, lavender, coral)
+// Dot colors matching the reference (teal, lavender, coral) + extras for dynamic competitors
 const PROFILE_DOTS: Record<string, string> = {
   meu_perfil: "hsl(170, 65%, 60%)",
   perfil1: "hsl(250, 70%, 78%)",
   perfil2: "hsl(0, 75%, 82%)",
 };
+const EXTRA_DOTS = [
+  "hsl(35, 85%, 65%)",
+  "hsl(140, 55%, 60%)",
+  "hsl(290, 60%, 72%)",
+  "hsl(210, 75%, 65%)",
+];
+const getDotColor = (key: string, idx: number): string =>
+  PROFILE_DOTS[key] || EXTRA_DOTS[idx % EXTRA_DOTS.length];
 
 const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false }: AnalysisResultsProps) => {
   const navigate = useNavigate();
