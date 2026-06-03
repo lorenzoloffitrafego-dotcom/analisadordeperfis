@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FileText, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useResultsTheme, t } from "@/components/ResultsThemeContext";
+import ProfileAvatar from "@/components/ProfileAvatar";
 
 interface PostData {
   tipo: string;
