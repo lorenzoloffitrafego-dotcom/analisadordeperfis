@@ -49,8 +49,6 @@ function formatComparacao(raw: unknown): string {
   return `${(num * 100).toFixed(2)}%`;
 }
 
-const profileKeys = ["meu_perfil", "perfil1", "perfil2"] as const;
-
 // Dot colors matching the reference (teal, lavender, coral)
 const PROFILE_DOTS: Record<string, string> = {
   meu_perfil: "hsl(170, 65%, 60%)",
