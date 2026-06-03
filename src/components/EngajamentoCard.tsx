@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Users, Eye } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import InfoTooltip from "@/components/InfoTooltip";
+import ProfileAvatar from "@/components/ProfileAvatar";
 
 interface PerfilData {
   engajamento_por_seguidor?: number | null;
