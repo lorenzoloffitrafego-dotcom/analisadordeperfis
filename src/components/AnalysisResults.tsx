@@ -70,6 +70,21 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
   const navigate = useNavigate();
   const { user } = useAuth();
   const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
+
+  // Dynamic profile keys: meu_perfil first, then every key starting with "perfil"
+  // (perfil1, perfil2, perfil3, ...) sorted in natural order.
+  const profileKeys: string[] = (() => {
+    const keys = ["meu_perfil"];
+    const extras = Object.keys(result || {})
+      .filter((k) => /^perfil\d+$/i.test(k) && result[k])
+      .sort((a, b) => {
+        const na = parseInt(a.replace(/\D/g, ""), 10) || 0;
+        const nb = parseInt(b.replace(/\D/g, ""), 10) || 0;
+        return na - nb;
+      });
+    return [...keys, ...extras];
+  })();
+
   const profiles = profileKeys.map((k) => result[k]);
   const theme = "light" as const;
   const th = t(theme);
@@ -82,11 +97,15 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
     if (key === "meu_perfil") return "Meu Perfil";
     const profile = result[key];
     if (profile?.nome) return String(profile.nome).charAt(0).toUpperCase() + String(profile.nome).slice(1);
-    return key === "perfil1" ? "Perfil 1" : "Perfil 2";
+    const m = key.match(/\d+/);
+    return `Perfil ${m ? m[0] : ""}`.trim();
   };
   const getFoto = (key: string): string | undefined => result[key]?.foto;
+  const getDot = (key: string): string => {
+    const idx = profileKeys.indexOf(key);
+    return getDotColor(key, Math.max(0, idx - 1));
+  };
 
-  
   const [avgPostAccount, setAvgPostAccount] = useState<string>("meu_perfil");
   const [contentDistAccount, setContentDistAccount] = useState<string>("meu_perfil");
   const [shareOpen, setShareOpen] = useState(false);
@@ -105,32 +124,11 @@ const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false
 
   const selectedAvgProfile = result[avgPostAccount];
 
-  const ProfileAvatar = ({ name, size = 20 }: { name: string; size?: number }) => {
-    const foto = getFoto(name);
-    const fallback = PROFILE_DOTS[name];
-    if (!foto) {
-      return <span className="rounded-full shrink-0" style={{ width: size, height: size, background: fallback }} />;
-    }
-    return (
-      <img
-        src={`https://images.weserv.nl/?url=${encodeURIComponent(foto)}`}
-        className="rounded-full object-cover shrink-0"
-        style={{ width: size, height: size, border: `1.5px solid ${fallback}` }}
-        onError={(e) => {
-          const el = e.currentTarget;
-          el.style.display = "none";
-          const sib = el.nextElementSibling as HTMLElement | null;
-          if (sib) sib.style.display = "inline-block";
-        }}
-      />
-    );
-  };
-
   const renderProfileOptions = () =>
     profileKeys.map((name) => (
       <SelectItem key={name} value={name} className="text-xs">
         <div className="flex items-center gap-2">
-          <ProfileAvatar name={name} size={20} />
+          <ProfileAvatar foto={getFoto(name)} label={getLabel(name)} size={32} borderColor={getDot(name)} />
           {getLabel(name)}
         </div>
       </SelectItem>
