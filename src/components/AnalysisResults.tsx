@@ -24,6 +24,7 @@ import ResumoIACard from "@/components/ResumoIACard";
 import ShareDialog from "@/components/ShareDialog";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
+import { normalizeAnalysisResult } from "@/lib/normalizeAnalysis";
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
