@@ -45,17 +45,27 @@ const tipoBadge: Record<string, { bg: string; color: string }> = {
 };
 
 function getPosts(perfil: Record<string, any>, accountKey?: string): PostData[] {
-  return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    .map((i) => {
-      const raw = perfil[`post${i}`];
-      if (raw === null || raw === undefined || raw === 0) return null;
+  if (!perfil) return [];
+  const raw: any[] = Array.isArray(perfil.posts)
+    ? perfil.posts
+    : Object.keys(perfil)
+        .filter((k) => /^post\d+$/.test(k))
+        .sort((a, b) => parseInt(a.slice(4), 10) - parseInt(b.slice(4), 10))
+        .map((k) => perfil[k]);
+
+  return raw
+    .map((item) => {
+      if (item === null || item === undefined || item === 0) return null;
       try {
-        const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+        const parsed = typeof item === "string" ? JSON.parse(item) : item;
         return { ...parsed, _account: accountKey };
-      } catch { return null; }
+      } catch {
+        return null;
+      }
     })
     .filter(Boolean) as PostData[];
 }
+
 
 type SortKey = "likes" | "comentarios" | "data_postagem" | null;
 type SortDir = "asc" | "desc";
