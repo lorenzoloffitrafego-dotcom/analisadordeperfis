@@ -22,11 +22,18 @@ const JS_DAY_TO_INDEX: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 
 
 function getPostsByDay(profile: Record<string, any>): number[] {
   const counts = [0, 0, 0, 0, 0, 0, 0];
-  for (let i = 0; i <= 9; i++) {
-    const raw = profile[`post${i}`];
-    if (!raw || raw === 0) continue;
+  if (!profile) return counts;
+
+  const raw: any[] = Array.isArray(profile.posts)
+    ? profile.posts
+    : Object.keys(profile)
+        .filter((k) => /^post\d+$/.test(k))
+        .map((k) => profile[k]);
+
+  raw.forEach((item) => {
+    if (!item || item === 0) return;
     try {
-      const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+      const parsed = typeof item === "string" ? JSON.parse(item) : item;
       if (parsed?.data_postagem) {
         const date = new Date(parsed.data_postagem + "T12:00:00");
         if (!isNaN(date.getTime())) {
@@ -35,9 +42,10 @@ function getPostsByDay(profile: Record<string, any>): number[] {
         }
       }
     } catch {}
-  }
+  });
   return counts;
 }
+
 
 const PostingDaysCard = ({ profiles, profileNames, getLabel, getFoto }: PostingDaysCardProps) => {
   const [account, setAccount] = useState(profileNames[0] || "meu_perfil");
