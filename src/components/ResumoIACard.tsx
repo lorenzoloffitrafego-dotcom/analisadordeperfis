@@ -79,34 +79,49 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
             </p>
           ) : hasResumoText ? (
             <div style={{ color: "#000000" }}>
-              {resumo!
-                .split(/\n+/)
-                .map((line) => line.trim())
-                .filter((line) => line.length > 0)
-                .map((line, idx) => {
-                  if (line.startsWith("###")) {
-                    const text = line.replace(/^#+\s*/, "");
-                    return (
-                      <p
-                        key={idx}
-                        className="font-bold"
-                        style={{ fontSize: "1rem", marginTop: idx === 0 ? 0 : "1.25rem", marginBottom: "0.5rem" }}
-                      >
-                        {text}
-                      </p>
-                    );
-                  }
-                  return (
-                    <p
-                      key={idx}
-                      className="text-sm leading-relaxed"
-                      style={{ marginBottom: "0.75rem" }}
-                    >
-                      {line}
-                    </p>
-                  );
-                })}
+              {(() => {
+                // Limpa marcadores markdown e quebra em parágrafos
+                const cleaned = resumo!
+                  // remove headings markdown (### Titulo) mantendo só o texto, vira parágrafo próprio
+                  .replace(/^#{1,6}\s*/gm, "")
+                  // remove marcadores de lista no início da linha (-, *, •, 1.)
+                  .replace(/^\s*([-*•]|\d+\.)\s+/gm, "")
+                  // remove comentários estilo // e barras isoladas
+                  .replace(/^\s*\/\/+\s*/gm, "")
+                  // remove blockquotes
+                  .replace(/^\s*>\s?/gm, "")
+                  // remove código inline `texto`
+                  .replace(/`([^`]+)`/g, "$1")
+                  // remove links markdown [texto](url) → texto
+                  .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+
+                // Renderiza **negrito** como <strong>, ignora demais marcações
+                const renderInline = (text: string) => {
+                  const parts = text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g);
+                  return parts.map((part, i) => {
+                    const m = part.match(/^(\*\*|__)(.+)\1$/);
+                    if (m) return <strong key={i} className="font-semibold">{m[2]}</strong>;
+                    return <span key={i}>{part}</span>;
+                  });
+                };
+
+                const paragraphs = cleaned
+                  .split(/\n\s*\n+/)
+                  .map((p) => p.replace(/\s*\n\s*/g, " ").trim())
+                  .filter((p) => p.length > 0);
+
+                return paragraphs.map((p, idx) => (
+                  <p
+                    key={idx}
+                    className="text-sm leading-relaxed"
+                    style={{ marginBottom: idx === paragraphs.length - 1 ? 0 : "0.9rem" }}
+                  >
+                    {renderInline(p)}
+                  </p>
+                ));
+              })()}
             </div>
+
           ) : (
             sections.map((s, i) => (
               <div key={s.title} className={i > 0 ? "pt-4 border-t" : ""} style={i > 0 ? { borderColor: "hsl(220,15%,93%)" } : {}}>
