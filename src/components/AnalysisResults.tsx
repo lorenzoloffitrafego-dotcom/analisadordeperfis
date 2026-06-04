@@ -24,6 +24,7 @@ import ResumoIACard from "@/components/ResumoIACard";
 import ShareDialog from "@/components/ShareDialog";
 import ProfileAvatar from "@/components/ProfileAvatar";
 import { ResultsThemeContext, t } from "@/components/ResultsThemeContext";
+import { normalizeAnalysisResult } from "@/lib/normalizeAnalysis";
 
 interface AnalysisResultsProps {
   result: Record<string, any>;
@@ -66,7 +67,8 @@ const EXTRA_DOTS = [
 const getDotColor = (key: string, idx: number): string =>
   PROFILE_DOTS[key] || EXTRA_DOTS[idx % EXTRA_DOTS.length];
 
-const AnalysisResults = ({ result, onReset, readOnly = false, publicView = false }: AnalysisResultsProps) => {
+const AnalysisResults = ({ result: rawResult, onReset, readOnly = false, publicView = false }: AnalysisResultsProps) => {
+  const result = normalizeAnalysisResult(rawResult);
   const navigate = useNavigate();
   const { user } = useAuth();
   const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
