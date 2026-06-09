@@ -45,10 +45,7 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
-        <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center"
-          style={{ background: `${PURPLE}1A` }}
-        >
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: `${PURPLE}1A` }}>
           <Sparkles className="w-5 h-5" style={{ color: PURPLE }} />
         </div>
         <h3 className="font-display font-bold text-lg" style={{ color: "hsl(225,30%,15%)" }}>
@@ -80,51 +77,76 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
           ) : hasResumoText ? (
             <div style={{ color: "#000000" }}>
               {(() => {
-                // Limpa marcadores markdown e quebra em parágrafos
-                const cleaned = resumo!
-                  // remove headings markdown (### Titulo) mantendo só o texto, vira parágrafo próprio
-                  .replace(/^#{1,6}\s*/gm, "")
-                  // remove marcadores de lista no início da linha (-, *, •, 1.)
-                  .replace(/^\s*([-*•]|\d+\.)\s+/gm, "")
-                  // remove comentários estilo // e barras isoladas
-                  .replace(/^\s*\/\/+\s*/gm, "")
-                  // remove blockquotes
-                  .replace(/^\s*>\s?/gm, "")
-                  // remove código inline `texto`
-                  .replace(/`([^`]+)`/g, "$1")
-                  // remove links markdown [texto](url) → texto
-                  .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
-
-                // Renderiza **negrito** como <strong>, ignora demais marcações
                 const renderInline = (text: string) => {
                   const parts = text.split(/(\*\*[^*]+\*\*|__[^_]+__)/g);
                   return parts.map((part, i) => {
                     const m = part.match(/^(\*\*|__)(.+)\1$/);
-                    if (m) return <strong key={i} className="font-semibold">{m[2]}</strong>;
+                    if (m)
+                      return (
+                        <strong key={i} className="font-semibold">
+                          {m[2]}
+                        </strong>
+                      );
                     return <span key={i}>{part}</span>;
                   });
                 };
 
-                const paragraphs = cleaned
-                  .split(/\n\s*\n+/)
-                  .map((p) => p.replace(/\s*\n\s*/g, " ").trim())
-                  .filter((p) => p.length > 0);
+                const lines = resumo!.split("\n");
+                const elements: JSX.Element[] = [];
+                let paragraphBuffer: string[] = [];
 
-                return paragraphs.map((p, idx) => (
-                  <p
-                    key={idx}
-                    className="text-sm leading-relaxed"
-                    style={{ marginBottom: idx === paragraphs.length - 1 ? 0 : "0.9rem" }}
-                  >
-                    {renderInline(p)}
-                  </p>
-                ));
+                const flushBuffer = () => {
+                  const text = paragraphBuffer.join(" ").trim();
+                  if (text.length > 0) {
+                    elements.push(
+                      <p
+                        key={`p-${elements.length}`}
+                        className="text-sm leading-relaxed"
+                        style={{ marginBottom: "0.9rem" }}
+                      >
+                        {renderInline(text)}
+                      </p>,
+                    );
+                  }
+                  paragraphBuffer = [];
+                };
+
+                lines.forEach((line) => {
+                  const headingMatch = line.match(/^#{1,6}\s+(.+)/);
+                  if (headingMatch) {
+                    flushBuffer();
+                    elements.push(
+                      <p
+                        key={`h-${elements.length}`}
+                        className="text-sm leading-relaxed"
+                        style={{ marginBottom: "0.4rem", marginTop: elements.length > 0 ? "1.2rem" : 0 }}
+                      >
+                        <strong className="font-bold">{headingMatch[1]}</strong>
+                      </p>,
+                    );
+                  } else if (line.trim() === "") {
+                    flushBuffer();
+                  } else {
+                    const cleaned = line
+                      .replace(/^\s*([-*•]|\d+\.)\s+/, "")
+                      .replace(/^\s*>\s?/, "")
+                      .replace(/`([^`]+)`/g, "$1")
+                      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+                    paragraphBuffer.push(cleaned);
+                  }
+                });
+
+                flushBuffer();
+                return elements;
               })()}
             </div>
-
           ) : (
             sections.map((s, i) => (
-              <div key={s.title} className={i > 0 ? "pt-4 border-t" : ""} style={i > 0 ? { borderColor: "hsl(220,15%,93%)" } : {}}>
+              <div
+                key={s.title}
+                className={i > 0 ? "pt-4 border-t" : ""}
+                style={i > 0 ? { borderColor: "hsl(220,15%,93%)" } : {}}
+              >
                 <h4 className="font-bold text-sm mb-1.5" style={{ color: "hsl(225,30%,15%)" }}>
                   {s.title}
                 </h4>
@@ -139,7 +161,6 @@ const ResumoIACard = ({ resumo, objetivo, contexto, solucao, conclusao }: Resumo
         {/* Fade overlay quando colapsado */}
         {!expanded && hasContent && (
           <div
-           
             style={{
               position: "absolute",
               bottom: 0,
