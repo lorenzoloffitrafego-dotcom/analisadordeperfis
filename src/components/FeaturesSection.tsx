@@ -124,10 +124,10 @@ const FeaturesSection = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-between gap-4 sm:gap-3">
                 <div className="relative shrink-0">
                   <div
-                    className="w-[92px] h-[92px] rounded-full"
+                    className="w-[120px] h-[120px] sm:w-[92px] sm:h-[92px] rounded-full"
                     style={{
                       background:
                         "conic-gradient(hsl(262 70% 55%) 0% 60%, hsl(255 65% 45%) 60% 85%, hsl(320 90% 65%) 85% 100%)",
@@ -137,16 +137,16 @@ const FeaturesSection = () => {
                     <span className="text-primary">●</span> 60% Reels
                   </div>
                 </div>
-                <ul className="space-y-1.5 text-[11px] pr-1">
-                  <li className="flex items-center gap-2">
+                <ul className="space-y-1.5 text-[11px] pr-1 w-full sm:w-auto text-center sm:text-left">
+                  <li className="flex items-center justify-center sm:justify-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(262 70% 55%)" }} />
                     <span className="text-muted-foreground">60% Reels</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center justify-center sm:justify-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(255 65% 45%)" }} />
                     <span className="text-muted-foreground">25% Carrossel</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center justify-center sm:justify-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(320 90% 65%)" }} />
                     <span className="text-muted-foreground">15% Imagem</span>
                   </li>
