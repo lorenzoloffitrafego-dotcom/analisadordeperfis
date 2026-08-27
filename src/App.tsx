@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import AnalysisFlow from "./pages/AnalysisFlow";
 import NotFound from "./pages/NotFound";
 import VerifyEmail from "./pages/VerifyEmail";
+import ResetPassword from "./pages/ResetPassword";
 import SharedAnalysis from "./pages/SharedAnalysis";
 import ProtectedRoute from "./components/ProtectedRoute";
 
