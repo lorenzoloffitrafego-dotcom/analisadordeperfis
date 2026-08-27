@@ -79,34 +79,35 @@ const FeaturesSection = () => {
                   </p>
                 </div>
               </div>
-              <div className="space-y-2">
+              {/* Mini tabela comparativa */}
+              <div className="rounded-xl border border-border overflow-hidden">
+                <div className="grid grid-cols-[1.2fr_1fr_1fr] bg-secondary/70 px-3 py-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  <span>Perfil</span>
+                  <span className="text-center">Seguidores</span>
+                  <span className="text-center">Eng.</span>
+                </div>
                 {[
-                  { l: "B", stats: ["385K", " 890", "12%"] },
-                  { l: "F", stats: ["1800", "2K", "53%"] },
-                ].map(({ l, stats }) => (
+                  { l: "B", name: "@suamarca", followers: "385K", eng: "12%", me: true },
+                  { l: "F", name: "@concorrente", followers: "1.8K", eng: "53%", me: false },
+                ].map((r) => (
                   <div
-                    key={l}
-                    className="flex items-center justify-between rounded-xl bg-secondary/70 px-3 py-2"
+                    key={r.l}
+                    className={`grid grid-cols-[1.2fr_1fr_1fr] items-center px-3 py-2.5 border-t border-border ${
+                      r.me ? "bg-primary/5" : "bg-card"
+                    }`}
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-7 h-7 rounded-full bg-brand-gradient text-primary-foreground text-xs font-semibold flex items-center justify-center shrink-0">
-                        {l}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-6 h-6 rounded-full bg-brand-gradient text-primary-foreground text-[10px] font-semibold flex items-center justify-center shrink-0">
+                        {r.l}
                       </div>
-                      <div className="flex items-center justify-between flex-1">
-                        {stats.map((stat, i) => (
-                          <div key={`${l}-${i}`} className="flex items-center flex-1 justify-center">
-                            <span className="text-sm font-semibold text-muted-foreground">{stat}</span>
-                            {i < stats.length - 1 && (
-                              <hr className="w-px h-5 border-0 bg-foreground/15 ml-auto" />
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                      <span className="text-[11px] font-medium text-foreground truncate">{r.name}</span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
+                    <span className="text-[13px] font-semibold text-foreground text-center">{r.followers}</span>
+                    <span className="text-[13px] font-semibold text-primary text-center">{r.eng}</span>
                   </div>
                 ))}
               </div>
+
             </div>
 
             {/* Distribuição */}
