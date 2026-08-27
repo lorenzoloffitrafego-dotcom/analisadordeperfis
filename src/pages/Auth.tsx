@@ -232,6 +232,23 @@ const Auth = () => {
               </div>
             </div>
 
+            {isLogin && (
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsForgot(true);
+                    setResetSent(false);
+                  }}
+                  className="text-sm text-accent hover:underline font-medium"
+                >
+                  Esqueci minha senha
+                </button>
+              </div>
+            )}
+
+
+
             <Button
               type="submit"
               disabled={submitting}
