@@ -1,4 +1,4 @@
-import { Calendar, BarChart3, PieChart as PieChartIcon, ChevronDown, ChevronRight } from "lucide-react";
+import { Calendar, BarChart3, PieChart as PieChartIcon, ChevronDown } from "lucide-react";
 
 const bars = [
   { d: "Seg", v: 2, color: "hsl(262 70% 55%)" },        // purple
