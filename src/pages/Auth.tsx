@@ -1,22 +1,33 @@
 import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, User } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+
+const GoogleLogo = () => (
+  <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      fill="#4285F4"
+      d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"
+    />
+  </svg>
+);
 
 const Auth = () => {
   const { user, loading: authLoading } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
-  const [isForgot, setIsForgot] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -25,124 +36,25 @@ const Auth = () => {
     return <Navigate to="/analisar" replace />;
   }
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGoogleAuth = async () => {
     setSubmitting(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/analisar`,
+        },
       });
       if (error) throw error;
-      setResetSent(true);
-      toast({
-        title: "Email enviado!",
-        description: "Confira sua caixa de entrada para redefinir sua senha.",
-      });
     } catch (error: any) {
       toast({
         title: "Erro",
-        description: error.message || "Não foi possível enviar o email.",
+        description: error.message || "Não foi possível entrar com o Google. Tente novamente.",
         variant: "destructive",
       });
-    } finally {
       setSubmitting(false);
     }
   };
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-
-    try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast({ title: "Login realizado!", description: "Bem-vindo de volta." });
-        navigate("/analisar");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { display_name: name },
-            emailRedirectTo: window.location.origin,
-          },
-        });
-        if (error) throw error;
-        toast({ title: "Cadastro realizado!", description: "Verifique seu email para ativar sua conta." });
-        navigate("/verify-email");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Erro",
-        description: error.message || "Ocorreu um erro. Tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  if (isForgot) {
-    return (
-      <div className="min-h-screen aurora-bg flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
-          <button
-            onClick={() => {
-              setIsForgot(false);
-              setResetSent(false);
-            }}
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Voltar para o login</span>
-          </button>
-
-          <div className="glass-surface rounded-2xl p-8 tactile-shadow">
-            <div className="text-center mb-8">
-              <h1 className="font-display text-2xl font-bold text-foreground mb-2">Esqueci minha senha</h1>
-              <p className="text-sm text-muted-foreground">
-                {resetSent
-                  ? "Se existir uma conta com esse email, enviamos um link para redefinir sua senha."
-                  : "Informe seu email e enviaremos um link para criar uma nova senha."}
-              </p>
-            </div>
-
-            {!resetSent && (
-              <form onSubmit={handleForgotPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="forgot-email" className="text-sm text-foreground">
-                    Email
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="forgot-email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-12 rounded-xl"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full h-12 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 text-sm font-medium"
-                >
-                  {submitting ? "Enviando..." : "Enviar link de recuperação"}
-                </Button>
-              </form>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
 
   return (
     <div className="min-h-screen aurora-bg flex items-center justify-center px-4">
@@ -158,114 +70,25 @@ const Auth = () => {
         <div className="glass-surface rounded-2xl p-8 tactile-shadow">
           <div className="text-center mb-8">
             <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-              {isLogin ? "Entrar na sua conta" : "Criar sua conta"}
+              Acesse sua conta
             </h1>
             <p className="text-sm text-muted-foreground">
-              {isLogin
-                ? "Acesse o InstaInsight para analisar seus perfis"
-                : "Cadastre-se para começar a analisar seus perfis"}
+              Entre ou cadastre-se com sua conta Google para começar a analisar seus perfis
             </p>
           </div>
 
-          <form onSubmit={handleEmailAuth} className="space-y-4">
-            {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm text-foreground">
-                  Como podemos te chamar?
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Seu nome"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="pl-10 h-12 rounded-xl"
-                    required
-                  />
-                </div>
-              </div>
-            )}
+          <button
+            type="button"
+            onClick={handleGoogleAuth}
+            disabled={submitting}
+            className="w-full h-12 rounded-xl bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors flex items-center justify-center gap-3 text-sm font-medium shadow-sm disabled:opacity-60"
+          >
+            <GoogleLogo />
+            {submitting ? "Conectando..." : "Continuar com Google"}
+          </button>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm text-foreground">
-                Email
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 rounded-xl"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm text-foreground">
-                Senha
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 h-12 rounded-xl"
-                  required
-                  minLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {isLogin && (
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsForgot(true);
-                    setResetSent(false);
-                  }}
-                  className="text-sm text-accent hover:underline font-medium"
-                >
-                  Esqueci minha senha
-                </button>
-              </div>
-            )}
-
-
-
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="w-full h-12 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 text-sm font-medium"
-            >
-              {submitting ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
-            </Button>
-          </form>
-
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            {isLogin ? "Não tem conta? " : "Já tem conta? "}
-            <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-accent hover:underline font-medium"
-            >
-              {isLogin ? "Cadastre-se" : "Entrar"}
-            </button>
+          <p className="text-center text-xs text-muted-foreground mt-6 leading-relaxed">
+            Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.
           </p>
         </div>
       </div>
