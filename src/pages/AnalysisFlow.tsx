@@ -148,6 +148,9 @@ const AnalysisFlow = () => {
                 <p className="text-sm text-muted-foreground">
                   Insira o @ ou a URL do seu Instagram principal que você deseja monitorar.
                 </p>
+                <p className="text-xs text-amber-600/90 bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/20">
+                  Lembrete: o perfil precisa ser público para conseguirmos coletar os dados.
+                </p>
               </div>
               <div className="flex items-center gap-2 rounded-xl bg-secondary/50 border border-border/50 px-3 py-2 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 ring-offset-background transition-shadow">
                 <span className="text-muted-foreground text-sm">@</span>
@@ -179,6 +182,9 @@ const AnalysisFlow = () => {
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   Insira os @ ou as URLs de dois perfis para análise comparativa de métricas.
+                </p>
+                <p className="text-xs text-amber-600/90 bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/20">
+                  Lembrete: os perfis precisam ser públicos para conseguirmos coletar os dados.
                 </p>
               </div>
               <div className="space-y-3">
