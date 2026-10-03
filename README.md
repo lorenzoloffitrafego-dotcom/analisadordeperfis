@@ -71,3 +71,15 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Publicação no GitHub Pages
+
+Cada push na branch `main` publica o app em
+https://lorenzoloffitrafego-dotcom.github.io/analisadordeperfis/ pelo workflow
+`.github/workflows/deploy-pages.yml`.
+
+Configuração única:
+
+1. Em **Settings → Pages**, escolha **GitHub Actions** como "Source".
+2. No Supabase, em **Authentication → URL Configuration → Redirect URLs**, adicione
+   `https://lorenzoloffitrafego-dotcom.github.io/analisadordeperfis/**` para o login com Google funcionar.

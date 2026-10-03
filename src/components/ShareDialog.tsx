@@ -29,7 +29,7 @@ const ShareDialog = ({ open, onClose, result }: ShareDialogProps) => {
       if (insErr || !data) {
         setError("Não foi possível gerar o link. Tente novamente.");
       } else {
-        setLink(`${window.location.origin}/share/${data.id}`);
+        setLink(`${window.location.origin}${import.meta.env.BASE_URL}share/${data.id}`);
       }
       setLoading(false);
     })();

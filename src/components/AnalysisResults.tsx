@@ -71,7 +71,7 @@ const AnalysisResults = ({ result: rawResult, onReset, readOnly = false, publicV
   const result = normalizeAnalysisResult(rawResult);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const signupUrl = (import.meta as any).env?.VITE_APP_URL || "/";
+  const signupUrl = (import.meta as any).env?.VITE_APP_URL || import.meta.env.BASE_URL;
 
   // Dynamic profile keys: meu_perfil first, then every key starting with "perfil"
   // (perfil1, perfil2, perfil3, ...) sorted in natural order.
